@@ -2,7 +2,7 @@
 
 ## Current Goal
 
-Apply the new NaenaeTeacher dashboard UI baseline to the Spring MVC teacher dashboard.
+Add a login-ready test teacher account and continue end-to-end dashboard verification.
 
 ## Current Status
 
@@ -32,13 +32,16 @@ Apply the new NaenaeTeacher dashboard UI baseline to the Spring MVC teacher dash
 - Thymeleaf is configured to resolve `WEB-INF/views` before the default template location, while existing templates can remain under `src/main/resources/templates`.
 - Git repository is initialized and connected to GitHub at `https://github.com/Eunji-ji/NaenaeTeacher`.
 - Initial project setup has been pushed to the remote `main` branch.
+- Flyway now includes a test teacher seed account for local login verification.
 
 ## Next Tasks
 
-1. Run the app with PostgreSQL available and visually verify `/teacher/dashboard`.
-2. Move future teacher/student screens into `src/main/webapp/WEB-INF/views` using the new dashboard CSS/component style as the baseline.
-3. Wire dashboard cards to real service data instead of static placeholders.
-4. Optionally clean up the old invalid Java 18 registry entry warning if it appears during local Gradle runs.
+1. Restart the Spring Boot app so Flyway applies `V2__seed_test_teacher.sql`.
+2. Log in with `teacher@naenae.com` / `password1234`.
+3. Verify successful redirect to `/teacher/dashboard`.
+4. Move future teacher/student screens into `src/main/webapp/WEB-INF/views` using the new dashboard CSS/component style as the baseline.
+5. Wire dashboard cards to real service data instead of static placeholders.
+6. Optionally clean up the old invalid Java 18 registry entry warning if it appears during local Gradle runs.
 
 ## Completed This Session
 
@@ -69,10 +72,12 @@ Apply the new NaenaeTeacher dashboard UI baseline to the Spring MVC teacher dash
 - Initialized local Git repository.
 - Created initial commit `b2f260e Initial NaenaeTeacher project setup`.
 - Added remote `origin` and pushed `main` to GitHub.
+- Added `V2__seed_test_teacher.sql` with a BCrypt-hashed local teacher login.
+- Verified `gradle build` succeeds after adding the seed migration.
 
 ## Next Resume Point
 
-Start PostgreSQL, run the Spring Boot app, log in as a teacher test account, and verify that `/teacher/dashboard` renders with `/assets/css/naenae-dashboard.css`.
+Restart the Spring Boot app and log in with `teacher@naenae.com` / `password1234`; verify that `/teacher/dashboard` renders with `/assets/css/naenae-dashboard.css`.
 
 ## Important Notes
 
