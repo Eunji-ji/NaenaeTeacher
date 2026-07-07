@@ -30,6 +30,8 @@ Apply the new NaenaeTeacher dashboard UI baseline to the Spring MVC teacher dash
 - Dashboard-specific CSS is separated under `src/main/webapp/assets/css/naenae-dashboard.css`.
 - `src/main/webapp` is packaged into `META-INF/resources` so the dashboard view and CSS are available from the executable jar.
 - Thymeleaf is configured to resolve `WEB-INF/views` before the default template location, while existing templates can remain under `src/main/resources/templates`.
+- Git repository is initialized and connected to GitHub at `https://github.com/Eunji-ji/NaenaeTeacher`.
+- Initial project setup has been pushed to the remote `main` branch.
 
 ## Next Tasks
 
@@ -64,6 +66,9 @@ Apply the new NaenaeTeacher dashboard UI baseline to the Spring MVC teacher dash
 - Updated Gradle `processResources` so `src/main/webapp` is included in boot jar resources.
 - Verified `bootJar` includes the dashboard HTML and CSS under `META-INF/resources`.
 - Verified `gradle build` succeeds after the UI view changes.
+- Initialized local Git repository.
+- Created initial commit `b2f260e Initial NaenaeTeacher project setup`.
+- Added remote `origin` and pushed `main` to GitHub.
 
 ## Next Resume Point
 
