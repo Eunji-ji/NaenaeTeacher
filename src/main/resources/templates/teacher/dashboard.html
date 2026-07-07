@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/teacher-layout :: teacherLayout(~{::title}, ~{::section})}">
+<head>
+    <title>선생님 대시보드 | NaenaeTeacher</title>
+</head>
+<body>
+<section>
+    <div class="p-4 p-lg-5">
+        <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
+            <div>
+                <p class="text-success fw-bold mb-1">Dashboard</p>
+                <h1 class="h2 fw-bold mb-0">선생님 대시보드</h1>
+            </div>
+            <div class="text-muted">초기 세팅 화면</div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-12 col-md-6 col-xl-3">
+                <article class="metric-card">
+                    <span>전체 학생 수</span>
+                    <strong th:text="${totalStudentCount}">0</strong>
+                </article>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <article class="metric-card">
+                    <span>오늘 출석 등록 수</span>
+                    <strong th:text="${todayAttendanceCount}">0</strong>
+                </article>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <article class="metric-card">
+                    <span>진행 중 과제 수</span>
+                    <strong th:text="${openAssignmentCount}">0</strong>
+                </article>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <article class="metric-card">
+                    <span>최근 메모 수</span>
+                    <strong th:text="${recentMemoCount}">0</strong>
+                </article>
+            </div>
+        </div>
+
+        <div class="setup-panel mt-4">
+            <h2 class="h5 fw-bold">다음 개발 준비</h2>
+            <p class="mb-0 text-muted">학생 관리, 수업 관리, 과제 관리, 출석 관리, 메모 기능을 이 구조 위에 순차적으로 붙일 수 있습니다.</p>
+        </div>
+    </div>
+</section>
+</body>
+</html>
