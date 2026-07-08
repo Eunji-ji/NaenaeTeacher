@@ -49,6 +49,14 @@ public class TeacherCourseService {
         return createdCount;
     }
 
+    @Transactional
+    public void deleteCourse(Long teacherUserId, Long courseId) {
+        Teacher teacher = getTeacher(teacherUserId);
+        Course course = courseRepository.findByIdAndTeacherId(courseId, teacher.getId())
+                .orElseThrow(() -> new IllegalArgumentException("삭제할 반을 찾을 수 없습니다."));
+        courseRepository.delete(course);
+    }
+
     private Teacher getTeacher(Long teacherUserId) {
         return teacherRepository.findByUserId(teacherUserId)
                 .orElseThrow(() -> new IllegalStateException("선생님 정보를 찾을 수 없습니다."));

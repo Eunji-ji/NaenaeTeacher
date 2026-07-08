@@ -1,7 +1,5 @@
 package com.naenae.teacher.student.controller;
 
-import java.util.List;
-
 import com.naenae.common.user.domain.User;
 import com.naenae.teacher.auth.security.CustomUserDetails;
 import com.naenae.teacher.student.service.TeacherStudentService;
@@ -11,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class TeacherStudentController {
@@ -37,7 +36,7 @@ public class TeacherStudentController {
     @PostMapping("/teacher/students")
     public String createStudent(
             @RequestParam String name,
-            @RequestParam(required = false) List<Long> courseIds,
+            @RequestParam(required = false) Long courseId,
             @RequestParam(required = false) String schoolName,
             @RequestParam(required = false) String phone,
             Authentication authentication,
@@ -45,17 +44,29 @@ public class TeacherStudentController {
     ) {
         Long teacherUserId = getTeacherUserId(authentication);
         try {
-            teacherStudentService.createStudent(teacherUserId, name, courseIds, schoolName, phone);
+            teacherStudentService.createStudent(teacherUserId, name, courseId, schoolName, phone);
         } catch (IllegalArgumentException exception) {
             model.addAttribute("errorMessage", exception.getMessage());
             model.addAttribute("name", name);
-            model.addAttribute("courseIds", courseIds == null ? List.of() : courseIds);
+            model.addAttribute("selectedCourseId", courseId);
             model.addAttribute("schoolName", schoolName);
             model.addAttribute("phone", phone);
             model.addAttribute("courses", teacherStudentService.getCourseOptions(teacherUserId));
             model.addAttribute("students", teacherStudentService.getStudents(teacherUserId, null));
             return "teacher/students";
         }
+        return "redirect:/teacher/students";
+    }
+
+    @PostMapping("/teacher/students/delete")
+    public String deleteStudent(
+            @RequestParam Long studentId,
+            Authentication authentication,
+            RedirectAttributes redirectAttributes
+    ) {
+        Long teacherUserId = getTeacherUserId(authentication);
+        teacherStudentService.deleteStudent(teacherUserId, studentId);
+        redirectAttributes.addFlashAttribute("successMessage", "학생을 삭제했습니다.");
         return "redirect:/teacher/students";
     }
 

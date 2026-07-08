@@ -12,5 +12,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     List<Course> findByTeacherIdAndIdInOrderByTitleAsc(Long teacherId, Collection<Long> ids);
 
+    Optional<Course> findByIdAndTeacherId(Long id, Long teacherId);
+
     Optional<Course> findFirstByTeacherIdAndTitleIgnoreCase(Long teacherId, String title);
 }

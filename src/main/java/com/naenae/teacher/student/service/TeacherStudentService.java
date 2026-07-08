@@ -77,10 +77,10 @@ public class TeacherStudentService {
     }
 
     @Transactional
-    public void createStudent(Long teacherUserId, String name, List<Long> courseIds, String schoolName, String phone) {
+    public void createStudent(Long teacherUserId, String name, Long courseId, String schoolName, String phone) {
         Teacher teacher = getTeacher(teacherUserId);
         String normalizedName = requireText(name, "학생 이름을 입력해 주세요.");
-        List<Course> selectedCourses = resolveSelectedCourses(teacher.getId(), courseIds);
+        Course selectedCourse = resolveSelectedCourse(teacher.getId(), courseId);
 
         Student student = studentRepository.save(Student.create(
                 teacher,
@@ -89,11 +89,17 @@ public class TeacherStudentService {
                 normalizeOptional(phone)
         ));
 
-        for (Course course : selectedCourses) {
-            if (!courseStudentRepository.existsByCourseIdAndStudentId(course.getId(), student.getId())) {
-                courseStudentRepository.save(CourseStudent.create(course, student));
-            }
+        if (!courseStudentRepository.existsByCourseIdAndStudentId(selectedCourse.getId(), student.getId())) {
+            courseStudentRepository.save(CourseStudent.create(selectedCourse, student));
         }
+    }
+
+    @Transactional
+    public void deleteStudent(Long teacherUserId, Long studentId) {
+        Teacher teacher = getTeacher(teacherUserId);
+        Student student = studentRepository.findByIdAndTeacherId(studentId, teacher.getId())
+                .orElseThrow(() -> new IllegalArgumentException("삭제할 학생을 찾을 수 없습니다."));
+        studentRepository.delete(student);
     }
 
     private Teacher getTeacher(Long teacherUserId) {
@@ -101,23 +107,13 @@ public class TeacherStudentService {
                 .orElseThrow(() -> new IllegalStateException("선생님 정보를 찾을 수 없습니다."));
     }
 
-    private List<Course> resolveSelectedCourses(Long teacherId, List<Long> courseIds) {
-        List<Long> selectedCourseIds = courseIds == null
-                ? List.of()
-                : courseIds.stream()
-                .filter(Objects::nonNull)
-                .distinct()
-                .toList();
-
-        if (selectedCourseIds.isEmpty()) {
-            throw new IllegalArgumentException("반을 1개 이상 선택해 주세요.");
+    private Course resolveSelectedCourse(Long teacherId, Long courseId) {
+        if (courseId == null) {
+            throw new IllegalArgumentException("반을 1개 선택해 주세요.");
         }
 
-        List<Course> selectedCourses = courseRepository.findByTeacherIdAndIdInOrderByTitleAsc(teacherId, selectedCourseIds);
-        if (selectedCourses.size() != selectedCourseIds.size()) {
-            throw new IllegalArgumentException("선택한 반 중 등록되지 않은 반이 있습니다.");
-        }
-        return selectedCourses;
+        return courseRepository.findByIdAndTeacherId(courseId, teacherId)
+                .orElseThrow(() -> new IllegalArgumentException("선택한 반은 등록된 반이 아닙니다."));
     }
 
     private String requireText(String value, String message) {

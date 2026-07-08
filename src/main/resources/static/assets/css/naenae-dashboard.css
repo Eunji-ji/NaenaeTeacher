@@ -287,9 +287,9 @@ a {
 }
 
 .sidebar-section-label {
-    margin: 10px 14px 6px;
+    margin: 12px 14px 8px;
     color: var(--muted-foreground);
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 900;
     letter-spacing: 0.02em;
 }
@@ -804,6 +804,10 @@ a {
     padding: 10px 12px;
 }
 
+.student-form select {
+    width: 100%;
+}
+
 .student-form textarea,
 .course-form textarea {
     min-height: 134px;
@@ -864,6 +868,25 @@ a {
 .student-table td {
     color: var(--card-foreground);
     font-size: 14px;
+}
+
+.table-action-button {
+    min-height: 34px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--card);
+    color: var(--muted-foreground);
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 900;
+    padding: 0 12px;
+}
+
+.table-action-button.danger:hover {
+    border-color: rgba(239, 143, 143, 0.45);
+    background: rgba(239, 143, 143, 0.12);
+    color: #a84545;
 }
 
 .course-chip-list {

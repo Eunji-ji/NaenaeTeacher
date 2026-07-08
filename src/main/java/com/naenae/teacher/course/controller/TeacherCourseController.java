@@ -51,6 +51,18 @@ public class TeacherCourseController {
         }
     }
 
+    @PostMapping("/teacher/courses/delete")
+    public String deleteCourse(
+            @RequestParam Long courseId,
+            Authentication authentication,
+            RedirectAttributes redirectAttributes
+    ) {
+        Long teacherUserId = getTeacherUserId(authentication);
+        teacherCourseService.deleteCourse(teacherUserId, courseId);
+        redirectAttributes.addFlashAttribute("successMessage", "반을 삭제했습니다.");
+        return "redirect:/teacher/courses";
+    }
+
     private Long getTeacherUserId(Authentication authentication) {
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
             User user = userDetails.getUser();
