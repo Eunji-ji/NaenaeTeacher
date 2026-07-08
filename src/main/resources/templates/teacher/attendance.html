@@ -81,6 +81,16 @@
                                 <input type="hidden" name="date" th:value="${#temporals.format(attendancePage.nextDate(), 'yyyy-MM-dd')}">
                                 <button type="submit" aria-label="다음 날짜">›</button>
                             </form>
+                            <form class="attendance-bulk-form" action="/teacher/attendance/bulk-present" method="post"
+                                  th:if="${attendancePage.selectedCourseId() != null}">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <input type="hidden" name="courseId" th:value="${attendancePage.selectedCourseId()}">
+                                <input type="hidden" name="date" th:value="${#temporals.format(attendancePage.selectedDate(), 'yyyy-MM-dd')}">
+                                <button class="attendance-bulk-button" type="submit">
+                                    <span class="attendance-bulk-icon">☑</span>
+                                    모두출석
+                                </button>
+                            </form>
                         </div>
                     </div>
 

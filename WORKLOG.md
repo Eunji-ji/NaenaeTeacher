@@ -131,6 +131,7 @@ Implement teacher-side student management with multi-class registration.
 - Teacher branding now renders as the logged-in name plus `쌤` on the teacher menus.
 - Dashboard attendance summaries now use live present / late / absent counts and attendance rate.
 - Attendance management is being moved from checkbox save flow to per-row status selection with auto-save.
+- Added a `모두출석` bulk action on the attendance screen to mark all currently loaded students as present.
 - Bulk template download/upload buttons and the student bulk action now use the shared dashboard button styling.
 - `gradle build` passed after the new teacher view advice, attendance flow, and student status screen changes.
 

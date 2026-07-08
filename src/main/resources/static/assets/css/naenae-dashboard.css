@@ -970,9 +970,14 @@ a {
     align-items: center;
     justify-content: center;
     gap: 12px;
+    flex-wrap: wrap;
 }
 
 .attendance-date-nav form {
+    margin: 0;
+}
+
+.attendance-bulk-form {
     margin: 0;
 }
 
@@ -992,6 +997,30 @@ a {
 .attendance-date-nav button:hover {
     border-color: rgba(76, 195, 188, 0.45);
     background: rgba(76, 195, 188, 0.12);
+}
+
+.attendance-bulk-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    border: 1px solid rgba(76, 195, 188, 0.28);
+    border-radius: 14px;
+    background: rgba(76, 195, 188, 0.1);
+    color: var(--sidebar-accent-foreground);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 900;
+    padding: 0 14px;
+}
+
+.attendance-bulk-button:hover {
+    border-color: rgba(76, 195, 188, 0.45);
+    background: rgba(76, 195, 188, 0.16);
+}
+
+.attendance-bulk-icon {
+    font-size: 14px;
 }
 
 .attendance-date-pill {

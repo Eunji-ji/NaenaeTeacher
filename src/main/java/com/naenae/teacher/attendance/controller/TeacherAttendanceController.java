@@ -61,6 +61,27 @@ public class TeacherAttendanceController {
         return redirect;
     }
 
+    @PostMapping("/teacher/attendance/bulk-present")
+    public String markAllPresent(
+            @RequestParam(required = false) Long courseId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            Authentication authentication,
+            RedirectAttributes redirectAttributes
+    ) {
+        Long teacherUserId = getTeacherUserId(authentication);
+        try {
+            teacherAttendanceService.markAllPresent(teacherUserId, courseId, date);
+            redirectAttributes.addFlashAttribute("successMessage", "조회된 학생을 모두 출석으로 저장했습니다.");
+        } catch (IllegalArgumentException exception) {
+            redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
+        }
+        String redirect = "redirect:/teacher/attendance?date=" + date;
+        if (courseId != null) {
+            redirect += "&courseId=" + courseId;
+        }
+        return redirect;
+    }
+
     private LocalDate resolveDate(LocalDate date, Integer shift) {
         LocalDate baseDate = date == null ? LocalDate.now() : date;
         if (shift != null) {

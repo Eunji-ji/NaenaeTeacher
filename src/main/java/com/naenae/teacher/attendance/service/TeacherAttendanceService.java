@@ -149,6 +149,30 @@ public class TeacherAttendanceService {
         attendanceRepository.save(attendance);
     }
 
+    @Transactional
+    public void markAllPresent(Long teacherUserId, Long courseId, LocalDate attendanceDate) {
+        Teacher teacher = getTeacher(teacherUserId);
+        if (courseId == null) {
+            throw new IllegalArgumentException("반을 선택해 주세요.");
+        }
+
+        Course course = courseRepository.findByIdAndTeacherId(courseId, teacher.getId())
+                .orElseThrow(() -> new IllegalArgumentException("선택한 반을 찾을 수 없습니다."));
+
+        List<CourseStudent> classStudents = courseStudentRepository
+                .findByCourseIdAndStudentTeacherIdOrderByStudentNameAsc(course.getId(), teacher.getId());
+        LocalDateTime checkedAt = LocalDateTime.now();
+
+        for (CourseStudent mapping : classStudents) {
+            Student student = mapping.getStudent();
+            Attendance attendance = attendanceRepository
+                    .findByTeacherIdAndCourseIdAndStudentIdAndAttendanceDate(teacher.getId(), course.getId(), student.getId(), attendanceDate)
+                    .orElseGet(() -> Attendance.create(teacher, course, student, attendanceDate, AttendanceStatus.PRESENT, checkedAt));
+            attendance.updateStatus(AttendanceStatus.PRESENT, checkedAt);
+            attendanceRepository.save(attendance);
+        }
+    }
+
     public String formatCheckedAt(LocalDateTime checkedAt) {
         return checkedAt == null ? "" : checkedAt.format(TIME_FORMATTER);
     }
