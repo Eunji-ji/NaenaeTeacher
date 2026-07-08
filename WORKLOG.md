@@ -125,18 +125,18 @@ Implement teacher-side student management with multi-class registration.
 
 ## This Update
 
-- Removed the student helper text above the class selector.
-- Added `/teacher/students/bulk` for Excel template download and upload.
-- Bulk template headers are `학생이름`, `반`, `학교`, `전화번호`.
-- Bound Spring Boot to `0.0.0.0` so other PCs can reach the app by host IP.
-- Bulk template download/upload buttons now use dashboard-matching styles.
-- Course dropdowns remain sorted by class name.
-- Branding was renamed to `이름쌤` across menu and auth templates.
-- Attendance management screen was added with date navigation, course selection, and checkbox save flow.
+- Added `학생 학습 관리` under student management and wired it to a new feature memo screen.
+- Student memo text now reuses the existing `memo_summary` column and supports 1000 characters.
+- Student list sorting stays class name first, then student name.
+- Teacher branding now renders as the logged-in name plus `쌤` on the teacher menus.
+- Dashboard attendance summaries now use live present / late / absent counts and attendance rate.
+- Attendance management is being moved from checkbox save flow to per-row status selection with auto-save.
+- Bulk template download/upload buttons and the student bulk action now use the shared dashboard button styling.
+- `gradle build` passed after the new teacher view advice, attendance flow, and student status screen changes.
 
 ## Next Resume Point
 
-Restart the Spring Boot app and verify `/teacher/students` manual registration and class filtering.
+Restart the Spring Boot app, then verify student status saving and the new attendance status flow.
 
 ## Important Notes
 

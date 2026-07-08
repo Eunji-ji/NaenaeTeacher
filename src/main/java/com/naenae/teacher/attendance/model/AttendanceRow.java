@@ -6,7 +6,7 @@ public record AttendanceRow(
         Long studentId,
         String studentName,
         String schoolName,
-        boolean checked,
+        String status,
         LocalDateTime checkedAt
 ) {
 }

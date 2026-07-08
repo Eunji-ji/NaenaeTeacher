@@ -14,4 +14,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> findByTeacherIdAndNameContainingIgnoreCase(Long teacherId, String name);
 
     Optional<Student> findByIdAndTeacherId(Long id, Long teacherId);
+
+    long countByTeacherId(Long teacherId);
 }

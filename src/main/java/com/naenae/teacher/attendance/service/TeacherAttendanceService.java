@@ -3,16 +3,14 @@ package com.naenae.teacher.attendance.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import com.naenae.student.profile.domain.Student;
 import com.naenae.teacher.attendance.domain.Attendance;
+import com.naenae.teacher.attendance.domain.AttendanceStatus;
 import com.naenae.teacher.attendance.model.AttendancePage;
 import com.naenae.teacher.attendance.model.AttendanceRow;
 import com.naenae.teacher.attendance.repository.AttendanceRepository;
@@ -95,7 +93,7 @@ public class TeacherAttendanceService {
                             student.getId(),
                             student.getName(),
                             student.getSchoolName(),
-                            attendance != null,
+                            attendance == null ? null : attendance.getStatus().name(),
                             attendance == null ? null : attendance.getCheckedAt()
                     );
                 })
@@ -114,49 +112,41 @@ public class TeacherAttendanceService {
     }
 
     @Transactional
-    public void saveAttendance(Long teacherUserId, Long courseId, LocalDate attendanceDate, List<Long> presentStudentIds) {
+    public void saveAttendance(Long teacherUserId, Long courseId, LocalDate attendanceDate, Long studentId, AttendanceStatus status) {
         Teacher teacher = getTeacher(teacherUserId);
         if (courseId == null) {
             throw new IllegalArgumentException("반을 선택해 주세요.");
         }
+        if (studentId == null) {
+            throw new IllegalArgumentException("학생을 선택해 주세요.");
+        }
+        if (status == null) {
+            attendanceRepository.findByTeacherIdAndCourseIdAndStudentIdAndAttendanceDate(
+                    teacher.getId(), courseId, studentId, attendanceDate
+            ).ifPresent(attendanceRepository::delete);
+            return;
+        }
 
         Course course = courseRepository.findByIdAndTeacherId(courseId, teacher.getId())
                 .orElseThrow(() -> new IllegalArgumentException("선택한 반을 찾을 수 없습니다."));
-
-        Set<Long> checkedIds = presentStudentIds == null ? Set.of() : new HashSet<>(presentStudentIds);
         List<CourseStudent> classStudents = courseStudentRepository
                 .findByCourseIdAndStudentTeacherIdOrderByStudentNameAsc(course.getId(), teacher.getId());
         Map<Long, Student> studentsById = new HashMap<>();
         for (CourseStudent mapping : classStudents) {
             studentsById.put(mapping.getStudent().getId(), mapping.getStudent());
         }
-
-        Map<Long, Attendance> existingAttendances = new HashMap<>();
-        for (Attendance attendance : attendanceRepository
-                .findByTeacherIdAndCourseIdAndAttendanceDateOrderByStudentNameAsc(teacher.getId(), course.getId(), attendanceDate)) {
-            existingAttendances.put(attendance.getStudent().getId(), attendance);
+        Student student = studentsById.get(studentId);
+        if (student == null) {
+            throw new IllegalArgumentException("선택한 반에 속한 학생만 저장할 수 있습니다.");
         }
 
         LocalDateTime checkedAt = LocalDateTime.now();
-        for (Long studentId : studentsById.keySet()) {
-            Attendance existing = existingAttendances.get(studentId);
-            if (checkedIds.contains(studentId)) {
-                if (existing == null) {
-                    attendanceRepository.save(Attendance.createPresent(
-                            teacher,
-                            course,
-                            studentsById.get(studentId),
-                            attendanceDate,
-                            checkedAt
-                    ));
-                } else {
-                    existing.markPresent(checkedAt);
-                    attendanceRepository.save(existing);
-                }
-            } else if (existing != null) {
-                attendanceRepository.delete(existing);
-            }
-        }
+        Attendance attendance = attendanceRepository
+                .findByTeacherIdAndCourseIdAndStudentIdAndAttendanceDate(teacher.getId(), course.getId(), studentId, attendanceDate)
+                .orElseGet(() -> Attendance.create(teacher, course, student, attendanceDate, status, checkedAt));
+
+        attendance.updateStatus(status, checkedAt);
+        attendanceRepository.save(attendance);
     }
 
     public String formatCheckedAt(LocalDateTime checkedAt) {

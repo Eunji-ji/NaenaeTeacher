@@ -12,7 +12,7 @@
         <div class="brand">
             <span class="brand-mark">N</span>
             <div>
-                <p class="brand-name">이름쌤</p>
+                <p class="brand-name" th:text="${teacherDisplayName}">김지우쌤</p>
                 <p class="brand-role">Teacher Space</p>
             </div>
         </div>
@@ -26,6 +26,7 @@
                     <a class="sidebar-subitem" href="/teacher/students"><span class="nav-icon">👩‍🎓</span> 학생등록</a>
                     <a class="sidebar-subitem" href="/teacher/students/bulk"><span class="nav-icon">⬇</span> 학생일괄등록</a>
                     <a class="sidebar-subitem active" href="/teacher/attendance"><span class="nav-icon">✓</span> 출석관리</a>
+                    <a class="sidebar-subitem" href="/teacher/students/status"><span class="nav-icon">▤</span> 학생 학습 관리</a>
                 </div>
             </div>
             <a class="nav-item" href="/teacher/assignments"><span class="nav-icon">✎</span> 과제 관리</a>
@@ -90,50 +91,44 @@
                         먼저 반등록에서 반을 추가해 주세요.
                     </div>
 
-                    <form th:if="${!#lists.isEmpty(attendancePage.courses())}"
-                          class="attendance-save-form"
-                          action="/teacher/attendance"
-                          method="post">
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                        <input type="hidden" name="courseId" th:value="${attendancePage.selectedCourseId()}">
-                        <input type="hidden" name="date" th:value="${#temporals.format(attendancePage.selectedDate(), 'yyyy-MM-dd')}">
-
-                        <div class="table-scroll">
-                            <table class="student-table attendance-table">
-                                <thead>
-                                <tr>
-                                    <th>출석</th>
-                                    <th>이름</th>
-                                    <th>학교</th>
-                                    <th>체크 시간</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:if="${#lists.isEmpty(attendancePage.students())}">
-                                    <td class="empty-state" colspan="4">등록된 학생이 없습니다.</td>
-                                </tr>
-                                <tr th:each="student : ${attendancePage.students()}">
-                                    <td>
-                                        <label class="attendance-check">
-                                            <input type="checkbox"
-                                                   name="presentStudentIds"
-                                                   th:value="${student.studentId()}"
-                                                   th:checked="${student.checked()}">
-                                            <span></span>
-                                        </label>
-                                    </td>
-                                    <td th:text="${student.studentName()}">김지우</td>
-                                    <td th:text="${student.schoolName() ?: '-'}">내곡초</td>
-                                    <td th:text="${student.checkedAt() != null ? #temporals.format(student.checkedAt(), 'HH:mm') : '-'}">09:00</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="attendance-save-row">
-                            <button type="submit">출석 저장</button>
-                        </div>
-                    </form>
+                    <div class="table-scroll" th:if="${!#lists.isEmpty(attendancePage.courses())}">
+                        <table class="student-table attendance-table">
+                            <thead>
+                            <tr>
+                                <th>이름</th>
+                                <th>출결</th>
+                                <th>학교</th>
+                                <th>기록 시간</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:if="${#lists.isEmpty(attendancePage.students())}">
+                                <td class="empty-state" colspan="4">등록된 학생이 없습니다.</td>
+                            </tr>
+                            <tr th:each="student : ${attendancePage.students()}">
+                                <td th:text="${student.studentName()}">김지우</td>
+                                <td>
+                                    <form class="attendance-row-form" action="/teacher/attendance" method="post">
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                        <input type="hidden" name="courseId" th:value="${attendancePage.selectedCourseId()}">
+                                        <input type="hidden" name="date" th:value="${#temporals.format(attendancePage.selectedDate(), 'yyyy-MM-dd')}">
+                                        <input type="hidden" name="studentId" th:value="${student.studentId()}">
+                                        <select name="status"
+                                                class="attendance-status-select"
+                                                onchange="this.form.submit()">
+                                            <option value="" th:selected="${student.status() == null}">상태 선택</option>
+                                            <option value="PRESENT" th:selected="${student.status() == 'PRESENT'}">출석</option>
+                                            <option value="LATE" th:selected="${student.status() == 'LATE'}">지각</option>
+                                            <option value="ABSENT" th:selected="${student.status() == 'ABSENT'}">결석</option>
+                                        </select>
+                                    </form>
+                                </td>
+                                <td th:text="${student.schoolName() ?: '-'}">내곡초</td>
+                                <td th:text="${student.checkedAt() != null ? #temporals.format(student.checkedAt(), 'HH:mm') : '-'}">09:00</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </section>
             </div>
         </main>

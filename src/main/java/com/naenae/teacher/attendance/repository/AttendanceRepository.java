@@ -5,10 +5,13 @@ import java.util.List;
 import java.util.Optional;
 
 import com.naenae.teacher.attendance.domain.Attendance;
+import com.naenae.teacher.attendance.domain.AttendanceStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     List<Attendance> findByTeacherIdAndCourseIdAndAttendanceDateOrderByStudentNameAsc(Long teacherId, Long courseId, LocalDate attendanceDate);
 
     Optional<Attendance> findByTeacherIdAndCourseIdAndStudentIdAndAttendanceDate(Long teacherId, Long courseId, Long studentId, LocalDate attendanceDate);
+
+    long countByTeacherIdAndAttendanceDateAndStatus(Long teacherId, LocalDate attendanceDate, AttendanceStatus status);
 }

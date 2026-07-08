@@ -56,12 +56,6 @@ public class TeacherStudentService {
 
         Map<Long, StudentListItemBuilder> students = new LinkedHashMap<>();
 
-        if (courseId == null) {
-            for (Student student : studentRepository.findByTeacherIdOrderByNameAsc(teacher.getId())) {
-                students.put(student.getId(), new StudentListItemBuilder(student));
-            }
-        }
-
         for (CourseStudent mapping : mappings) {
             Student student = mapping.getStudent();
             StudentListItemBuilder builder = students.computeIfAbsent(

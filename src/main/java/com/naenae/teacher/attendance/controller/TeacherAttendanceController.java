@@ -3,6 +3,7 @@ package com.naenae.teacher.attendance.controller;
 import java.time.LocalDate;
 
 import com.naenae.common.user.domain.User;
+import com.naenae.teacher.attendance.domain.AttendanceStatus;
 import com.naenae.teacher.attendance.service.TeacherAttendanceService;
 import com.naenae.teacher.auth.security.CustomUserDetails;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -41,18 +42,23 @@ public class TeacherAttendanceController {
     public String saveAttendance(
             @RequestParam(required = false) Long courseId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-            @RequestParam(required = false) java.util.List<Long> presentStudentIds,
+            @RequestParam Long studentId,
+            @RequestParam(required = false) AttendanceStatus status,
             Authentication authentication,
             RedirectAttributes redirectAttributes
     ) {
         Long teacherUserId = getTeacherUserId(authentication);
         try {
-            teacherAttendanceService.saveAttendance(teacherUserId, courseId, date, presentStudentIds);
-            redirectAttributes.addFlashAttribute("successMessage", "출석을 저장했습니다.");
+            teacherAttendanceService.saveAttendance(teacherUserId, courseId, date, studentId, status);
+            redirectAttributes.addFlashAttribute("successMessage", "출결을 저장했습니다.");
         } catch (IllegalArgumentException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
         }
-        return "redirect:/teacher/attendance?courseId=" + courseId + "&date=" + date;
+        String redirect = "redirect:/teacher/attendance?date=" + date;
+        if (courseId != null) {
+            redirect += "&courseId=" + courseId;
+        }
+        return redirect;
     }
 
     private LocalDate resolveDate(LocalDate date, Integer shift) {

@@ -64,19 +64,19 @@ public class Attendance extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT")
     private String note;
 
-    public static Attendance createPresent(Teacher teacher, Course course, Student student, LocalDate attendanceDate, LocalDateTime checkedAt) {
+    public static Attendance create(Teacher teacher, Course course, Student student, LocalDate attendanceDate, AttendanceStatus status, LocalDateTime checkedAt) {
         Attendance attendance = new Attendance();
         attendance.teacher = teacher;
         attendance.course = course;
         attendance.student = student;
         attendance.attendanceDate = attendanceDate;
         attendance.checkedAt = checkedAt;
-        attendance.status = AttendanceStatus.PRESENT;
+        attendance.status = status;
         return attendance;
     }
 
-    public void markPresent(LocalDateTime checkedAt) {
-        this.status = AttendanceStatus.PRESENT;
+    public void updateStatus(AttendanceStatus status, LocalDateTime checkedAt) {
+        this.status = status;
         this.checkedAt = checkedAt;
     }
 

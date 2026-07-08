@@ -20,15 +20,28 @@ public class TeacherDashboardController {
 
     @GetMapping("/teacher/dashboard")
     public String dashboard(Model model, Authentication authentication) {
-        TeacherDashboard dashboard = teacherDashboardService.getDashboard();
+        Long teacherUserId = resolveTeacherUserId(authentication);
+        TeacherDashboard dashboard = teacherDashboardService.getDashboard(teacherUserId);
         String teacherName = resolveTeacherName(authentication);
         model.addAttribute("totalStudentCount", dashboard.totalStudentCount());
-        model.addAttribute("todayAttendanceCount", dashboard.todayAttendanceCount());
+        model.addAttribute("todayPresentCount", dashboard.todayPresentCount());
+        model.addAttribute("todayLateCount", dashboard.todayLateCount());
+        model.addAttribute("todayAbsentCount", dashboard.todayAbsentCount());
+        model.addAttribute("todayAttendanceRate", dashboard.todayAttendanceRate());
         model.addAttribute("openAssignmentCount", dashboard.openAssignmentCount());
         model.addAttribute("recentMemoCount", dashboard.recentMemoCount());
         model.addAttribute("teacherName", teacherName);
         model.addAttribute("teacherInitial", teacherName.substring(0, 1));
+        model.addAttribute("teacherDisplayName", teacherName + "쌤");
         return "teacher/dashboard";
+    }
+
+    private Long resolveTeacherUserId(Authentication authentication) {
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+            User user = userDetails.getUser();
+            return user.getId();
+        }
+        throw new IllegalStateException("로그인 정보가 없습니다.");
     }
 
     private String resolveTeacherName(Authentication authentication) {

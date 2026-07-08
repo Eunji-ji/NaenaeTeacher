@@ -12,7 +12,7 @@
         <div class="brand">
             <span class="brand-mark">N</span>
             <div>
-                <p class="brand-name">이름쌤</p>
+                <p class="brand-name" th:text="${teacherDisplayName}">김지우쌤</p>
                 <p class="brand-role">Teacher Space</p>
             </div>
         </div>
@@ -26,6 +26,7 @@
                     <a class="sidebar-subitem" href="/teacher/students"><span class="nav-icon">◎</span> 학생등록</a>
                     <a class="sidebar-subitem" href="/teacher/students/bulk"><span class="nav-icon">⬇</span> 학생일괄등록</a>
                     <a class="sidebar-subitem" href="/teacher/attendance"><span class="nav-icon">✓</span> 출석관리</a>
+                    <a class="sidebar-subitem" href="/teacher/students/status"><span class="nav-icon">▤</span> 학생 학습 관리</a>
                 </div>
             </div>
             <a class="nav-item" href="/teacher/assignments"><span class="nav-icon">□</span> 과제 관리</a>
@@ -77,28 +78,28 @@
                         <span class="card-icon tone-success">✓</span>
                         <div>
                             <p class="summary-label">오늘 출석 완료</p>
-                            <p class="summary-value"><span th:text="${todayAttendanceCount}">0</span>명</p>
+                            <p class="summary-value"><span th:text="${todayPresentCount}">0</span>명</p>
                         </div>
                     </article>
                     <article class="summary-card">
                         <span class="card-icon tone-warning">!</span>
                         <div>
-                            <p class="summary-label">결석 및 지각</p>
-                            <p class="summary-value">2명</p>
+                            <p class="summary-label">지각 / 결석</p>
+                            <p class="summary-value"><span th:text="${todayLateCount}">0</span>명 / <span th:text="${todayAbsentCount}">0</span>명</p>
                         </div>
                     </article>
                     <article class="summary-card">
                         <span class="card-icon tone-info">□</span>
                         <div>
-                            <p class="summary-label">진행 중 과제</p>
-                            <p class="summary-value"><span th:text="${openAssignmentCount}">0</span>개</p>
+                            <p class="summary-label">출석률</p>
+                            <p class="summary-value"><span th:text="${todayAttendanceRate}">0</span>%</p>
                         </div>
                     </article>
                     <article class="summary-card">
                         <span class="card-icon tone-neutral">!</span>
                         <div>
-                            <p class="summary-label">새 알림</p>
-                            <p class="summary-value"><span th:text="${recentMemoCount}">0</span>개</p>
+                            <p class="summary-label">진행 중 과제</p>
+                            <p class="summary-value"><span th:text="${openAssignmentCount}">0</span>개</p>
                         </div>
                     </article>
                 </section>
@@ -128,10 +129,14 @@
                     <article class="dashboard-card">
                         <div class="card-header">
                             <h2 class="card-title"><span class="card-icon tone-success">✓</span> 출석 현황</h2>
-                            <span class="pill">90%</span>
+                            <a class="pill" href="/teacher/attendance" aria-label="출석 관리로 이동">관리</a>
                         </div>
-                        <div class="progress-track"><div class="progress-fill" style="width:90%;"></div></div>
-                        <div class="attendance-row"><span>출석 18명</span><span>지각 1명</span><span>결석 1명</span></div>
+                        <div class="progress-track"><div class="progress-fill" th:style="|width:${todayAttendanceRate}%|"></div></div>
+                        <div class="attendance-row">
+                            <span>출석 <span th:text="${todayPresentCount}">0</span>명</span>
+                            <span>지각 <span th:text="${todayLateCount}">0</span>명</span>
+                            <span>결석 <span th:text="${todayAbsentCount}">0</span>명</span>
+                        </div>
                     </article>
 
                     <article class="dashboard-card">
@@ -155,7 +160,8 @@
 
                     <article class="dashboard-card">
                         <div class="card-header">
-                            <h2 class="card-title"><span class="card-icon tone-warning">◎</span> 학생 상태</h2>
+                            <h2 class="card-title"><span class="card-icon tone-warning">◎</span> 학생 학습 관리</h2>
+                            <a class="pill" href="/teacher/students/status">관리</a>
                         </div>
                         <ul class="status-list">
                             <li class="list-item"><div><p class="item-title">민지</p><p class="item-meta">과제 미완료 · Unit 3</p></div><span class="pill">주의</span></li>

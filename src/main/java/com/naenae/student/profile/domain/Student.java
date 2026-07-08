@@ -88,4 +88,12 @@ public class Student extends BaseTimeEntity {
     public String getPhone() {
         return phone;
     }
+
+    public String getMemoSummary() {
+        return memoSummary;
+    }
+
+    public void updateMemoSummary(String memoSummary) {
+        this.memoSummary = memoSummary;
+    }
 }

@@ -12,7 +12,7 @@
         <div class="brand">
             <span class="brand-mark">N</span>
             <div>
-                <p class="brand-name">이름쌤</p>
+                <p class="brand-name" th:text="${teacherDisplayName}">김지우쌤</p>
                 <p class="brand-role">Teacher Space</p>
             </div>
         </div>
@@ -26,6 +26,7 @@
                     <a class="sidebar-subitem active" href="/teacher/students"><span class="nav-icon">👩‍🎓</span> 학생등록</a>
                     <a class="sidebar-subitem" href="/teacher/students/bulk"><span class="nav-icon">⬇</span> 학생일괄등록</a>
                     <a class="sidebar-subitem" href="/teacher/attendance"><span class="nav-icon">✓</span> 출석관리</a>
+                    <a class="sidebar-subitem" href="/teacher/students/status"><span class="nav-icon">▤</span> 학생 학습 관리</a>
                 </div>
             </div>
             <a class="nav-item" href="/teacher/assignments"><span class="nav-icon">✎</span> 과제 관리</a>
@@ -57,7 +58,7 @@
                         <div>
                             <h2>학생 등록</h2>
                         </div>
-                        <a class="quick-action" href="/teacher/students/bulk">학생일괄등록</a>
+                        <a class="bulk-action bulk-download" href="/teacher/students/bulk">학생일괄등록</a>
                     </div>
 
                     <div class="auth-alert error" th:if="${errorMessage}" th:text="${errorMessage}">
