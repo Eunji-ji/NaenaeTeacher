@@ -50,6 +50,7 @@ Implement teacher-side student management with multi-class registration.
 - Student management sidebar now groups `반등록` and `학생등록` under a shared `학생관리` section.
 - `출석관리` was also moved under the shared `학생관리` section.
 - `반등록` and `학생등록` now support deletion from their list views.
+- The student class-selector helper text was removed to keep the form aligned.
 
 ## Next Tasks
 
@@ -121,6 +122,13 @@ Implement teacher-side student management with multi-class registration.
 - Allowed `/teacher/signup` through Spring Security.
 - Extended `naenae-dashboard.css` with shared auth screen styles.
 - Verified `gradle build` succeeds and boot jar includes the auth templates/CSS.
+
+## This Update
+
+- Removed the student helper text above the class selector.
+- Added `/teacher/students/bulk` for Excel template download and upload.
+- Bulk template headers are `학생이름`, `반`, `학교`, `전화번호`.
+- Bound Spring Boot to `0.0.0.0` so other PCs can reach the app by host IP.
 
 ## Next Resume Point
 

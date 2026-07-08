@@ -889,6 +889,38 @@ a {
     color: #a84545;
 }
 
+.bulk-guide {
+    display: grid;
+    gap: 6px;
+    color: var(--muted-foreground);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.bulk-upload-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: end;
+}
+
+.bulk-upload-form input[type="file"] {
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: #ffffff;
+    color: var(--foreground);
+    font: inherit;
+    outline: none;
+    padding: 10px 12px;
+}
+
+.bulk-upload-form input[type="file"]:focus {
+    border-color: rgba(76, 195, 188, 0.8);
+    box-shadow: 0 0 0 4px rgba(76, 195, 188, 0.14);
+}
+
 .course-chip-list {
     display: flex;
     flex-wrap: wrap;
