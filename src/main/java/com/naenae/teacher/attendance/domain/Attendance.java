@@ -1,6 +1,7 @@
 package com.naenae.teacher.attendance.domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.naenae.common.domain.BaseTimeEntity;
 import com.naenae.teacher.course.domain.Course;
@@ -49,6 +50,9 @@ public class Attendance extends BaseTimeEntity {
     @Column(name = "attendance_date", nullable = false)
     private LocalDate attendanceDate;
 
+    @Column(name = "checked_at", nullable = false)
+    private LocalDateTime checkedAt;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private AttendanceStatus status;
@@ -59,4 +63,48 @@ public class Attendance extends BaseTimeEntity {
 
     @Column(columnDefinition = "TEXT")
     private String note;
+
+    public static Attendance createPresent(Teacher teacher, Course course, Student student, LocalDate attendanceDate, LocalDateTime checkedAt) {
+        Attendance attendance = new Attendance();
+        attendance.teacher = teacher;
+        attendance.course = course;
+        attendance.student = student;
+        attendance.attendanceDate = attendanceDate;
+        attendance.checkedAt = checkedAt;
+        attendance.status = AttendanceStatus.PRESENT;
+        return attendance;
+    }
+
+    public void markPresent(LocalDateTime checkedAt) {
+        this.status = AttendanceStatus.PRESENT;
+        this.checkedAt = checkedAt;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public LocalDate getAttendanceDate() {
+        return attendanceDate;
+    }
+
+    public LocalDateTime getCheckedAt() {
+        return checkedAt;
+    }
+
+    public AttendanceStatus getStatus() {
+        return status;
+    }
 }

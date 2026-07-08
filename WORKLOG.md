@@ -131,6 +131,8 @@ Implement teacher-side student management with multi-class registration.
 - Bound Spring Boot to `0.0.0.0` so other PCs can reach the app by host IP.
 - Bulk template download/upload buttons now use dashboard-matching styles.
 - Course dropdowns remain sorted by class name.
+- Branding was renamed to `이름쌤` across menu and auth templates.
+- Attendance management screen was added with date navigation, course selection, and checkbox save flow.
 
 ## Next Resume Point
 

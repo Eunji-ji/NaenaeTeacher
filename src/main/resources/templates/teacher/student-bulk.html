@@ -12,7 +12,7 @@
         <div class="brand">
             <span class="brand-mark">N</span>
             <div>
-                <p class="brand-name">NaenaeTeacher</p>
+                <p class="brand-name">이름쌤</p>
                 <p class="brand-role">Teacher Space</p>
             </div>
         </div>
@@ -84,8 +84,7 @@
 
                     <form class="bulk-upload-form" action="/teacher/students/bulk/upload" method="post" enctype="multipart/form-data">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                        <div class="field-group">
-                            <label for="file">엑셀 파일</label>
+                        <div class="field-group file-field">
                             <input id="file" name="file" type="file" accept=".xlsx" required>
                         </div>
                         <button class="bulk-action bulk-upload" type="submit">업로드</button>

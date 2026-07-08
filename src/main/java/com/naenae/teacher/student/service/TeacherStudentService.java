@@ -51,7 +51,7 @@ public class TeacherStudentService {
     public List<StudentListItem> getStudents(Long teacherUserId, Long courseId) {
         Teacher teacher = getTeacher(teacherUserId);
         List<CourseStudent> mappings = courseId == null
-                ? courseStudentRepository.findByStudentTeacherIdOrderByStudentNameAsc(teacher.getId())
+                ? courseStudentRepository.findByStudentTeacherIdOrderByCourseTitleAscStudentNameAsc(teacher.getId())
                 : courseStudentRepository.findByCourseIdAndStudentTeacherIdOrderByStudentNameAsc(courseId, teacher.getId());
 
         Map<Long, StudentListItemBuilder> students = new LinkedHashMap<>();

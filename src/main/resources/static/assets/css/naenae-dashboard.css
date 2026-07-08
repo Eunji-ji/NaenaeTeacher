@@ -921,6 +921,156 @@ a {
     box-shadow: 0 0 0 4px rgba(76, 195, 188, 0.14);
 }
 
+.attendance-toolbar {
+    display: grid;
+    grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.attendance-course-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+}
+
+.attendance-course-form select {
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: #ffffff;
+    color: var(--foreground);
+    font: inherit;
+    outline: none;
+    padding: 0 12px;
+}
+
+.attendance-course-form select:focus {
+    border-color: rgba(76, 195, 188, 0.8);
+    box-shadow: 0 0 0 4px rgba(76, 195, 188, 0.14);
+}
+
+.attendance-course-form button {
+    min-height: 44px;
+    border: 0;
+    border-radius: 14px;
+    background: var(--primary);
+    color: var(--primary-foreground);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 900;
+    padding: 0 16px;
+}
+
+.attendance-date-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.attendance-date-nav form {
+    margin: 0;
+}
+
+.attendance-date-nav button {
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--card);
+    color: var(--foreground);
+    cursor: pointer;
+    font: inherit;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.attendance-date-nav button:hover {
+    border-color: rgba(76, 195, 188, 0.45);
+    background: rgba(76, 195, 188, 0.12);
+}
+
+.attendance-date-pill {
+    display: grid;
+    gap: 2px;
+    min-width: 220px;
+    text-align: center;
+}
+
+.attendance-date-kicker {
+    margin: 0;
+    color: var(--muted-foreground);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.attendance-date-pill h2 {
+    margin: 0;
+    color: var(--foreground);
+    font-size: 24px;
+    line-height: 1.2;
+}
+
+.attendance-save-form {
+    display: grid;
+    gap: 16px;
+}
+
+.attendance-table tbody tr:hover {
+    background: rgba(76, 195, 188, 0.04);
+}
+
+.attendance-check {
+    display: inline-flex;
+    align-items: center;
+}
+
+.attendance-check input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.attendance-check span {
+    display: inline-flex;
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    background: #ffffff;
+}
+
+.attendance-check input:checked + span {
+    border-color: var(--primary);
+    background: var(--primary);
+    box-shadow: inset 0 0 0 4px #ffffff;
+}
+
+.attendance-save-row {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.attendance-save-row button {
+    min-height: 44px;
+    border: 0;
+    border-radius: 14px;
+    background: var(--primary);
+    color: var(--primary-foreground);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 900;
+    padding: 0 18px;
+}
+
+.attendance-empty {
+    margin-bottom: 16px;
+}
+
 .bulk-action {
     display: inline-flex;
     align-items: center;
