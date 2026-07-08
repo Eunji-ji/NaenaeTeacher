@@ -12,6 +12,8 @@ public record StudentLearningDetailPage(
         int memoMaxLength,
         int currentYear,
         List<StudentLearningScoreRow> scores,
+        List<StudentLearningChartPoint> chartPoints,
+        String chartPolyline,
         int scoreDelta
 ) {
 }

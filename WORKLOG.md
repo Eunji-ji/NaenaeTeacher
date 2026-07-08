@@ -128,7 +128,8 @@ Implement teacher-side student management with multi-class registration.
 - Added `학생 학습관리` under student management and split it into a list view and a student detail view.
 - Student memo text now reuses the existing `memo_summary` column and supports 4000 characters.
 - Added midterm/final score storage per year and a simple score graph on the student detail page.
-- Student names on the list now open the detail registration page.
+- The student list now shows only name, class, and school, and names open the detail page.
+- The score graph was changed from bars to a line chart.
 - Student list sorting stays class name first, then student name.
 - Teacher branding now renders as the logged-in name plus `쌤` on the teacher menus.
 - Dashboard attendance summaries now use live present / late / absent counts and attendance rate.

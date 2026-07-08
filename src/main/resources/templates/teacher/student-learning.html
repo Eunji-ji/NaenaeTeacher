@@ -81,8 +81,8 @@
                             <thead>
                             <tr>
                                 <th>학생명</th>
+                                <th>반</th>
                                 <th>학교</th>
-                                <th>전화번호</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -95,8 +95,8 @@
                                        th:href="@{/teacher/students/status/{studentId}(studentId=${student.studentId()}, courseId=${studentLearningPage.selectedCourseId()})}"
                                        th:text="${student.studentName()}">김지우</a>
                                 </td>
+                                <td th:text="${studentLearningPage.selectedCourseTitle()}">초등 A반</td>
                                 <td th:text="${student.schoolName() ?: '-'}">내곡초</td>
-                                <td th:text="${student.phone() ?: '-'}">010-0000-0000</td>
                             </tr>
                             </tbody>
                         </table>

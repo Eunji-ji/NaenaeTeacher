@@ -17,6 +17,7 @@ import com.naenae.teacher.profile.domain.Teacher;
 import com.naenae.teacher.profile.repository.TeacherRepository;
 import com.naenae.teacher.student.model.CourseOption;
 import com.naenae.teacher.studentstatus.model.StudentLearningDetailPage;
+import com.naenae.teacher.studentstatus.model.StudentLearningChartPoint;
 import com.naenae.teacher.studentstatus.model.StudentLearningPage;
 import com.naenae.teacher.studentstatus.model.StudentLearningRow;
 import com.naenae.teacher.studentstatus.model.StudentLearningScoreRow;
@@ -105,9 +106,12 @@ public class TeacherStudentStatusService {
                 ))
                 .toList();
 
+        List<StudentLearningChartPoint> chartPoints = buildChartPoints(scoreRows);
+        String chartPolyline = buildPolyline(scoreRows);
+
         int scoreDelta = 0;
-        if (records.size() >= 2) {
-            scoreDelta = records.get(records.size() - 1).getScore() - records.get(0).getScore();
+        if (scoreRows.size() >= 2) {
+            scoreDelta = scoreRows.get(scoreRows.size() - 1).score() - scoreRows.get(0).score();
         }
 
         return new StudentLearningDetailPage(
@@ -120,6 +124,8 @@ public class TeacherStudentStatusService {
                 MEMO_MAX_LENGTH,
                 currentYear,
                 scoreRows,
+                chartPoints,
+                chartPolyline,
                 scoreDelta
         );
     }
@@ -178,5 +184,58 @@ public class TeacherStudentStatusService {
             case MIDTERM -> "중간고사";
             case FINAL -> "기말고사";
         };
+    }
+
+    private List<StudentLearningChartPoint> buildChartPoints(List<StudentLearningScoreRow> scoreRows) {
+        if (scoreRows.isEmpty()) {
+            return List.of();
+        }
+        if (scoreRows.size() == 1) {
+            StudentLearningScoreRow scoreRow = scoreRows.get(0);
+            return List.of(new StudentLearningChartPoint(
+                    50,
+                    100 - scoreRow.score(),
+                    scoreRow.examYear() + " " + scoreRow.examTypeLabel(),
+                    scoreRow.score()
+            ));
+        }
+
+        int step = 100 / (scoreRows.size() - 1);
+        return scoreRows.stream()
+                .map(scoreRow -> {
+                    int index = scoreRows.indexOf(scoreRow);
+                    int x = Math.min(100, index * step);
+                    int y = Math.max(0, 100 - scoreRow.score());
+                    return new StudentLearningChartPoint(
+                            x,
+                            y,
+                            scoreRow.examYear() + " " + scoreRow.examTypeLabel(),
+                            scoreRow.score()
+                    );
+                })
+                .toList();
+    }
+
+    private String buildPolyline(List<StudentLearningScoreRow> scoreRows) {
+        if (scoreRows.isEmpty()) {
+            return "";
+        }
+        if (scoreRows.size() == 1) {
+            StudentLearningScoreRow scoreRow = scoreRows.get(0);
+            return "50," + (100 - scoreRow.score());
+        }
+
+        StringBuilder builder = new StringBuilder();
+        int step = 100 / (scoreRows.size() - 1);
+        for (int i = 0; i < scoreRows.size(); i++) {
+            StudentLearningScoreRow scoreRow = scoreRows.get(i);
+            int x = Math.min(100, i * step);
+            int y = Math.max(0, 100 - scoreRow.score());
+            if (i > 0) {
+                builder.append(' ');
+            }
+            builder.append(x).append(',').append(y);
+        }
+        return builder.toString();
     }
 }
