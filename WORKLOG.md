@@ -158,3 +158,25 @@ Restart the Spring Boot app, then verify today word seeding, teacher dashboard r
 - Do not implement full business features yet.
 - Initial goal is project foundation.
 - Keep structure clean for future teacher/student role separation.
+
+## 2026-07-08 Local VS Code and Docker Bring-up
+
+- Confirmed the repository remote is `origin -> https://github.com/Eunji-ji/NaenaeTeacher.git` on branch `main`.
+- Confirmed this PC uses Java 21 from `C:\workSp\java`.
+- The project wrapper reads `org.gradle.java.home` from project `gradle.properties`, so this PC keeps a local-only `gradle.properties` value of `C:/workSp/java`.
+- Marked `gradle.properties` as local-only with `git update-index --skip-worktree gradle.properties` so the PC-specific Java path is not committed.
+- Marked VS Code/Eclipse-generated local IDE changes as local-only with `skip-worktree`: `.classpath`, `.project`, `.settings/org.eclipse.buildship.core.prefs`, and `.settings/org.eclipse.jdt.core.prefs`.
+- Added `.settings/org.eclipse.jdt.apt.core.prefs` to local `.git/info/exclude` so it is not committed.
+- Docker Desktop initially could not start the engine because WSL 2 was not installed/enabled.
+- Enabled the required Windows features for WSL and Virtual Machine Platform, rebooted, then started Docker Desktop.
+- Verified Docker Desktop Linux engine is running with Docker 29.6.1 and WSL2 backend.
+- Started PostgreSQL with `docker compose up -d`; container `naenae-teacher-postgres` is running on host port `5432`.
+- Verified PostgreSQL readiness with `pg_isready -U naenae -d naenae_teacher`.
+- Started the Spring Boot app with `gradlew.bat bootRun`.
+- Verified `http://localhost:8080/api/health` returns `{"status":"ok"}` and `/` redirects to `/teacher/login`.
+- Next local startup on this PC: start Docker Desktop, run `docker compose up -d`, then run `gradlew.bat bootRun` from `C:\workSp\NaenaeTeacher`.
+
+## Next Resume Point
+
+- On another PC, do not reuse this PC's local Java path. Make sure that PC has its own valid Java 21 setup before running Gradle.
+- Continue normal development from `main` after pulling the latest commit.
