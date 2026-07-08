@@ -40,6 +40,8 @@ Apply consistent auth UI and add minimal teacher signup.
 - Login/signup intro headline sizing was reduced to avoid awkward wrapping.
 - Dashboard header now displays the authenticated teacher name and initial instead of hardcoded `김지우`.
 - Dashboard header includes a POST `/logout` 나가기 button.
+- Auth/dashboard templates and shared CSS were moved back to Spring Boot default resource locations for faster development refresh.
+- Login intro description text size was reduced for better single-line fit.
 
 ## Next Tasks
 
@@ -91,6 +93,10 @@ Apply consistent auth UI and add minimal teacher signup.
 - Wired `TeacherDashboardController` to expose authenticated teacher display name and initial.
 - Replaced hardcoded dashboard teacher copy with Thymeleaf model values.
 - Added dashboard logout form/button in the top-right header.
+- Moved active templates to `src/main/resources/templates` and active CSS to `src/main/resources/static/assets/css`.
+- Removed duplicate active auth/dashboard files from `src/main/webapp`.
+- Added DevTools and `bootRun sourceResources` configuration for easier local UI iteration.
+- Reduced `.auth-intro p` font size to keep the login intro copy more compact.
 - Added entity factory methods and `UserRepository.existsByEmail`.
 - Allowed `/teacher/signup` through Spring Security.
 - Extended `naenae-dashboard.css` with shared auth screen styles.
