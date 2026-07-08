@@ -159,11 +159,11 @@ Restart the Spring Boot app, then verify today word seeding, teacher dashboard r
 - Initial goal is project foundation.
 - Keep structure clean for future teacher/student role separation.
 
-## 2026-07-08 Local VS Code and Docker Bring-up
+## 2026-07-08 pc_2 Local VS Code and Docker Bring-up
 
 - Confirmed the repository remote is `origin -> https://github.com/Eunji-ji/NaenaeTeacher.git` on branch `main`.
-- Confirmed this PC uses Java 21 from `C:\workSp\java`.
-- The project wrapper reads `org.gradle.java.home` from project `gradle.properties`, so this PC keeps a local-only `gradle.properties` value of `C:/workSp/java`.
+- Confirmed `pc_2` uses Java 21 from `C:\workSp\java`.
+- The project wrapper reads `org.gradle.java.home` from project `gradle.properties`, so `pc_2` keeps a local-only `gradle.properties` value of `C:/workSp/java`.
 - Marked `gradle.properties` as local-only with `git update-index --skip-worktree gradle.properties` so the PC-specific Java path is not committed.
 - Marked VS Code/Eclipse-generated local IDE changes as local-only with `skip-worktree`: `.classpath`, `.project`, `.settings/org.eclipse.buildship.core.prefs`, and `.settings/org.eclipse.jdt.core.prefs`.
 - Added `.settings/org.eclipse.jdt.apt.core.prefs` to local `.git/info/exclude` so it is not committed.
@@ -174,7 +174,7 @@ Restart the Spring Boot app, then verify today word seeding, teacher dashboard r
 - Verified PostgreSQL readiness with `pg_isready -U naenae -d naenae_teacher`.
 - Started the Spring Boot app with `gradlew.bat bootRun`.
 - Verified `http://localhost:8080/api/health` returns `{"status":"ok"}` and `/` redirects to `/teacher/login`.
-- Next local startup on this PC: start Docker Desktop, run `docker compose up -d`, then run `gradlew.bat bootRun` from `C:\workSp\NaenaeTeacher`.
+- Next local startup on `pc_2`: start Docker Desktop, run `docker compose up -d`, then run `gradlew.bat bootRun` from `C:\workSp\NaenaeTeacher`.
 
 ## Next Resume Point
 
