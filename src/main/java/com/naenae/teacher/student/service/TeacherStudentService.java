@@ -1,10 +1,10 @@
 package com.naenae.teacher.student.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.naenae.student.profile.domain.Student;
 import com.naenae.student.profile.repository.StudentRepository;
@@ -51,8 +51,8 @@ public class TeacherStudentService {
     public List<StudentListItem> getStudents(Long teacherUserId, Long courseId) {
         Teacher teacher = getTeacher(teacherUserId);
         List<CourseStudent> mappings = courseId == null
-                ? courseStudentRepository.findByStudentTeacherId(teacher.getId())
-                : courseStudentRepository.findByCourseIdAndStudentTeacherId(courseId, teacher.getId());
+                ? courseStudentRepository.findByStudentTeacherIdOrderByStudentNameAsc(teacher.getId())
+                : courseStudentRepository.findByCourseIdAndStudentTeacherIdOrderByStudentNameAsc(courseId, teacher.getId());
 
         Map<Long, StudentListItemBuilder> students = new LinkedHashMap<>();
 
@@ -77,10 +77,10 @@ public class TeacherStudentService {
     }
 
     @Transactional
-    public void createStudent(Long teacherUserId, String name, String courseNames, String schoolName, String phone) {
+    public void createStudent(Long teacherUserId, String name, List<Long> courseIds, String schoolName, String phone) {
         Teacher teacher = getTeacher(teacherUserId);
-        String normalizedName = requireText(name, "이름을 입력해 주세요.");
-        List<String> parsedCourseNames = parseCourseNames(courseNames);
+        String normalizedName = requireText(name, "학생 이름을 입력해 주세요.");
+        List<Course> selectedCourses = resolveSelectedCourses(teacher.getId(), courseIds);
 
         Student student = studentRepository.save(Student.create(
                 teacher,
@@ -89,9 +89,7 @@ public class TeacherStudentService {
                 normalizeOptional(phone)
         ));
 
-        for (String courseName : parsedCourseNames) {
-            Course course = courseRepository.findFirstByTeacherIdAndTitleIgnoreCase(teacher.getId(), courseName)
-                    .orElseGet(() -> courseRepository.save(Course.create(teacher, courseName)));
+        for (Course course : selectedCourses) {
             if (!courseStudentRepository.existsByCourseIdAndStudentId(course.getId(), student.getId())) {
                 courseStudentRepository.save(CourseStudent.create(course, student));
             }
@@ -103,13 +101,23 @@ public class TeacherStudentService {
                 .orElseThrow(() -> new IllegalStateException("선생님 정보를 찾을 수 없습니다."));
     }
 
-    private List<String> parseCourseNames(String courseNames) {
-        String rawCourseNames = requireText(courseNames, "반을 1개 이상 입력해 주세요.");
-        return Arrays.stream(rawCourseNames.split(","))
-                .map(String::trim)
-                .filter(value -> !value.isEmpty())
+    private List<Course> resolveSelectedCourses(Long teacherId, List<Long> courseIds) {
+        List<Long> selectedCourseIds = courseIds == null
+                ? List.of()
+                : courseIds.stream()
+                .filter(Objects::nonNull)
                 .distinct()
                 .toList();
+
+        if (selectedCourseIds.isEmpty()) {
+            throw new IllegalArgumentException("반을 1개 이상 선택해 주세요.");
+        }
+
+        List<Course> selectedCourses = courseRepository.findByTeacherIdAndIdInOrderByTitleAsc(teacherId, selectedCourseIds);
+        if (selectedCourses.size() != selectedCourseIds.size()) {
+            throw new IllegalArgumentException("선택한 반 중 등록되지 않은 반이 있습니다.");
+        }
+        return selectedCourses;
     }
 
     private String requireText(String value, String message) {

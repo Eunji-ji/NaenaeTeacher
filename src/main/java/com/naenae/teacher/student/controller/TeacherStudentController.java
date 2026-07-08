@@ -1,5 +1,7 @@
 package com.naenae.teacher.student.controller;
 
+import java.util.List;
+
 import com.naenae.common.user.domain.User;
 import com.naenae.teacher.auth.security.CustomUserDetails;
 import com.naenae.teacher.student.service.TeacherStudentService;
@@ -35,7 +37,7 @@ public class TeacherStudentController {
     @PostMapping("/teacher/students")
     public String createStudent(
             @RequestParam String name,
-            @RequestParam String courseNames,
+            @RequestParam(required = false) List<Long> courseIds,
             @RequestParam(required = false) String schoolName,
             @RequestParam(required = false) String phone,
             Authentication authentication,
@@ -43,11 +45,11 @@ public class TeacherStudentController {
     ) {
         Long teacherUserId = getTeacherUserId(authentication);
         try {
-            teacherStudentService.createStudent(teacherUserId, name, courseNames, schoolName, phone);
+            teacherStudentService.createStudent(teacherUserId, name, courseIds, schoolName, phone);
         } catch (IllegalArgumentException exception) {
             model.addAttribute("errorMessage", exception.getMessage());
             model.addAttribute("name", name);
-            model.addAttribute("courseNames", courseNames);
+            model.addAttribute("courseIds", courseIds == null ? List.of() : courseIds);
             model.addAttribute("schoolName", schoolName);
             model.addAttribute("phone", phone);
             model.addAttribute("courses", teacherStudentService.getCourseOptions(teacherUserId));

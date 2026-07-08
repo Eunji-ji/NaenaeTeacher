@@ -726,7 +726,10 @@ a {
 }
 
 .filter-form select,
-.student-form input {
+.student-form input,
+.student-form select,
+.student-form textarea,
+.course-form textarea {
     min-height: 44px;
     border: 1px solid var(--border);
     border-radius: 14px;
@@ -738,7 +741,10 @@ a {
 }
 
 .filter-form select:focus,
-.student-form input:focus {
+.student-form input:focus,
+.student-form select:focus,
+.student-form textarea:focus,
+.course-form textarea:focus {
     border-color: rgba(76, 195, 188, 0.8);
     box-shadow: 0 0 0 4px rgba(76, 195, 188, 0.14);
 }
@@ -754,7 +760,37 @@ a {
     gap: 6px;
 }
 
+.student-form select[multiple] {
+    min-height: 134px;
+    padding: 10px 12px;
+}
+
+.student-form textarea,
+.course-form textarea {
+    min-height: 134px;
+    padding: 12px 14px;
+    resize: vertical;
+}
+
+.course-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: end;
+}
+
+.field-note {
+    color: var(--muted-foreground);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.field-note.empty {
+    color: var(--warning-foreground);
+}
+
 .student-form button,
+.course-form button,
 .filter-form button {
     min-height: 44px;
     border: 0;
@@ -831,6 +867,10 @@ a {
     .student-form {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    .course-form {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 860px) {
@@ -903,6 +943,10 @@ a {
     }
 
     .student-form {
+        grid-template-columns: 1fr;
+    }
+
+    .course-form {
         grid-template-columns: 1fr;
     }
 

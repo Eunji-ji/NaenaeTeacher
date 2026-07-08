@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>반등록 | NaenaeTeacher</title>
+    <link rel="stylesheet" href="/assets/css/naenae-dashboard.css">
+</head>
+<body class="naenae-dashboard-body">
+<div class="dashboard-shell">
+    <aside class="dashboard-sidebar" aria-label="반 관리 메뉴">
+        <div class="brand">
+            <span class="brand-mark">N</span>
+            <div>
+                <p class="brand-name">NaenaeTeacher</p>
+                <p class="brand-role">Teacher Space</p>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a class="nav-item" href="/teacher/dashboard"><span class="nav-icon">⌂</span> 대시보드</a>
+            <a class="nav-item" href="/teacher/students"><span class="nav-icon">👩‍🎓</span> 학생등록</a>
+            <a class="nav-item active" href="/teacher/courses"><span class="nav-icon">🏷</span> 반등록</a>
+            <a class="nav-item" href="/teacher/assignments"><span class="nav-icon">✎</span> 과제 관리</a>
+            <a class="nav-item" href="/teacher/attendance"><span class="nav-icon">✓</span> 출석 관리</a>
+            <a class="nav-item" href="/teacher/today-english"><span class="nav-icon">Aa</span> 오늘의 영어</a>
+            <a class="nav-item" href="/teacher/notice"><span class="nav-icon">!</span> 알림장</a>
+            <a class="nav-item" href="/teacher/board"><span class="nav-icon">#</span> 게시판</a>
+            <a class="nav-item" href="/teacher/settings"><span class="nav-icon">⚙</span> 설정</a>
+        </nav>
+    </aside>
+
+    <div class="dashboard-main">
+        <header class="dashboard-header">
+            <div>
+                <p class="header-kicker">Class Management</p>
+                <h1 class="header-title">반등록</h1>
+            </div>
+            <div class="header-actions">
+                <a class="quick-action" href="/teacher/students">학생등록으로 이동</a>
+                <form class="logout-form" action="/logout" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <button class="logout-button" type="submit">나가기</button>
+                </form>
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+            <div class="stack">
+                <section class="dashboard-card">
+                    <div class="page-toolbar">
+                        <div>
+                            <h2>반 등록</h2>
+                            <p>반 이름을 한 줄씩 또는 쉼표로 구분해서 여러 개를 한 번에 등록할 수 있습니다.</p>
+                        </div>
+                    </div>
+
+                    <div class="auth-alert success" th:if="${successMessage}" th:text="${successMessage}">
+                        반이 등록되었습니다.
+                    </div>
+                    <div class="auth-alert error" th:if="${errorMessage}" th:text="${errorMessage}">
+                        입력값을 확인해 주세요.
+                    </div>
+
+                    <form class="course-form" action="/teacher/courses" method="post">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <div class="field-group">
+                            <label for="courseTitles">반 이름</label>
+                            <textarea id="courseTitles"
+                                      name="courseTitles"
+                                      th:text="${courseTitles}"
+                                      placeholder="초등 A반&#10;초등 B반&#10;중등 문법반"
+                                      required></textarea>
+                        </div>
+                        <button type="submit">등록</button>
+                    </form>
+                </section>
+
+                <section class="dashboard-card">
+                    <div class="page-toolbar">
+                        <div>
+                            <h2>등록된 반</h2>
+                            <p>학생 등록 화면의 반 선택 목록에 그대로 사용됩니다.</p>
+                        </div>
+                    </div>
+
+                    <div class="table-scroll">
+                        <table class="student-table">
+                            <thead>
+                            <tr>
+                                <th>반 이름</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:if="${#lists.isEmpty(courses)}">
+                                <td class="empty-state">등록된 반이 없습니다.</td>
+                            </tr>
+                            <tr th:each="course : ${courses}">
+                                <td th:text="${course.title()}">초등 A반</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html>

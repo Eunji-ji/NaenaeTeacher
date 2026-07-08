@@ -1,14 +1,14 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>학생 관리 | NaenaeTeacher</title>
+    <title>학생등록 | NaenaeTeacher</title>
     <link rel="stylesheet" href="/assets/css/naenae-dashboard.css">
 </head>
 <body class="naenae-dashboard-body">
 <div class="dashboard-shell">
-    <aside class="dashboard-sidebar" aria-label="선생님 메뉴">
+    <aside class="dashboard-sidebar" aria-label="학생 관리 메뉴">
         <div class="brand">
             <span class="brand-mark">N</span>
             <div>
@@ -18,12 +18,12 @@
         </div>
 
         <nav class="sidebar-nav">
-            <a class="nav-item" href="/teacher/dashboard"><span class="nav-icon">▦</span> Dashboard</a>
-            <a class="nav-item active" href="/teacher/students"><span class="nav-icon">◎</span> 학생 관리</a>
-            <a class="nav-item" href="/teacher/courses"><span class="nav-icon">▤</span> 수업 관리</a>
-            <a class="nav-item" href="/teacher/assignments"><span class="nav-icon">□</span> 과제 관리</a>
+            <a class="nav-item" href="/teacher/dashboard"><span class="nav-icon">⌂</span> 대시보드</a>
+            <a class="nav-item active" href="/teacher/students"><span class="nav-icon">👩‍🎓</span> 학생등록</a>
+            <a class="nav-item" href="/teacher/courses"><span class="nav-icon">🏷</span> 반등록</a>
+            <a class="nav-item" href="/teacher/assignments"><span class="nav-icon">✎</span> 과제 관리</a>
             <a class="nav-item" href="/teacher/attendance"><span class="nav-icon">✓</span> 출석 관리</a>
-            <a class="nav-item" href="/teacher/today-english"><span class="nav-icon">✦</span> 오늘의 영어</a>
+            <a class="nav-item" href="/teacher/today-english"><span class="nav-icon">Aa</span> 오늘의 영어</a>
             <a class="nav-item" href="/teacher/notice"><span class="nav-icon">!</span> 알림장</a>
             <a class="nav-item" href="/teacher/board"><span class="nav-icon">#</span> 게시판</a>
             <a class="nav-item" href="/teacher/settings"><span class="nav-icon">⚙</span> 설정</a>
@@ -34,7 +34,7 @@
         <header class="dashboard-header">
             <div>
                 <p class="header-kicker">Student Management</p>
-                <h1 class="header-title">학생 관리</h1>
+                <h1 class="header-title">학생등록</h1>
             </div>
             <div class="header-actions">
                 <form class="logout-form" action="/logout" method="post">
@@ -50,7 +50,7 @@
                     <div class="page-toolbar">
                         <div>
                             <h2>학생 등록</h2>
-                            <p>여러 반은 쉼표로 구분해서 입력하세요. 예: 초등 A반, 문법 B반</p>
+                            <p>미리 등록한 반만 선택할 수 있습니다. 여러 반을 동시에 선택해서 등록하세요.</p>
                         </div>
                     </div>
 
@@ -65,8 +65,22 @@
                             <input id="name" name="name" type="text" th:value="${name}" required>
                         </div>
                         <div class="field-group">
-                            <label for="courseNames">반</label>
-                            <input id="courseNames" name="courseNames" type="text" th:value="${courseNames}" placeholder="초등 A반, 문법 B반" required>
+                            <label for="courseIds">반</label>
+                            <select id="courseIds"
+                                    name="courseIds"
+                                    multiple
+                                    size="5"
+                                    th:if="${!#lists.isEmpty(courses)}"
+                                    required>
+                                <option th:each="course : ${courses}"
+                                        th:value="${course.id()}"
+                                        th:selected="${courseIds != null and #lists.contains(courseIds, course.id())}"
+                                        th:text="${course.title()}">
+                                    초등 A반
+                                </option>
+                            </select>
+                            <div class="field-note" th:if="${!#lists.isEmpty(courses)}">Ctrl 또는 Cmd를 누르고 여러 반을 선택하세요.</div>
+                            <div class="field-note empty" th:if="${#lists.isEmpty(courses)}">먼저 반등록에서 반을 추가해 주세요.</div>
                         </div>
                         <div class="field-group">
                             <label for="schoolName">학교</label>
@@ -113,14 +127,14 @@
                                 <td class="empty-state" colspan="4">등록된 학생이 없습니다.</td>
                             </tr>
                             <tr th:each="student : ${students}">
-                                <td th:text="${student.name()}">김민지</td>
+                                <td th:text="${student.name()}">김지우</td>
                                 <td>
                                     <div class="course-chip-list" th:if="${!#lists.isEmpty(student.courseNames())}">
                                         <span class="course-chip" th:each="courseName : ${student.courseNames()}" th:text="${courseName}">초등 A반</span>
                                     </div>
                                     <span th:if="${#lists.isEmpty(student.courseNames())}">-</span>
                                 </td>
-                                <td th:text="${student.schoolName() ?: '-'}">내내초</td>
+                                <td th:text="${student.schoolName() ?: '-'}">내곡초</td>
                                 <td th:text="${student.phone() ?: '-'}">010-0000-0000</td>
                             </tr>
                             </tbody>

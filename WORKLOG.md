@@ -43,15 +43,17 @@ Implement teacher-side student management with multi-class registration.
 - Auth/dashboard templates and shared CSS were moved back to Spring Boot default resource locations for faster development refresh.
 - Login intro description text size was reduced for better single-line fit.
 - Teacher student management now supports manual student registration.
+- Classes are registered separately through `/teacher/courses`.
+- Student registration now selects only registered classes through a multi-select.
 - Students can be connected to multiple classes using the existing `courses` and `course_students` tables.
 - Student list can be filtered by class.
 
 ## Next Tasks
 
-1. Restart the Spring Boot app because student management added Java controller/service/repository code.
-2. Verify `/teacher/students` loads after login.
-3. Register a student with multiple classes using comma-separated class names.
-4. Verify class filter on `/teacher/students`.
+1. Restart the Spring Boot app because the new course controller/service changed web routes.
+2. Verify `/teacher/courses` loads and can register multiple classes.
+3. Verify `/teacher/students` loads after login and only shows registered classes in the selector.
+4. Register a student with multiple selected classes and confirm the class filter works.
 5. Decide next student-management fields before Excel upload design.
 6. Wire dashboard cards to real service data instead of static placeholders.
 
@@ -104,6 +106,9 @@ Implement teacher-side student management with multi-class registration.
 - Added `CourseStudentRepository`, student list models, and course option model.
 - Added entity factory methods for `Student`, `Course`, and `CourseStudent`.
 - Added `/teacher/students` list/filter/register screen.
+- Added `/teacher/courses` class registration screen.
+- Changed student registration to choose from already registered classes only.
+- Added multi-class selection for student registration.
 - Extended shared CSS for student forms, filters, tables, and class chips.
 - Verified `gradle build` succeeds after student management implementation.
 - Added entity factory methods and `UserRepository.existsByEmail`.
