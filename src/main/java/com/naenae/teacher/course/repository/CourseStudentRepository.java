@@ -10,5 +10,7 @@ public interface CourseStudentRepository extends JpaRepository<CourseStudent, Lo
 
     List<CourseStudent> findByCourseIdAndStudentTeacherIdOrderByStudentNameAsc(Long courseId, Long teacherId);
 
+    List<CourseStudent> findByStudent_IdOrderByCourseTitleAsc(Long studentId);
+
     boolean existsByCourseIdAndStudentId(Long courseId, Long studentId);
 }

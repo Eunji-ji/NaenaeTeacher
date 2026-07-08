@@ -651,6 +651,44 @@ a {
     line-height: 1.65;
 }
 
+.today-word-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.today-word-mini {
+    display: grid;
+    gap: 8px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--background);
+    padding: 14px;
+}
+
+.today-word-mini-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.today-word-level {
+    color: var(--sidebar-accent-foreground);
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.today-word-mini .word {
+    font-size: 28px;
+    line-height: 1.05;
+}
+
+.today-word-mini .description {
+    font-size: 13px;
+    line-height: 1.5;
+}
+
 .sentence-box {
     border-radius: 20px;
     background: var(--muted);
@@ -1369,6 +1407,10 @@ a {
     }
 
     .course-form {
+        grid-template-columns: 1fr;
+    }
+
+    .today-word-list {
         grid-template-columns: 1fr;
     }
 }

@@ -108,11 +108,18 @@
                     <article class="dashboard-card">
                         <div class="card-header">
                             <h2 class="card-title"><span class="card-icon tone-info">Aa</span> 오늘의 단어</h2>
-                            <span class="pill">학습</span>
+                            <span class="pill">3 카테고리</span>
                         </div>
-                        <p class="word">brave</p>
-                        <p class="pronunciation">/breiv/</p>
-                        <p class="description">용감한. She is brave enough to try again.</p>
+                        <div class="today-word-list">
+                            <article class="today-word-mini" th:each="word : ${todayEnglishWords}">
+                                <div class="today-word-mini-head">
+                                    <span class="today-word-level" th:text="${word.levelLabel()}">초등저학년</span>
+                                    <span class="pill">오늘</span>
+                                </div>
+                                <p class="word" th:text="${word.word()}">brave</p>
+                                <p class="description" th:text="${word.sentence()}">She is brave enough to try again.</p>
+                            </article>
+                        </div>
                     </article>
 
                     <article class="dashboard-card">

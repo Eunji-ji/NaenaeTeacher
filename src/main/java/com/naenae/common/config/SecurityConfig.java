@@ -1,6 +1,7 @@
 package com.naenae.common.config;
 
 import com.naenae.teacher.auth.security.CustomUserDetailsService;
+import com.naenae.teacher.auth.security.RoleBasedAuthenticationSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -15,9 +16,14 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
+    private final RoleBasedAuthenticationSuccessHandler roleBasedAuthenticationSuccessHandler;
 
-    public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
+    public SecurityConfig(
+            CustomUserDetailsService customUserDetailsService,
+            RoleBasedAuthenticationSuccessHandler roleBasedAuthenticationSuccessHandler
+    ) {
         this.customUserDetailsService = customUserDetailsService;
+        this.roleBasedAuthenticationSuccessHandler = roleBasedAuthenticationSuccessHandler;
     }
 
     @Bean
@@ -46,7 +52,7 @@ public class SecurityConfig {
                         .loginProcessingUrl("/teacher/login")
                         .usernameParameter("email")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/teacher/dashboard", true)
+                        .successHandler(roleBasedAuthenticationSuccessHandler)
                         .failureUrl("/teacher/login?error")
                         .permitAll()
                 )

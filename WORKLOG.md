@@ -141,10 +141,14 @@ Implement teacher-side student management with multi-class registration.
 - Bulk template download/upload buttons and the student bulk action now use the shared dashboard button styling.
 - `gradle build` passed after the student learning detail restructuring and score history migration.
 - The student learning score graph was compacted into a smaller line chart so it fits as a light yearly summary without overflowing the detail card.
+- Added DB-backed today word tables for 3 level bands: lower elementary, upper elementary, and middle school.
+- Seeded today word data at startup and wired the teacher dashboard to show all 3 daily selections.
+- Added a student dashboard route that shows the daily word matched to the student grade band, with a fallback to course title when grade is not stored.
+- Added role-based login redirect so student accounts can land on the student dashboard.
 
 ## Next Resume Point
 
-Restart the Spring Boot app, then verify student learning detail saving and the new attendance status flow.
+Restart the Spring Boot app, then verify today word seeding, teacher dashboard rendering, and student dashboard redirection.
 
 ## Important Notes
 

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학생 대시보드 | NaenaeTeacher</title>
+    <link rel="stylesheet" href="/assets/css/naenae-dashboard.css">
+</head>
+<body class="naenae-dashboard-body">
+<div class="dashboard-shell">
+    <div class="dashboard-main" style="padding-left:0;">
+        <header class="dashboard-header">
+            <div>
+                <p class="header-kicker">Student Dashboard</p>
+                <h1 class="header-title">학생 대시보드</h1>
+            </div>
+            <div class="header-actions">
+                <form class="logout-form" action="/logout" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <button class="logout-button" type="submit">나가기</button>
+                </form>
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+            <section class="dashboard-card">
+                <div class="card-header">
+                    <h2 class="card-title"><span class="card-icon tone-info">Aa</span> 오늘의 단어</h2>
+                    <span class="pill" th:text="${studentDashboard.levelLabel()}">초등저학년</span>
+                </div>
+                <p class="word" th:text="${studentDashboard.word()}">apple</p>
+                <p class="description" th:text="${studentDashboard.sentence()}">I can use apple today.</p>
+            </section>
+        </main>
+    </div>
+</div>
+</body>
+</html>

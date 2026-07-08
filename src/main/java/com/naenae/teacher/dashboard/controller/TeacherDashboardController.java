@@ -1,6 +1,7 @@
 package com.naenae.teacher.dashboard.controller;
 
 import com.naenae.common.user.domain.User;
+import com.naenae.common.vocabulary.service.TodayWordService;
 import com.naenae.teacher.auth.security.CustomUserDetails;
 import com.naenae.teacher.dashboard.model.TeacherDashboard;
 import com.naenae.teacher.dashboard.service.TeacherDashboardService;
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class TeacherDashboardController {
 
     private final TeacherDashboardService teacherDashboardService;
+    private final TodayWordService todayWordService;
 
-    public TeacherDashboardController(TeacherDashboardService teacherDashboardService) {
+    public TeacherDashboardController(TeacherDashboardService teacherDashboardService, TodayWordService todayWordService) {
         this.teacherDashboardService = teacherDashboardService;
+        this.todayWordService = todayWordService;
     }
 
     @GetMapping("/teacher/dashboard")
@@ -30,6 +33,7 @@ public class TeacherDashboardController {
         model.addAttribute("todayAttendanceRate", dashboard.todayAttendanceRate());
         model.addAttribute("openAssignmentCount", dashboard.openAssignmentCount());
         model.addAttribute("recentMemoCount", dashboard.recentMemoCount());
+        model.addAttribute("todayEnglishWords", todayWordService.getTeacherTodayWords(java.time.LocalDate.now()));
         model.addAttribute("teacherName", teacherName);
         model.addAttribute("teacherInitial", teacherName.substring(0, 1));
         model.addAttribute("teacherDisplayName", teacherName + "쌤");
