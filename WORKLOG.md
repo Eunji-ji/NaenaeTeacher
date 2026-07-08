@@ -34,12 +34,12 @@ Apply consistent auth UI and add minimal teacher signup.
 - Initial project setup has been pushed to the remote `main` branch.
 - Flyway now includes a test teacher seed account for local login verification.
 - Login and signup screens use the shared Naenae dashboard CSS baseline.
-- Minimal teacher signup is implemented with name, email, and password.
+- Minimal teacher signup is implemented with name, email, password, and password confirmation.
 
 ## Next Tasks
 
 1. Restart the Spring Boot app and visually verify `/teacher/login` and `/teacher/signup`.
-2. Create a new teacher account from `/teacher/signup`.
+2. Create a new teacher account from `/teacher/signup`, including password confirmation.
 3. Log in with the newly created account and verify redirect to `/teacher/dashboard`.
 4. Move future teacher/student screens into `src/main/webapp/WEB-INF/views` using the new dashboard CSS/component style as the baseline.
 5. Wire dashboard cards to real service data instead of static placeholders.
@@ -79,6 +79,7 @@ Apply consistent auth UI and add minimal teacher signup.
 - Added `WEB-INF/views/auth/login.html` and `WEB-INF/views/auth/signup.html`.
 - Updated the auth controller with GET/POST `/teacher/signup`.
 - Added `TeacherSignupService` to create `User` and `Teacher` records with BCrypt password hashing.
+- Added server-side password confirmation validation to teacher signup.
 - Added entity factory methods and `UserRepository.existsByEmail`.
 - Allowed `/teacher/signup` through Spring Security.
 - Extended `naenae-dashboard.css` with shared auth screen styles.

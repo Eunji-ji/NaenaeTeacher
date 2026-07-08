@@ -32,11 +32,12 @@ public class AuthPageController {
             @RequestParam String name,
             @RequestParam String email,
             @RequestParam String password,
+            @RequestParam String passwordConfirm,
             Model model,
             RedirectAttributes redirectAttributes
     ) {
         try {
-            teacherSignupService.signup(name, email, password);
+            teacherSignupService.signup(name, email, password, passwordConfirm);
         } catch (IllegalArgumentException exception) {
             model.addAttribute("errorMessage", exception.getMessage());
             model.addAttribute("name", name);

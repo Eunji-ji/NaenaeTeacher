@@ -26,13 +26,18 @@ public class TeacherSignupService {
     }
 
     @Transactional
-    public void signup(String name, String email, String password) {
+    public void signup(String name, String email, String password, String passwordConfirm) {
         String normalizedName = requireText(name, "이름을 입력해 주세요.");
         String normalizedEmail = requireText(email, "이메일을 입력해 주세요.").toLowerCase();
         String rawPassword = requireText(password, "비밀번호를 입력해 주세요.");
+        String rawPasswordConfirm = requireText(passwordConfirm, "비밀번호 확인을 입력해 주세요.");
 
         if (rawPassword.length() < 8) {
             throw new IllegalArgumentException("비밀번호는 8자 이상이어야 합니다.");
+        }
+
+        if (!rawPassword.equals(rawPasswordConfirm)) {
+            throw new IllegalArgumentException("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
         }
 
         if (userRepository.existsByEmail(normalizedEmail)) {
