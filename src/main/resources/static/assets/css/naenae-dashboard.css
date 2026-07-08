@@ -768,6 +768,9 @@ a {
 .student-form input,
 .student-form select,
 .student-form textarea,
+.student-detail-form textarea,
+.score-form select,
+.score-form input,
 .course-form textarea {
     min-height: 44px;
     border: 1px solid var(--border);
@@ -783,6 +786,9 @@ a {
 .student-form input:focus,
 .student-form select:focus,
 .student-form textarea:focus,
+.student-detail-form textarea:focus,
+.score-form select:focus,
+.score-form input:focus,
 .course-form textarea:focus {
     border-color: rgba(76, 195, 188, 0.8);
     box-shadow: 0 0 0 4px rgba(76, 195, 188, 0.14);
@@ -813,6 +819,41 @@ a {
     min-height: 134px;
     padding: 12px 14px;
     resize: vertical;
+}
+
+.student-detail-form textarea {
+    width: 100%;
+    min-height: 220px;
+    padding: 12px 14px;
+    resize: vertical;
+}
+
+.student-detail-form {
+    display: grid;
+    gap: 12px;
+}
+
+.score-form {
+    display: grid;
+    gap: 12px;
+}
+
+.score-form select,
+.score-form input {
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: #ffffff;
+    color: var(--foreground);
+    font: inherit;
+    outline: none;
+    padding: 0 12px;
+}
+
+.score-form button,
+.student-detail-form button {
+    width: fit-content;
 }
 
 .course-form {
@@ -868,6 +909,15 @@ a {
 .student-table td {
     color: var(--card-foreground);
     font-size: 14px;
+}
+
+.student-name-link {
+    color: var(--sidebar-accent-foreground);
+    font-weight: 900;
+}
+
+.student-name-link:hover {
+    text-decoration: underline;
 }
 
 .table-action-button {
@@ -927,6 +977,13 @@ a {
     gap: 16px;
     align-items: center;
     margin-bottom: 18px;
+}
+
+.attendance-toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .attendance-course-form {
@@ -1130,6 +1187,92 @@ a {
     padding: 4px 9px;
 }
 
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.detail-panel {
+    display: grid;
+    gap: 14px;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    background: var(--background);
+    padding: 18px;
+}
+
+.score-delta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 16px;
+    background: var(--muted);
+    padding: 12px 14px;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.score-chart {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 16px;
+    align-items: stretch;
+}
+
+.score-chart-axis {
+    display: grid;
+    align-content: space-between;
+    color: var(--muted-foreground);
+    font-size: 12px;
+    font-weight: 800;
+    height: 260px;
+    padding: 4px 0;
+}
+
+.score-chart-bars {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 14px;
+    align-items: end;
+    min-height: 260px;
+    padding: 0 4px 4px;
+}
+
+.score-bar-item {
+    display: grid;
+    gap: 8px;
+    align-items: end;
+}
+
+.score-bar {
+    min-height: 18px;
+    border-radius: 16px 16px 8px 8px;
+    background: linear-gradient(180deg, rgba(76, 195, 188, 0.95), rgba(76, 195, 188, 0.45));
+    box-shadow: 0 8px 20px rgba(76, 195, 188, 0.16);
+}
+
+.score-bar-label,
+.score-bar-value {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.score-bar-label {
+    color: var(--card-foreground);
+}
+
+.score-bar-value {
+    color: var(--muted-foreground);
+}
+
+@media (max-width: 1100px) {
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 .student-status-form {
     display: grid;
     gap: 10px;
@@ -1217,6 +1360,10 @@ a {
         align-items: stretch;
         flex-direction: column;
     }
+
+    .attendance-toolbar {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 640px) {
@@ -1264,5 +1411,15 @@ a {
 
     .table-scroll {
         overflow-x: auto;
+    }
+
+    .score-chart {
+        grid-template-columns: 1fr;
+    }
+
+    .score-chart-axis {
+        display: flex;
+        justify-content: space-between;
+        height: auto;
     }
 }

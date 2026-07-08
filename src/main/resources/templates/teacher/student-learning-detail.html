@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학생 학습관리 상세 | NaenaeTeacher</title>
+    <link rel="stylesheet" href="/assets/css/naenae-dashboard.css">
+</head>
+<body class="naenae-dashboard-body">
+<div class="dashboard-shell">
+    <aside class="dashboard-sidebar" aria-label="학생 학습관리 메뉴">
+        <div class="brand">
+            <span class="brand-mark">N</span>
+            <div>
+                <p class="brand-name" th:text="${teacherDisplayName}">김지우쌤</p>
+                <p class="brand-role">Teacher Space</p>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a class="nav-item" href="/teacher/dashboard"><span class="nav-icon">⌂</span> 대시보드</a>
+            <div class="sidebar-section" aria-label="학생관리">
+                <div class="sidebar-section-label">학생관리</div>
+                <div class="sidebar-subnav">
+                    <a class="sidebar-subitem" href="/teacher/courses"><span class="nav-icon">🏷</span> 반등록</a>
+                    <a class="sidebar-subitem" href="/teacher/students"><span class="nav-icon">👩‍🎓</span> 학생등록</a>
+                    <a class="sidebar-subitem" href="/teacher/students/bulk"><span class="nav-icon">⬇</span> 학생일괄등록</a>
+                    <a class="sidebar-subitem" href="/teacher/attendance"><span class="nav-icon">✓</span> 출석관리</a>
+                    <a class="sidebar-subitem active" href="/teacher/students/status"><span class="nav-icon">▤</span> 학생 학습관리</a>
+                </div>
+            </div>
+            <a class="nav-item" href="/teacher/assignments"><span class="nav-icon">✎</span> 과제 관리</a>
+            <a class="nav-item" href="/teacher/today-english"><span class="nav-icon">Aa</span> 오늘의 영어</a>
+            <a class="nav-item" href="/teacher/notice"><span class="nav-icon">!</span> 알림장</a>
+            <a class="nav-item" href="/teacher/board"><span class="nav-icon">#</span> 게시판</a>
+            <a class="nav-item" href="/teacher/settings"><span class="nav-icon">⚙</span> 설정</a>
+        </nav>
+    </aside>
+
+    <div class="dashboard-main">
+        <header class="dashboard-header">
+            <div>
+                <p class="header-kicker">Student Learning</p>
+                <h1 class="header-title">학생 학습관리 상세</h1>
+            </div>
+            <div class="header-actions">
+                <a class="bulk-action bulk-download" th:href="@{/teacher/students/status(courseId=${selectedCourseId})}">목록으로</a>
+                <form class="logout-form" action="/logout" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <button class="logout-button" type="submit">나가기</button>
+                </form>
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+            <div class="stack">
+                <section class="dashboard-card">
+                    <div class="page-toolbar">
+                        <div>
+                            <h2 th:text="${studentLearningDetailPage.studentName()}">김지우</h2>
+                            <p>
+                                <span th:text="${studentLearningDetailPage.courseTitle()}">초등 A반</span>
+                                · <span th:text="${studentLearningDetailPage.schoolName() ?: '-'}">내곡초</span>
+                                · <span th:text="${studentLearningDetailPage.phone() ?: '-'}">010-0000-0000</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="auth-alert success" th:if="${successMessage}" th:text="${successMessage}">
+                        저장되었습니다.
+                    </div>
+                    <div class="auth-alert error" th:if="${errorMessage}" th:text="${errorMessage}">
+                        입력값을 확인해 주세요.
+                    </div>
+
+                    <div class="detail-grid">
+                        <section class="detail-panel">
+                            <div class="card-header">
+                                <h2 class="card-title"><span class="card-icon tone-info">✎</span> 특징 메모</h2>
+                                <span class="pill"
+                                      th:text="|${studentLearningDetailPage.memoSummary() == null ? 0 : #strings.length(studentLearningDetailPage.memoSummary())}/${studentLearningDetailPage.memoMaxLength()}|">0/4000</span>
+                            </div>
+                            <form class="student-detail-form" th:action="@{/teacher/students/status/{studentId}(studentId=${studentLearningDetailPage.studentId()})}" method="post">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <input type="hidden" name="courseId" th:value="${selectedCourseId}">
+                                <textarea name="memoSummary"
+                                          maxlength="4000"
+                                          rows="10"
+                                          th:text="${studentLearningDetailPage.memoSummary()}"></textarea>
+                                <button type="submit" class="table-action-button">특징 저장</button>
+                            </form>
+                        </section>
+
+                        <section class="detail-panel">
+                            <div class="card-header">
+                                <h2 class="card-title"><span class="card-icon tone-success">▦</span> 성적 입력</h2>
+                                <span class="pill" th:text="${studentLearningDetailPage.currentYear()}">2026</span>
+                            </div>
+                            <form class="score-form" th:action="@{/teacher/students/status/{studentId}/score(studentId=${studentLearningDetailPage.studentId()})}" method="post">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <input type="hidden" name="courseId" th:value="${selectedCourseId}">
+                                <div class="field-group">
+                                    <label for="examType">시험 종류</label>
+                                    <select id="examType" name="examType" required>
+                                        <option value="MIDTERM">중간고사</option>
+                                        <option value="FINAL">기말고사</option>
+                                    </select>
+                                </div>
+                                <div class="field-group">
+                                    <label for="score">성적</label>
+                                    <input id="score" name="score" type="number" min="0" max="100" step="1" required>
+                                </div>
+                                <button type="submit" class="table-action-button">성적 저장</button>
+                            </form>
+
+                            <div class="score-delta">
+                                <span>변화량</span>
+                                <strong th:text="|${studentLearningDetailPage.scoreDelta()}점|">0점</strong>
+                            </div>
+                        </section>
+                    </div>
+                </section>
+
+                <section class="dashboard-card">
+                    <div class="card-header">
+                        <h2 class="card-title"><span class="card-icon tone-warning">▤</span> 성적 그래프</h2>
+                        <span class="pill">중간 / 기말</span>
+                    </div>
+
+                    <div class="score-chart" th:if="${!#lists.isEmpty(studentLearningDetailPage.scores())}">
+                        <div class="score-chart-axis">
+                            <span>100</span>
+                            <span>75</span>
+                            <span>50</span>
+                            <span>25</span>
+                            <span>0</span>
+                        </div>
+                        <div class="score-chart-bars">
+                            <div class="score-bar-item" th:each="record : ${studentLearningDetailPage.scores()}">
+                                <div class="score-bar" th:style="|height:${record.score()}%;|"></div>
+                                <div class="score-bar-label" th:text="|${record.examYear()} ${record.examTypeLabel()}|">2026 중간고사</div>
+                                <div class="score-bar-value" th:text="|${record.score()}점|">92점</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="empty-state" th:if="${#lists.isEmpty(studentLearningDetailPage.scores())}">
+                        저장된 성적이 없습니다.
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html>

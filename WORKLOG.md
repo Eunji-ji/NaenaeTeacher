@@ -125,20 +125,24 @@ Implement teacher-side student management with multi-class registration.
 
 ## This Update
 
-- Added `학생 학습 관리` under student management and wired it to a new feature memo screen.
-- Student memo text now reuses the existing `memo_summary` column and supports 1000 characters.
+- Added `학생 학습관리` under student management and split it into a list view and a student detail view.
+- Student memo text now reuses the existing `memo_summary` column and supports 4000 characters.
+- Added midterm/final score storage per year and a simple score graph on the student detail page.
+- Student names on the list now open the detail registration page.
 - Student list sorting stays class name first, then student name.
 - Teacher branding now renders as the logged-in name plus `쌤` on the teacher menus.
 - Dashboard attendance summaries now use live present / late / absent counts and attendance rate.
 - Attendance management is being moved from checkbox save flow to per-row status selection with auto-save.
 - Added a `모두출석` bulk action on the attendance screen to mark all currently loaded students as present.
 - Simplified the attendance bulk action label to `전체출석` and tightened its button styling to avoid layout breakage.
+- Moved the bulk attendance button next to the query controls so it no longer inherits the date navigation button sizing.
+- Added `student_academic_records` and a Flyway migration for student score history.
 - Bulk template download/upload buttons and the student bulk action now use the shared dashboard button styling.
-- `gradle build` passed after the new teacher view advice, attendance flow, and student status screen changes.
+- `gradle build` passed after the student learning detail restructuring and score history migration.
 
 ## Next Resume Point
 
-Restart the Spring Boot app, then verify student status saving and the new attendance status flow.
+Restart the Spring Boot app, then verify student learning detail saving and the new attendance status flow.
 
 ## Important Notes
 
