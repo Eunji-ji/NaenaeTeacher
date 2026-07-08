@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>선생님 회원가입 | NaenaeTeacher</title>
+    <link rel="stylesheet" href="/assets/css/naenae-dashboard.css">
+</head>
+<body class="naenae-auth-body">
+<main class="auth-shell">
+    <section class="auth-panel" aria-label="선생님 회원가입">
+        <div class="auth-intro">
+            <div>
+                <div class="brand">
+                    <span class="brand-mark">N</span>
+                    <div>
+                        <p class="brand-name">NaenaeTeacher</p>
+                        <p class="brand-role">Teacher Space</p>
+                    </div>
+                </div>
+                <h1>최소 정보로 선생님 공간을 시작하세요.</h1>
+                <p>이름, 이메일, 비밀번호만 입력하면 로컬 테스트용 선생님 계정이 생성됩니다.</p>
+                <ul class="auth-feature-list">
+                    <li><span class="card-icon tone-success">✓</span> BCrypt 비밀번호 암호화 저장</li>
+                    <li><span class="card-icon tone-info">◎</span> TEACHER 권한 자동 부여</li>
+                    <li><span class="card-icon tone-neutral">N</span> 가입 후 바로 로그인 가능</li>
+                </ul>
+            </div>
+            <div class="pill">Teacher Signup</div>
+        </div>
+
+        <div class="auth-form-area">
+            <p class="auth-kicker">Create Account</p>
+            <h2 class="auth-title">회원가입</h2>
+            <p class="auth-subtitle">MVP 단계라 필수 항목만 받습니다.</p>
+
+            <div class="auth-alert error" th:if="${errorMessage}" th:text="${errorMessage}">
+                입력값을 확인해 주세요.
+            </div>
+
+            <form class="auth-form" action="/teacher/signup" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <div class="field-group">
+                    <label for="name">이름</label>
+                    <input id="name" name="name" type="text" autocomplete="name" th:value="${name}" required>
+                </div>
+                <div class="field-group">
+                    <label for="email">이메일</label>
+                    <input id="email" name="email" type="email" autocomplete="username" th:value="${email}" required>
+                </div>
+                <div class="field-group">
+                    <label for="password">비밀번호</label>
+                    <input id="password" name="password" type="password" autocomplete="new-password" minlength="8" required>
+                </div>
+                <button class="auth-submit" type="submit">회원가입</button>
+            </form>
+
+            <div class="auth-link-row">
+                <span>이미 계정이 있나요?</span>
+                <a href="/teacher/login">로그인</a>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

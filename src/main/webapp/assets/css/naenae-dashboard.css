@@ -36,6 +36,17 @@ body.naenae-dashboard-body {
     font-family: Pretendard, Inter, "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
+body.naenae-auth-body {
+    min-height: 100vh;
+    margin: 0;
+    background:
+        radial-gradient(circle at 16% 12%, rgba(76, 195, 188, 0.18), transparent 30%),
+        radial-gradient(circle at 86% 20%, rgba(255, 230, 204, 0.65), transparent 28%),
+        var(--background);
+    color: var(--foreground);
+    font-family: Pretendard, Inter, "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
 a {
     color: inherit;
     text-decoration: none;
@@ -43,6 +54,172 @@ a {
 
 .dashboard-shell {
     min-height: 100vh;
+}
+
+.auth-shell {
+    display: grid;
+    min-height: 100vh;
+    place-items: center;
+    padding: 28px 18px;
+}
+
+.auth-panel {
+    display: grid;
+    width: min(100%, 980px);
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 430px);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    background: var(--card);
+    box-shadow: 0 18px 50px rgba(43, 52, 64, 0.08);
+}
+
+.auth-intro {
+    display: flex;
+    min-height: 560px;
+    flex-direction: column;
+    justify-content: space-between;
+    background:
+        radial-gradient(circle at top right, rgba(255, 230, 204, 0.68), transparent 34%),
+        linear-gradient(135deg, rgba(76, 195, 188, 0.18), #ffffff 48%, rgba(211, 188, 228, 0.22));
+    padding: 34px;
+}
+
+.auth-intro h1 {
+    margin: 28px 0 10px;
+    color: var(--card-foreground);
+    font-size: 34px;
+    line-height: 1.18;
+}
+
+.auth-intro p {
+    max-width: 460px;
+    margin: 0;
+    color: var(--muted-foreground);
+    line-height: 1.7;
+}
+
+.auth-feature-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 28px;
+    padding: 0;
+    list-style: none;
+}
+
+.auth-feature-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--foreground);
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.auth-form-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 38px;
+}
+
+.auth-kicker {
+    margin: 0 0 6px;
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.auth-title {
+    margin: 0;
+    color: var(--card-foreground);
+    font-size: 28px;
+    line-height: 1.2;
+}
+
+.auth-subtitle {
+    margin: 9px 0 26px;
+    color: var(--muted-foreground);
+    line-height: 1.55;
+}
+
+.auth-alert {
+    margin-bottom: 16px;
+    border-radius: 16px;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.auth-alert.error {
+    background: rgba(239, 143, 143, 0.16);
+    color: #a84545;
+}
+
+.auth-alert.success {
+    background: rgba(134, 207, 166, 0.18);
+    color: var(--success-foreground);
+}
+
+.auth-form {
+    display: grid;
+    gap: 15px;
+}
+
+.field-group {
+    display: grid;
+    gap: 7px;
+}
+
+.field-group label {
+    color: var(--card-foreground);
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.field-group input {
+    width: 100%;
+    min-height: 48px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: #ffffff;
+    color: var(--foreground);
+    font: inherit;
+    outline: none;
+    padding: 0 14px;
+}
+
+.field-group input:focus {
+    border-color: rgba(76, 195, 188, 0.8);
+    box-shadow: 0 0 0 4px rgba(76, 195, 188, 0.14);
+}
+
+.auth-submit {
+    min-height: 50px;
+    border: 0;
+    border-radius: 17px;
+    background: var(--primary);
+    color: var(--primary-foreground);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 900;
+}
+
+.auth-link-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 20px;
+    color: var(--muted-foreground);
+    font-size: 14px;
+}
+
+.auth-link-row a {
+    color: var(--sidebar-accent-foreground);
+    font-weight: 900;
 }
 
 .dashboard-sidebar {
@@ -515,6 +692,15 @@ a {
 }
 
 @media (max-width: 860px) {
+    .auth-panel {
+        grid-template-columns: 1fr;
+    }
+
+    .auth-intro {
+        min-height: auto;
+        padding: 28px;
+    }
+
     .dashboard-sidebar {
         display: none;
     }
@@ -538,6 +724,14 @@ a {
 }
 
 @media (max-width: 640px) {
+    .auth-form-area {
+        padding: 28px 20px;
+    }
+
+    .auth-intro h1 {
+        font-size: 27px;
+    }
+
     .dashboard-header {
         padding-inline: 16px;
     }

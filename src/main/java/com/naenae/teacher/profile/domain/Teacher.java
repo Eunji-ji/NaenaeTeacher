@@ -37,4 +37,10 @@ public class Teacher extends BaseTimeEntity {
 
     @Column(columnDefinition = "TEXT")
     private String introduction;
+
+    public static Teacher create(User user) {
+        Teacher teacher = new Teacher();
+        teacher.user = user;
+        return teacher;
+    }
 }

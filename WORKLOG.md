@@ -2,7 +2,7 @@
 
 ## Current Goal
 
-Add a login-ready test teacher account and continue end-to-end dashboard verification.
+Apply consistent auth UI and add minimal teacher signup.
 
 ## Current Status
 
@@ -33,12 +33,14 @@ Add a login-ready test teacher account and continue end-to-end dashboard verific
 - Git repository is initialized and connected to GitHub at `https://github.com/Eunji-ji/NaenaeTeacher`.
 - Initial project setup has been pushed to the remote `main` branch.
 - Flyway now includes a test teacher seed account for local login verification.
+- Login and signup screens use the shared Naenae dashboard CSS baseline.
+- Minimal teacher signup is implemented with name, email, and password.
 
 ## Next Tasks
 
-1. Restart the Spring Boot app so Flyway applies `V2__seed_test_teacher.sql`.
-2. Log in with `teacher@naenae.com` / `password1234`.
-3. Verify successful redirect to `/teacher/dashboard`.
+1. Restart the Spring Boot app and visually verify `/teacher/login` and `/teacher/signup`.
+2. Create a new teacher account from `/teacher/signup`.
+3. Log in with the newly created account and verify redirect to `/teacher/dashboard`.
 4. Move future teacher/student screens into `src/main/webapp/WEB-INF/views` using the new dashboard CSS/component style as the baseline.
 5. Wire dashboard cards to real service data instead of static placeholders.
 6. Optionally clean up the old invalid Java 18 registry entry warning if it appears during local Gradle runs.
@@ -74,10 +76,17 @@ Add a login-ready test teacher account and continue end-to-end dashboard verific
 - Added remote `origin` and pushed `main` to GitHub.
 - Added `V2__seed_test_teacher.sql` with a BCrypt-hashed local teacher login.
 - Verified `gradle build` succeeds after adding the seed migration.
+- Added `WEB-INF/views/auth/login.html` and `WEB-INF/views/auth/signup.html`.
+- Updated the auth controller with GET/POST `/teacher/signup`.
+- Added `TeacherSignupService` to create `User` and `Teacher` records with BCrypt password hashing.
+- Added entity factory methods and `UserRepository.existsByEmail`.
+- Allowed `/teacher/signup` through Spring Security.
+- Extended `naenae-dashboard.css` with shared auth screen styles.
+- Verified `gradle build` succeeds and boot jar includes the auth templates/CSS.
 
 ## Next Resume Point
 
-Restart the Spring Boot app and log in with `teacher@naenae.com` / `password1234`; verify that `/teacher/dashboard` renders with `/assets/css/naenae-dashboard.css`.
+Restart the Spring Boot app, verify `/teacher/signup`, create a new teacher account, and confirm login redirects to `/teacher/dashboard`.
 
 ## Important Notes
 

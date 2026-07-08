@@ -47,6 +47,16 @@ public class User extends BaseTimeEntity {
     @Column(name = "last_login_at")
     private LocalDateTime lastLoginAt;
 
+    public static User createTeacher(String email, String passwordHash, String name) {
+        User user = new User();
+        user.email = email;
+        user.passwordHash = passwordHash;
+        user.role = Role.TEACHER;
+        user.name = name;
+        user.active = true;
+        return user;
+    }
+
     public Long getId() {
         return id;
     }
