@@ -145,6 +145,9 @@ Implement teacher-side student management with multi-class registration.
 - Seeded today word data at startup and wired the teacher dashboard to show all 3 daily selections.
 - Added a student dashboard route that shows the daily word matched to the student grade band, with a fallback to course title when grade is not stored.
 - Added role-based login redirect so student accounts can land on the student dashboard.
+- Fixed the corrupted `WordLevel` source file used by today word routing.
+- Removed the UTF-8 BOM from `WordLevel.java` after the Java compiler rejected the hidden BOM character.
+- Scanned the main Java and resource text files for BOM markers and cleaned the ones that had hidden BOM bytes: `TodayWordService.java`, `teacher/courses.html`, and `teacher/students.html`.
 
 ## Next Resume Point
 

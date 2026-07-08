@@ -1,4 +1,4 @@
-﻿package com.naenae.common.vocabulary.service;
+package com.naenae.common.vocabulary.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
