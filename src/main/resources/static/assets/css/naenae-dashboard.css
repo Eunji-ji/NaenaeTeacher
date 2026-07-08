@@ -921,6 +921,39 @@ a {
     box-shadow: 0 0 0 4px rgba(76, 195, 188, 0.14);
 }
 
+.bulk-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    border-radius: 14px;
+    font: inherit;
+    font-weight: 900;
+    padding: 0 16px;
+}
+
+.bulk-download {
+    border: 1px solid rgba(76, 195, 188, 0.28);
+    background: rgba(76, 195, 188, 0.1);
+    color: var(--sidebar-accent-foreground);
+}
+
+.bulk-download:hover {
+    border-color: rgba(76, 195, 188, 0.45);
+    background: rgba(76, 195, 188, 0.16);
+}
+
+.bulk-upload {
+    border: 0;
+    background: var(--primary);
+    color: var(--primary-foreground);
+    cursor: pointer;
+}
+
+.bulk-upload:hover {
+    filter: brightness(0.98);
+}
+
 .course-chip-list {
     display: flex;
     flex-wrap: wrap;

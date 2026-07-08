@@ -129,6 +129,8 @@ Implement teacher-side student management with multi-class registration.
 - Added `/teacher/students/bulk` for Excel template download and upload.
 - Bulk template headers are `학생이름`, `반`, `학교`, `전화번호`.
 - Bound Spring Boot to `0.0.0.0` so other PCs can reach the app by host IP.
+- Bulk template download/upload buttons now use dashboard-matching styles.
+- Course dropdowns remain sorted by class name.
 
 ## Next Resume Point
 

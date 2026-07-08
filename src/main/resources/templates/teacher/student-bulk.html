@@ -58,7 +58,7 @@
                             <h2>엑셀 템플릿</h2>
                             <p>템플릿을 내려받아 첫 줄 헤더를 유지한 상태로 작성하세요.</p>
                         </div>
-                        <a class="quick-action" href="/teacher/students/bulk/template">템플릿 다운로드</a>
+                        <a class="bulk-action bulk-download" href="/teacher/students/bulk/template">템플릿 다운로드</a>
                     </div>
 
                     <div class="auth-alert success" th:if="${successMessage}" th:text="${successMessage}">
@@ -88,7 +88,7 @@
                             <label for="file">엑셀 파일</label>
                             <input id="file" name="file" type="file" accept=".xlsx" required>
                         </div>
-                        <button type="submit">업로드</button>
+                        <button class="bulk-action bulk-upload" type="submit">업로드</button>
                     </form>
                 </section>
             </div>
