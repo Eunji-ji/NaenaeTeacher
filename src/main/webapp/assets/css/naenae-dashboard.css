@@ -401,6 +401,29 @@ a {
     font-weight: 800;
 }
 
+.logout-form {
+    margin: 0;
+}
+
+.logout-button {
+    min-height: 40px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--card);
+    color: var(--muted-foreground);
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 900;
+    padding: 0 14px;
+}
+
+.logout-button:hover {
+    border-color: rgba(239, 143, 143, 0.45);
+    background: rgba(239, 143, 143, 0.12);
+    color: #a84545;
+}
+
 .dashboard-content {
     width: min(100%, 1280px);
     margin: 0 auto;

@@ -46,9 +46,13 @@
                     <span class="notice-dot"></span>
                 </button>
                 <div class="profile-chip">
-                    <span class="avatar">김</span>
-                    <span class="profile-name">김지우 쌤</span>
+                    <span class="avatar" th:text="${teacherInitial}">김</span>
+                    <span class="profile-name"><span th:text="${teacherName}">김지우</span> 쌤</span>
                 </div>
+                <form class="logout-form" action="/logout" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <button class="logout-button" type="submit">나가기</button>
+                </form>
             </div>
         </header>
 
@@ -57,7 +61,7 @@
                 <section class="welcome-card">
                     <div class="mascot">N</div>
                     <div>
-                        <h2>안녕하세요, 김지우 쌤</h2>
+                        <h2>안녕하세요, <span th:text="${teacherName}">김지우</span> 쌤</h2>
                         <p>오늘의 수업, 출석, 과제 흐름을 한눈에 확인하세요. 전체 학생 24명과 함께 차분하게 하루를 시작할 수 있도록 정리했습니다.</p>
                     </div>
                 </section>

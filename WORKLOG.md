@@ -38,6 +38,8 @@ Apply consistent auth UI and add minimal teacher signup.
 - The `WEB-INF/views` Thymeleaf resolver now reads from `classpath:/META-INF/resources/WEB-INF/views/` so bootRun/bootJar resolve the new auth templates instead of falling back to old `resources/templates` files.
 - Dashboard teacher display text now uses `김지우 쌤`.
 - Login/signup intro headline sizing was reduced to avoid awkward wrapping.
+- Dashboard header now displays the authenticated teacher name and initial instead of hardcoded `김지우`.
+- Dashboard header includes a POST `/logout` 나가기 button.
 
 ## Next Tasks
 
@@ -86,6 +88,9 @@ Apply consistent auth UI and add minimal teacher signup.
 - Fixed the custom Thymeleaf resolver path so `/teacher/login` uses the new shared-CSS auth screen.
 - Updated the dashboard profile and welcome copy from `김지우 선생님` to `김지우 쌤`.
 - Reduced `.auth-intro h1` font sizes in the shared dashboard CSS.
+- Wired `TeacherDashboardController` to expose authenticated teacher display name and initial.
+- Replaced hardcoded dashboard teacher copy with Thymeleaf model values.
+- Added dashboard logout form/button in the top-right header.
 - Added entity factory methods and `UserRepository.existsByEmail`.
 - Allowed `/teacher/signup` through Spring Security.
 - Extended `naenae-dashboard.css` with shared auth screen styles.
