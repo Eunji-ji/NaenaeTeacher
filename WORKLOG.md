@@ -174,9 +174,16 @@ Restart the Spring Boot app, then verify today word seeding, teacher dashboard r
 - Verified PostgreSQL readiness with `pg_isready -U naenae -d naenae_teacher`.
 - Started the Spring Boot app with `gradlew.bat bootRun`.
 - Verified `http://localhost:8080/api/health` returns `{"status":"ok"}` and `/` redirects to `/teacher/login`.
-- Next local startup on `pc_2`: start Docker Desktop, run `docker compose up -d`, then run `gradlew.bat bootRun` from `C:\workSp\NaenaeTeacher`.
+- Next local startup on `pc_2`: start Docker Desktop, run `docker compose up -d`, then run `$env:PORT='8081'; .\gradlew.bat bootRun` from `C:\workSp\NaenaeTeacher`.
 
 ## Next Resume Point
 
 - On another PC, do not reuse this PC's local Java path. Make sure that PC has its own valid Java 21 setup before running Gradle.
 - Continue normal development from `main` after pulling the latest commit.
+## 2026-07-08 pc_2 Port Change
+
+- Switched the local Spring Boot runtime from port `8080` to port `8081` on `pc_2`.
+- Stopped the existing process listening on `8080`.
+- Restarted the app with `PORT=8081`.
+- Verified `http://localhost:8081/api/health` returns `{"status":"ok"}`.
+- Verified `http://localhost:8080/api/health` no longer responds.
