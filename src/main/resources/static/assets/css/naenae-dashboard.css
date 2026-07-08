@@ -979,6 +979,7 @@ a {
 
 .attendance-bulk-form {
     margin: 0;
+    flex-shrink: 0;
 }
 
 .attendance-date-nav button {
@@ -1003,24 +1004,26 @@ a {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    min-height: 44px;
+    width: auto;
+    height: auto;
+    min-height: 40px;
+    white-space: nowrap;
     border: 1px solid rgba(76, 195, 188, 0.28);
     border-radius: 14px;
     background: rgba(76, 195, 188, 0.1);
     color: var(--sidebar-accent-foreground);
     cursor: pointer;
     font: inherit;
+    font-size: 12px;
     font-weight: 900;
-    padding: 0 14px;
+    line-height: 1;
+    padding: 0 12px;
+    flex: 0 0 auto;
 }
 
 .attendance-bulk-button:hover {
     border-color: rgba(76, 195, 188, 0.45);
     background: rgba(76, 195, 188, 0.16);
-}
-
-.attendance-bulk-icon {
-    font-size: 14px;
 }
 
 .attendance-date-pill {
