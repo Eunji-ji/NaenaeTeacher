@@ -58,4 +58,34 @@ public class Student extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private StudentStatus status = StudentStatus.ACTIVE;
+
+    public static Student create(Teacher teacher, String name, String schoolName, String phone) {
+        Student student = new Student();
+        student.teacher = teacher;
+        student.name = name;
+        student.schoolName = schoolName;
+        student.phone = phone;
+        student.status = StudentStatus.ACTIVE;
+        return student;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSchoolName() {
+        return schoolName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
 }

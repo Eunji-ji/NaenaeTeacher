@@ -8,5 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> findByTeacherId(Long teacherId);
 
+    List<Student> findByTeacherIdOrderByNameAsc(Long teacherId);
+
     List<Student> findByTeacherIdAndNameContainingIgnoreCase(Long teacherId, String name);
 }

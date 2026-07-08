@@ -39,4 +39,20 @@ public class CourseStudent {
 
     @Column(name = "joined_at", nullable = false)
     private LocalDate joinedAt = LocalDate.now();
+
+    public static CourseStudent create(Course course, Student student) {
+        CourseStudent courseStudent = new CourseStudent();
+        courseStudent.course = course;
+        courseStudent.student = student;
+        courseStudent.joinedAt = LocalDate.now();
+        return courseStudent;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
 }

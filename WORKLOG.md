@@ -2,7 +2,7 @@
 
 ## Current Goal
 
-Apply consistent auth UI and add minimal teacher signup.
+Implement teacher-side student management with multi-class registration.
 
 ## Current Status
 
@@ -42,15 +42,18 @@ Apply consistent auth UI and add minimal teacher signup.
 - Dashboard header includes a POST `/logout` 나가기 button.
 - Auth/dashboard templates and shared CSS were moved back to Spring Boot default resource locations for faster development refresh.
 - Login intro description text size was reduced for better single-line fit.
+- Teacher student management now supports manual student registration.
+- Students can be connected to multiple classes using the existing `courses` and `course_students` tables.
+- Student list can be filtered by class.
 
 ## Next Tasks
 
-1. Restart the Spring Boot app and visually verify `/teacher/login` and `/teacher/signup`.
-2. Create a new teacher account from `/teacher/signup`, including password confirmation.
-3. Log in with the newly created account and verify redirect to `/teacher/dashboard`.
-4. Move future teacher/student screens into `src/main/webapp/WEB-INF/views` using the new dashboard CSS/component style as the baseline.
-5. Wire dashboard cards to real service data instead of static placeholders.
-6. Optionally clean up the old invalid Java 18 registry entry warning if it appears during local Gradle runs.
+1. Restart the Spring Boot app because student management added Java controller/service/repository code.
+2. Verify `/teacher/students` loads after login.
+3. Register a student with multiple classes using comma-separated class names.
+4. Verify class filter on `/teacher/students`.
+5. Decide next student-management fields before Excel upload design.
+6. Wire dashboard cards to real service data instead of static placeholders.
 
 ## Completed This Session
 
@@ -97,6 +100,12 @@ Apply consistent auth UI and add minimal teacher signup.
 - Removed duplicate active auth/dashboard files from `src/main/webapp`.
 - Added DevTools and `bootRun sourceResources` configuration for easier local UI iteration.
 - Reduced `.auth-intro p` font size to keep the login intro copy more compact.
+- Added `TeacherStudentController` and `TeacherStudentService`.
+- Added `CourseStudentRepository`, student list models, and course option model.
+- Added entity factory methods for `Student`, `Course`, and `CourseStudent`.
+- Added `/teacher/students` list/filter/register screen.
+- Extended shared CSS for student forms, filters, tables, and class chips.
+- Verified `gradle build` succeeds after student management implementation.
 - Added entity factory methods and `UserRepository.existsByEmail`.
 - Allowed `/teacher/signup` through Spring Security.
 - Extended `naenae-dashboard.css` with shared auth screen styles.
@@ -104,7 +113,7 @@ Apply consistent auth UI and add minimal teacher signup.
 
 ## Next Resume Point
 
-Restart the Spring Boot app, verify `/teacher/signup`, create a new teacher account, and confirm login redirects to `/teacher/dashboard`.
+Restart the Spring Boot app and verify `/teacher/students` manual registration and class filtering.
 
 ## Important Notes
 

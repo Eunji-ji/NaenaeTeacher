@@ -43,4 +43,8 @@ public class Teacher extends BaseTimeEntity {
         teacher.user = user;
         return teacher;
     }
+
+    public Long getId() {
+        return id;
+    }
 }

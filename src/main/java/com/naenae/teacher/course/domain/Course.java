@@ -48,4 +48,28 @@ public class Course extends BaseTimeEntity {
 
     @Column(name = "is_active", nullable = false)
     private boolean active = true;
+
+    public static Course create(Teacher teacher, String title) {
+        Course course = new Course();
+        course.teacher = teacher;
+        course.title = title;
+        course.active = true;
+        return course;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
 }
