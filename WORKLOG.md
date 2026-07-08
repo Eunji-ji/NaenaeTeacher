@@ -47,6 +47,7 @@ Implement teacher-side student management with multi-class registration.
 - Student registration now selects only registered classes through a multi-select.
 - Students can be connected to multiple classes using the existing `courses` and `course_students` tables.
 - Student list can be filtered by class.
+- Student management sidebar now groups `반등록` and `학생등록` under a shared `학생관리` section.
 
 ## Next Tasks
 
@@ -109,6 +110,7 @@ Implement teacher-side student management with multi-class registration.
 - Added `/teacher/courses` class registration screen.
 - Changed student registration to choose from already registered classes only.
 - Added multi-class selection for student registration.
+- Grouped `반등록` and `학생등록` in the sidebar under `학생관리`.
 - Extended shared CSS for student forms, filters, tables, and class chips.
 - Verified `gradle build` succeeds after student management implementation.
 - Added entity factory methods and `UserRepository.existsByEmail`.

@@ -282,6 +282,45 @@ a {
     padding: 8px 12px 18px;
 }
 
+.sidebar-section {
+    margin-top: 10px;
+}
+
+.sidebar-section-label {
+    margin: 10px 14px 6px;
+    color: var(--muted-foreground);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+}
+
+.sidebar-subnav {
+    display: grid;
+    gap: 4px;
+    padding-left: 8px;
+}
+
+.sidebar-subitem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: 14px;
+    padding: 10px 14px 10px 26px;
+    color: var(--muted-foreground);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.sidebar-subitem:hover {
+    background: var(--muted);
+    color: var(--foreground);
+}
+
+.sidebar-subitem.active {
+    background: var(--sidebar-accent);
+    color: var(--sidebar-accent-foreground);
+}
+
 .nav-item {
     display: flex;
     align-items: center;
