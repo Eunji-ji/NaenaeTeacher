@@ -35,6 +35,9 @@ Apply consistent auth UI and add minimal teacher signup.
 - Flyway now includes a test teacher seed account for local login verification.
 - Login and signup screens use the shared Naenae dashboard CSS baseline.
 - Minimal teacher signup is implemented with name, email, password, and password confirmation.
+- The `WEB-INF/views` Thymeleaf resolver now reads from `classpath:/META-INF/resources/WEB-INF/views/` so bootRun/bootJar resolve the new auth templates instead of falling back to old `resources/templates` files.
+- Dashboard teacher display text now uses `김지우 쌤`.
+- Login/signup intro headline sizing was reduced to avoid awkward wrapping.
 
 ## Next Tasks
 
@@ -80,6 +83,9 @@ Apply consistent auth UI and add minimal teacher signup.
 - Updated the auth controller with GET/POST `/teacher/signup`.
 - Added `TeacherSignupService` to create `User` and `Teacher` records with BCrypt password hashing.
 - Added server-side password confirmation validation to teacher signup.
+- Fixed the custom Thymeleaf resolver path so `/teacher/login` uses the new shared-CSS auth screen.
+- Updated the dashboard profile and welcome copy from `김지우 선생님` to `김지우 쌤`.
+- Reduced `.auth-intro h1` font sizes in the shared dashboard CSS.
 - Added entity factory methods and `UserRepository.existsByEmail`.
 - Allowed `/teacher/signup` through Spring Security.
 - Extended `naenae-dashboard.css` with shared auth screen styles.

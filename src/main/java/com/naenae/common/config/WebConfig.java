@@ -12,7 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
     @org.springframework.context.annotation.Bean
     public SpringResourceTemplateResolver webInfTemplateResolver() {
         SpringResourceTemplateResolver resolver = new SpringResourceTemplateResolver();
-        resolver.setPrefix("/WEB-INF/views/");
+        resolver.setPrefix("classpath:/META-INF/resources/WEB-INF/views/");
         resolver.setSuffix(".html");
         resolver.setTemplateMode(TemplateMode.HTML);
         resolver.setCharacterEncoding("UTF-8");
