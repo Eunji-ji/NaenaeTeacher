@@ -140,6 +140,7 @@ Implement teacher-side student management with multi-class registration.
 - Added `student_academic_records` and a Flyway migration for student score history.
 - Bulk template download/upload buttons and the student bulk action now use the shared dashboard button styling.
 - `gradle build` passed after the student learning detail restructuring and score history migration.
+- The student learning score graph was compacted into a smaller line chart so it fits as a light yearly summary without overflowing the detail card.
 
 ## Next Resume Point
 

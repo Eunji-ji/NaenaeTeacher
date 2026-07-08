@@ -127,7 +127,7 @@
                         <span class="pill">중간 / 기말</span>
                     </div>
 
-                    <div class="score-chart" th:if="${!#lists.isEmpty(studentLearningDetailPage.chartPoints())}">
+                    <div class="score-chart compact" th:if="${!#lists.isEmpty(studentLearningDetailPage.chartPoints())}">
                         <div class="score-chart-axis">
                             <span>100</span>
                             <span>75</span>
@@ -136,7 +136,7 @@
                             <span>0</span>
                         </div>
                         <div class="score-line-wrap">
-                            <svg class="score-line-chart" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                            <svg class="score-line-chart compact" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
                                 <polyline class="score-line-path"
                                           th:attr="points=${studentLearningDetailPage.chartPolyline()}"></polyline>
                                 <circle class="score-line-point"
@@ -144,7 +144,7 @@
                                         th:attr="cx=${point.x()}, cy=${point.y()}, r=3">
                                 </circle>
                             </svg>
-                            <div class="score-line-labels">
+                            <div class="score-line-labels compact">
                                 <div class="score-line-label-item" th:each="point : ${studentLearningDetailPage.chartPoints()}">
                                     <div class="score-line-label" th:text="${point.label()}">2026 중간고사</div>
                                     <div class="score-line-value" th:text="|${point.score()}점|">92점</div>
