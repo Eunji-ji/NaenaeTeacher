@@ -194,3 +194,11 @@ Restart the Spring Boot app, then verify today word seeding, teacher dashboard r
 - Copied the dump to local backup path `C:\workSp\db-backups\naenae_teacher_test.dump` for pc_2 use.
 - Verified the repository copy and local backup copy are both `136344` bytes.
 - The local backup copy is outside the repository and should not be committed separately.
+## 2026-07-11 pc_2 Connect to pc_3 DB
+
+- Connected from `pc_2` to `pc_3` PostgreSQL at `172.30.1.87:5432` for this session.
+- Note: ask for the current `pc_3` IP again next time because it can change by location/network.
+- Started the pc_2 Spring Boot app on port `8081` using the pc_3 database `naenae_teacher`.
+- Verified `http://localhost:8081/api/health` returns `{"status":"ok"}`.
+- Verified `http://localhost:8081/teacher/login` returns HTTP 200.
+- Do not commit DB credentials; the password was only provided as a runtime environment variable.
