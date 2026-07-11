@@ -202,3 +202,12 @@ Restart the Spring Boot app, then verify today word seeding, teacher dashboard r
 - Verified `http://localhost:8081/api/health` returns `{"status":"ok"}`.
 - Verified `http://localhost:8081/teacher/login` returns HTTP 200.
 - Do not commit DB credentials; the password was only provided as a runtime environment variable.
+## 2026-07-11 pc_2 Today Word Transaction Fix
+
+- Investigated dashboard error from pc_2 while using the pc_3 PostgreSQL database.
+- Confirmed the dump itself was not the primary issue; the dashboard creates missing `today_word_selections` rows when the selected date/level has no existing row.
+- Fixed `TodayWordService` so teacher/student today-word selection methods run in a write-capable `REQUIRES_NEW` transaction instead of a read-only transaction.
+- Verified `gradlew.bat compileJava` succeeds.
+- Restarted the pc_2 app on port `8081` using pc_3 DB `172.30.1.87:5432/naenae_teacher`.
+- Verified `http://localhost:8081/api/health` returns `{"status":"ok"}` and `http://localhost:8081/teacher/login` returns HTTP 200.
+- Ask for the current pc_3 IP again before the next pc_3 DB connection because it can change by network/location.

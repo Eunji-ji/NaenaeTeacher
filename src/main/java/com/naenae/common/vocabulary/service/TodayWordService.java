@@ -18,6 +18,7 @@ import com.naenae.teacher.course.repository.CourseStudentRepository;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -46,7 +47,7 @@ public class TodayWordService {
         todayWordRepository.saveAll(buildSeedWords());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public List<TodayWordView> getTeacherTodayWords(LocalDate date) {
         return List.of(
                 getOrCreateSelection(date, WordLevel.LOWER_ELEMENTARY),
@@ -55,7 +56,7 @@ public class TodayWordService {
         );
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public TodayWordView getStudentTodayWord(LocalDate date, Student student) {
         WordLevel level = resolveLevel(student);
         return getOrCreateSelection(date, level);
