@@ -187,3 +187,10 @@ Restart the Spring Boot app, then verify today word seeding, teacher dashboard r
 - Restarted the app with `PORT=8081`.
 - Verified `http://localhost:8081/api/health` returns `{"status":"ok"}`.
 - Verified `http://localhost:8080/api/health` no longer responds.
+## 2026-07-11 pc_2 DB Dump Download
+
+- Pulled latest `main` from GitHub on `pc_2`.
+- Downloaded tracked dump file `db-transfer/naenae_teacher_test.dump` from the repository.
+- Copied the dump to local backup path `C:\workSp\db-backups\naenae_teacher_test.dump` for pc_2 use.
+- Verified the repository copy and local backup copy are both `136344` bytes.
+- The local backup copy is outside the repository and should not be committed separately.
