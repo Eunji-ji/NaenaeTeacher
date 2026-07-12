@@ -20,7 +20,7 @@
         <nav class="sidebar-nav">
             <a class="nav-item active" href="/teacher/dashboard"><span class="nav-icon">▦</span> Dashboard</a>
             <div class="sidebar-section" aria-label="학생관리">
-                <div class="sidebar-section-label">학생관리</div>
+                <div class="sidebar-section-label"><span class="nav-icon" aria-hidden="true">👥</span> 학생관리</div>
                 <div class="sidebar-subnav">
                     <a class="sidebar-subitem" href="/teacher/courses"><span class="nav-icon">▤</span> 반등록</a>
                     <a class="sidebar-subitem" href="/teacher/students"><span class="nav-icon">◎</span> 학생등록</a>
@@ -29,7 +29,13 @@
                     <a class="sidebar-subitem" href="/teacher/students/status"><span class="nav-icon">▤</span> 학생 학습관리</a>
                 </div>
             </div>
-            <a class="nav-item" href="/teacher/assignments"><span class="nav-icon">□</span> 과제 관리</a>
+            <div class="sidebar-section" aria-label="과제관리">
+                <div class="sidebar-section-label"><span class="nav-icon" aria-hidden="true">📝</span> 과제관리</div>
+                <div class="sidebar-subnav">
+                    <a class="sidebar-subitem" href="/teacher/word-tests"><span class="nav-icon">•</span> 단어시험</a>
+                    <a class="sidebar-subitem" href="/teacher/assignments"><span class="nav-icon">•</span> 과제등록</a>
+                </div>
+            </div>
             <a class="nav-item" href="/teacher/today-english"><span class="nav-icon">✦</span> 오늘의 영어</a>
             <a class="nav-item" href="/teacher/notice"><span class="nav-icon">!</span> 알림장</a>
             <a class="nav-item" href="/teacher/board"><span class="nav-icon">#</span> 게시판</a>
@@ -111,7 +117,9 @@
                             <span class="pill">3 카테고리</span>
                         </div>
                         <div class="today-word-list">
-                            <article class="today-word-mini" th:each="word : ${todayEnglishWords}">
+                            <article class="today-word-mini"
+                                     th:each="word : ${todayEnglishWords}"
+                                     th:classappend="${#strings.length(word.word()) > 24 ? ' word-extra-long' : (#strings.length(word.word()) > 14 ? ' word-long' : '')}">
                                 <div class="today-word-mini-head">
                                     <span class="today-word-level" th:text="${word.levelLabel()}">초등저학년</span>
                                     <span class="pill">오늘</span>
@@ -125,11 +133,15 @@
                     <article class="dashboard-card">
                         <div class="card-header">
                             <h2 class="card-title"><span class="card-icon tone-neutral">“</span> 오늘의 문장</h2>
-                            <span class="pill">복습</span>
+                            <span class="pill">3 카테고리</span>
                         </div>
-                        <div class="sentence-box">
-                            <p class="sentence">I can do better tomorrow.</p>
-                            <p class="description">나는 내일 더 잘할 수 있어.</p>
+                        <div class="today-sentence-list">
+                            <article class="today-sentence-mini"
+                                     th:each="sentence : ${todayEnglishSentences}"
+                                     th:classappend="${#strings.length(sentence.sentence()) > 78 ? ' sentence-extra-long' : (#strings.length(sentence.sentence()) > 56 ? ' sentence-long' : '')}">
+                                <span class="today-word-level" th:text="${sentence.levelLabel()}">초등저학년</span>
+                                <p class="sentence" th:text="${sentence.sentence()}">A kind heart can make a better day.</p>
+                            </article>
                         </div>
                     </article>
 
@@ -167,18 +179,6 @@
 
                     <article class="dashboard-card">
                         <div class="card-header">
-                            <h2 class="card-title"><span class="card-icon tone-warning">◎</span> 학생 학습관리</h2>
-                            <a class="pill" href="/teacher/students/status">관리</a>
-                        </div>
-                        <ul class="status-list">
-                            <li class="list-item"><div><p class="item-title">민지</p><p class="item-meta">과제 미완료 · Unit 3</p></div><span class="pill">주의</span></li>
-                            <li class="list-item"><div><p class="item-title">서연</p><p class="item-meta">최근 결석 2회</p></div><span class="pill">확인</span></li>
-                            <li class="list-item"><div><p class="item-title">지훈</p><p class="item-meta">단어 테스트 우수</p></div><span class="pill">우수</span></li>
-                        </ul>
-                    </article>
-
-                    <article class="dashboard-card">
-                        <div class="card-header">
                             <h2 class="card-title"><span class="card-icon tone-neutral">#</span> 게시판</h2>
                             <a class="pill" href="/teacher/board">보기</a>
                         </div>
@@ -188,7 +188,7 @@
                         </ul>
                     </article>
 
-                    <article class="dashboard-card wide">
+                    <article class="dashboard-card full-row">
                         <div class="card-header">
                             <h2 class="card-title"><span class="card-icon tone-success">+</span> 빠른 작업</h2>
                         </div>

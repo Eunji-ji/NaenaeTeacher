@@ -1,6 +1,7 @@
 package com.naenae.teacher.course.service;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,6 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TeacherCourseService {
 
+    private static final Comparator<CourseOption> COURSE_NAME_ORDER =
+            Comparator.comparing(CourseOption::title, String.CASE_INSENSITIVE_ORDER)
+                    .thenComparing(CourseOption::id);
+
     private final TeacherRepository teacherRepository;
     private final CourseRepository courseRepository;
 
@@ -28,6 +33,7 @@ public class TeacherCourseService {
         Teacher teacher = getTeacher(teacherUserId);
         return courseRepository.findByTeacherIdOrderByTitleAsc(teacher.getId()).stream()
                 .map(course -> new CourseOption(course.getId(), course.getTitle()))
+                .sorted(COURSE_NAME_ORDER)
                 .toList();
     }
 

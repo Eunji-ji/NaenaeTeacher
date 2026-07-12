@@ -15,11 +15,11 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(
-        name = "today_words",
-        uniqueConstraints = @UniqueConstraint(name = "uk_today_words_level_word", columnNames = {"level", "word"})
+        name = "today_sentences",
+        uniqueConstraints = @UniqueConstraint(name = "uk_today_sentences_level_sentence", columnNames = {"level", "sentence"})
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TodayWord extends BaseTimeEntity {
+public class TodaySentence extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,21 +29,17 @@ public class TodayWord extends BaseTimeEntity {
     @Column(name = "level", nullable = false, length = 30)
     private WordLevel level;
 
-    @Column(nullable = false, length = 120)
-    private String word;
-
     @Column(name = "sentence", nullable = false, columnDefinition = "TEXT")
     private String sentence;
 
     @Column(name = "meaning_ko", columnDefinition = "TEXT")
     private String meaningKo;
 
-    public static TodayWord create(WordLevel level, String word, String sentence) {
-        TodayWord todayWord = new TodayWord();
-        todayWord.level = level;
-        todayWord.word = word;
-        todayWord.sentence = sentence;
-        return todayWord;
+    public static TodaySentence create(WordLevel level, String sentence) {
+        TodaySentence todaySentence = new TodaySentence();
+        todaySentence.level = level;
+        todaySentence.sentence = sentence;
+        return todaySentence;
     }
 
     public Long getId() {
@@ -52,10 +48,6 @@ public class TodayWord extends BaseTimeEntity {
 
     public WordLevel getLevel() {
         return level;
-    }
-
-    public String getWord() {
-        return word;
     }
 
     public String getSentence() {

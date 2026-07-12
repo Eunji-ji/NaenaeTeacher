@@ -35,6 +35,7 @@ dependencies {
     implementation 'org.flywaydb:flyway-database-postgresql'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
     implementation 'org.apache.poi:poi-ooxml:5.2.5'
+    implementation 'org.jsoup:jsoup:1.22.2'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 

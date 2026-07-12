@@ -1,6 +1,9 @@
 package com.naenae.teacher.dashboard.controller;
 
+import java.time.LocalDate;
+
 import com.naenae.common.user.domain.User;
+import com.naenae.common.vocabulary.service.TodaySentenceService;
 import com.naenae.common.vocabulary.service.TodayWordService;
 import com.naenae.teacher.auth.security.CustomUserDetails;
 import com.naenae.teacher.dashboard.model.TeacherDashboard;
@@ -15,10 +18,16 @@ public class TeacherDashboardController {
 
     private final TeacherDashboardService teacherDashboardService;
     private final TodayWordService todayWordService;
+    private final TodaySentenceService todaySentenceService;
 
-    public TeacherDashboardController(TeacherDashboardService teacherDashboardService, TodayWordService todayWordService) {
+    public TeacherDashboardController(
+            TeacherDashboardService teacherDashboardService,
+            TodayWordService todayWordService,
+            TodaySentenceService todaySentenceService
+    ) {
         this.teacherDashboardService = teacherDashboardService;
         this.todayWordService = todayWordService;
+        this.todaySentenceService = todaySentenceService;
     }
 
     @GetMapping("/teacher/dashboard")
@@ -26,6 +35,7 @@ public class TeacherDashboardController {
         Long teacherUserId = resolveTeacherUserId(authentication);
         TeacherDashboard dashboard = teacherDashboardService.getDashboard(teacherUserId);
         String teacherName = resolveTeacherName(authentication);
+
         model.addAttribute("totalStudentCount", dashboard.totalStudentCount());
         model.addAttribute("todayPresentCount", dashboard.todayPresentCount());
         model.addAttribute("todayLateCount", dashboard.todayLateCount());
@@ -33,7 +43,8 @@ public class TeacherDashboardController {
         model.addAttribute("todayAttendanceRate", dashboard.todayAttendanceRate());
         model.addAttribute("openAssignmentCount", dashboard.openAssignmentCount());
         model.addAttribute("recentMemoCount", dashboard.recentMemoCount());
-        model.addAttribute("todayEnglishWords", todayWordService.getTeacherTodayWords(java.time.LocalDate.now()));
+        model.addAttribute("todayEnglishWords", todayWordService.getTeacherTodayWords(LocalDate.now()));
+        model.addAttribute("todayEnglishSentences", todaySentenceService.getTeacherTodaySentences(LocalDate.now()));
         model.addAttribute("teacherName", teacherName);
         model.addAttribute("teacherInitial", teacherName.substring(0, 1));
         model.addAttribute("teacherDisplayName", teacherName + "쌤");

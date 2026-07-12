@@ -18,18 +18,24 @@
         </div>
 
         <nav class="sidebar-nav">
-            <a class="nav-item" href="/teacher/dashboard"><span class="nav-icon">⌂</span> 대시보드</a>
+            <a class="nav-item" href="/teacher/dashboard"><span class="nav-icon">▦</span> 대시보드</a>
             <div class="sidebar-section" aria-label="학생관리">
-                <div class="sidebar-section-label">학생관리</div>
+                <div class="sidebar-section-label"><span class="nav-icon" aria-hidden="true">👥</span> 학생관리</div>
                 <div class="sidebar-subnav">
-                    <a class="sidebar-subitem" href="/teacher/courses"><span class="nav-icon">🏷</span> 반등록</a>
-                    <a class="sidebar-subitem" href="/teacher/students"><span class="nav-icon">👩‍🎓</span> 학생등록</a>
+                    <a class="sidebar-subitem" href="/teacher/courses"><span class="nav-icon">□</span> 반등록</a>
+                    <a class="sidebar-subitem" href="/teacher/students"><span class="nav-icon">◎</span> 학생등록</a>
                     <a class="sidebar-subitem" href="/teacher/students/bulk"><span class="nav-icon">⬇</span> 학생일괄등록</a>
                     <a class="sidebar-subitem" href="/teacher/attendance"><span class="nav-icon">✓</span> 출석관리</a>
                     <a class="sidebar-subitem active" href="/teacher/students/status"><span class="nav-icon">▤</span> 학생 학습관리</a>
                 </div>
             </div>
-            <a class="nav-item" href="/teacher/assignments"><span class="nav-icon">✎</span> 과제 관리</a>
+            <div class="sidebar-section" aria-label="과제관리">
+                <div class="sidebar-section-label"><span class="nav-icon" aria-hidden="true">📝</span> 과제관리</div>
+                <div class="sidebar-subnav">
+                    <a class="sidebar-subitem" href="/teacher/word-tests"><span class="nav-icon">•</span> 단어시험</a>
+                    <a class="sidebar-subitem" href="/teacher/assignments"><span class="nav-icon">•</span> 과제등록</a>
+                </div>
+            </div>
             <a class="nav-item" href="/teacher/today-english"><span class="nav-icon">Aa</span> 오늘의 영어</a>
             <a class="nav-item" href="/teacher/notice"><span class="nav-icon">!</span> 알림장</a>
             <a class="nav-item" href="/teacher/board"><span class="nav-icon">#</span> 게시판</a>
@@ -60,7 +66,7 @@
                             <h2 th:text="${studentLearningDetailPage.studentName()}">김지우</h2>
                             <p>
                                 <span th:text="${studentLearningDetailPage.courseTitle()}">초등 A반</span>
-                                · <span th:text="${studentLearningDetailPage.schoolName() ?: '-'}">내곡초</span>
+                                · <span th:text="${studentLearningDetailPage.schoolName() ?: '-'}">나내초</span>
                                 · <span th:text="${studentLearningDetailPage.phone() ?: '-'}">010-0000-0000</span>
                             </p>
                         </div>
@@ -93,7 +99,7 @@
 
                         <section class="detail-panel">
                             <div class="card-header">
-                                <h2 class="card-title"><span class="card-icon tone-success">▦</span> 성적 입력</h2>
+                                <h2 class="card-title"><span class="card-icon tone-success">✓</span> 성적 입력</h2>
                                 <span class="pill" th:text="${studentLearningDetailPage.currentYear()}">2026</span>
                             </div>
                             <form class="score-form" th:action="@{/teacher/students/status/{studentId}/score(studentId=${studentLearningDetailPage.studentId()})}" method="post">
@@ -123,34 +129,35 @@
 
                 <section class="dashboard-card">
                     <div class="card-header">
-                        <h2 class="card-title"><span class="card-icon tone-warning">▤</span> 성적 그래프</h2>
+                        <h2 class="card-title"><span class="card-icon tone-warning">▤</span> 성적 표그래프</h2>
                         <span class="pill">중간 / 기말</span>
                     </div>
 
-                    <div class="score-chart compact" th:if="${!#lists.isEmpty(studentLearningDetailPage.chartPoints())}">
-                        <div class="score-chart-axis">
-                            <span>100</span>
-                            <span>75</span>
-                            <span>50</span>
-                            <span>25</span>
-                            <span>0</span>
-                        </div>
-                        <div class="score-line-wrap">
-                            <svg class="score-line-chart compact" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-                                <polyline class="score-line-path"
-                                          th:attr="points=${studentLearningDetailPage.chartPolyline()}"></polyline>
-                                <circle class="score-line-point"
-                                        th:each="point : ${studentLearningDetailPage.chartPoints()}"
-                                        th:attr="cx=${point.x()}, cy=${point.y()}, r=3">
-                                </circle>
-                            </svg>
-                            <div class="score-line-labels compact">
-                                <div class="score-line-label-item" th:each="point : ${studentLearningDetailPage.chartPoints()}">
-                                    <div class="score-line-label" th:text="${point.label()}">2026 중간고사</div>
-                                    <div class="score-line-value" th:text="|${point.score()}점|">92점</div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="score-table-chart" th:if="${!#lists.isEmpty(studentLearningDetailPage.scoreTableRows())}">
+                        <table class="score-chart-table">
+                            <thead>
+                            <tr>
+                                <th>연도</th>
+                                <th>중간</th>
+                                <th>기말</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="row : ${studentLearningDetailPage.scoreTableRows()}">
+                                <th th:text="${row.examYear()}">2026</th>
+                                <td>
+                                    <span class="score-table-value"
+                                          th:classappend="${row.midtermScore() == null ? ' empty' : ''}"
+                                          th:text="${row.midtermScore() == null ? '-' : row.midtermScore()}">92</span>
+                                </td>
+                                <td>
+                                    <span class="score-table-value"
+                                          th:classappend="${row.finalScore() == null ? ' empty' : ''}"
+                                          th:text="${row.finalScore() == null ? '-' : row.finalScore()}">95</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
 
                     <div class="empty-state" th:if="${#lists.isEmpty(studentLearningDetailPage.scores())}">

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>단어시험 조회 | NaenaeTeacher</title>
+    <link rel="stylesheet" href="/assets/css/naenae-dashboard.css">
+</head>
+<body class="naenae-dashboard-body">
+<div class="dashboard-shell">
+    <aside class="dashboard-sidebar" aria-label="선생님 메뉴">
+        <div class="brand">
+            <span class="brand-mark">N</span>
+            <div><p class="brand-name" th:text="${teacherDisplayName}">김지우쌤</p><p class="brand-role">Teacher Space</p></div>
+        </div>
+        <nav class="sidebar-nav">
+            <a class="nav-item" href="/teacher/dashboard"><span class="nav-icon">⌂</span> 대시보드</a>
+            <div class="sidebar-section" aria-label="학생관리">
+                <div class="sidebar-section-label"><span class="nav-icon" aria-hidden="true">👥</span> 학생관리</div>
+                <div class="sidebar-subnav">
+                    <a class="sidebar-subitem" href="/teacher/courses"><span class="nav-icon">•</span> 반등록</a>
+                    <a class="sidebar-subitem" href="/teacher/students"><span class="nav-icon">•</span> 학생등록</a>
+                    <a class="sidebar-subitem" href="/teacher/students/bulk"><span class="nav-icon">•</span> 학생일괄등록</a>
+                    <a class="sidebar-subitem" href="/teacher/attendance"><span class="nav-icon">•</span> 출석관리</a>
+                    <a class="sidebar-subitem" href="/teacher/students/status"><span class="nav-icon">•</span> 학생 학습관리</a>
+                </div>
+            </div>
+            <div class="sidebar-section" aria-label="과제관리">
+                <div class="sidebar-section-label"><span class="nav-icon" aria-hidden="true">📝</span> 과제관리</div>
+                <div class="sidebar-subnav">
+                    <a class="sidebar-subitem active" href="/teacher/word-tests"><span class="nav-icon">•</span> 단어시험</a>
+                    <a class="sidebar-subitem" href="/teacher/assignments"><span class="nav-icon">•</span> 과제등록</a>
+                </div>
+            </div>
+            <a class="nav-item" href="/teacher/today-english"><span class="nav-icon">Aa</span> 오늘의 영어</a>
+            <a class="nav-item" href="/teacher/notice"><span class="nav-icon">!</span> 알림장</a>
+            <a class="nav-item" href="/teacher/board"><span class="nav-icon">#</span> 게시판</a>
+            <a class="nav-item" href="/teacher/settings"><span class="nav-icon">⚙</span> 설정</a>
+        </nav>
+    </aside>
+    <div class="dashboard-main">
+        <header class="dashboard-header">
+            <div><p class="header-kicker">Word Test Detail</p><h1 class="header-title">단어시험 조회</h1></div>
+            <div class="header-actions">
+                <a class="header-nav-action header-nav-action-secondary" href="/teacher/word-tests">목록</a>
+                <a class="header-nav-action" th:href="@{/teacher/word-tests/{id}/edit(id=${wordTest.id()})}">수정</a>
+            </div>
+        </header>
+        <main class="dashboard-content">
+            <section class="dashboard-card word-test-card">
+                <div class="word-test-detail-head">
+                    <div>
+                        <span class="summary-caption">게시 기간</span>
+                        <strong th:text="|${#temporals.format(wordTest.startDate(), 'yyyy.MM.dd')} ~ ${#temporals.format(wordTest.endDate(), 'yyyy.MM.dd')}|">2026.07.15 ~ 2026.07.16</strong>
+                    </div>
+                    <div class="selected-course-summary">
+                        <span class="summary-caption">대상 반</span>
+                        <span class="selected-course-chip" th:each="course : ${wordTest.courses()}" th:text="${course.title()}">중등반1</span>
+                    </div>
+                </div>
+                <div class="word-test-detail-list">
+                    <div class="word-test-detail-row" th:each="item, stat : ${wordTest.words()}">
+                        <span class="word-number" th:text="${stat.count}">1</span>
+                        <strong th:text="${item.word()}">apple</strong>
+                        <span th:text="${item.meaning() != null ? item.meaning() : '-'}">사과</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+</body>
+</html>

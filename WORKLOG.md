@@ -6,6 +6,11 @@ Implement teacher-side student management with multi-class registration.
 
 ## Current Status
 
+- Current machine is `PC_1`.
+- The user also works from `PC_2`; at the start of future work, check the `PC_2` notes in this `WORKLOG.md` so work is not duplicated.
+- PC_2 did not make source changes yesterday; it only completed basic setup and got the server running.
+- PC_2 could not continue feature work because the database was not available there.
+- After today's work is complete, export a PostgreSQL dump from the current PC_1 database so PC_2 can import the same DB state.
 - Java 21 installed.
 - Project uses Spring Boot.
 - PostgreSQL will be used.
@@ -148,10 +153,49 @@ Implement teacher-side student management with multi-class registration.
 - Fixed the corrupted `WordLevel` source file used by today word routing.
 - Removed the UTF-8 BOM from `WordLevel.java` after the Java compiler rejected the hidden BOM character.
 - Scanned the main Java and resource text files for BOM markers and cleaned the ones that had hidden BOM bytes: `TodayWordService.java`, `teacher/courses.html`, and `teacher/students.html`.
+- On PC_1, PostgreSQL connection refused was resolved by starting Docker Compose PostgreSQL with `docker compose up -d`.
+- Verified container `naenae-teacher-postgres` is accepting connections on port `5432`.
+- Verified `compileJava` succeeds when run outside the managed sandbox after Gradle probe-file cleanup.
+- Started the Spring Boot app on port `8081` and verified `http://localhost:8081/api/health` returns `ok`.
+- Fixed dashboard today-word selection creation by changing the selection lookup methods from read-only transactions to writable transactions.
+- Rewrote `TodayWordService.java` with ASCII-safe string handling for Korean grade markers to avoid repeated source encoding corruption.
+- Verified `compileJava` succeeds after the today-word transaction and encoding fix.
+- Removed Java-side hardcoded/generated today-word seed data from `TodayWordService`.
+- Added Flyway migration `V6__seed_temporary_today_words.sql` to seed temporary DB today-word data when `today_words` is empty.
+- Today-word service now only reads words from DB and creates daily selections in `today_word_selections`.
+- Verified `compileJava` succeeds after removing Java today-word seed logic.
+- Restarted the Spring Boot app on port `8081` and verified Flyway schema version `6` is applied.
+- Verified DB today-word counts are 1000 rows each for `LOWER_ELEMENTARY`, `UPPER_ELEMENTARY`, and `MIDDLE_SCHOOL`.
+- Verified `http://localhost:8081/api/health` returns `ok` after the restart.
+- Updated the teacher dashboard today-word card so the three level words render as a vertical list that uses each row's width efficiently.
+- Added length-based today-word font scaling plus wrapping so long DB words and sentences stay inside their rows.
+- Removed the student learning management card from the teacher dashboard body.
+- Moved the board card up into the freed dashboard position and changed quick actions to span a full dashboard row.
+- Added DB-backed today sentence support with `today_sentences` and `today_sentence_selections`.
+- Added Flyway migration `V7__create_and_seed_today_sentences.sql` with 1000 quote-style study sentences each for lower elementary, upper elementary, and middle school.
+- Added today sentence domain, selection entity, repositories, service, and dashboard view model.
+- Wired the teacher dashboard to show 3 daily sentences, one per level band.
+- Verified `compileJava` succeeds after adding today sentence support.
+- Restarted the Spring Boot app on port `8081` and verified Flyway schema version `7` is applied.
+- Verified DB today-sentence counts are 1000 rows each for `LOWER_ELEMENTARY`, `UPPER_ELEMENTARY`, and `MIDDLE_SCHOOL`.
+- Verified `http://localhost:8081/api/health` returns `ok` after the today sentence migration.
+- Added nullable Korean meaning columns with Flyway `V8__add_korean_meanings_to_today_english.sql`: `today_words.meaning_ko` and `today_sentences.meaning_ko`.
+- Added `meaningKo` fields and getters to `TodayWord` and `TodaySentence`.
+- Verified `compileJava` succeeds after adding Korean meaning columns to the domain model.
+- Restarted the Spring Boot app on port `8081` and verified Flyway schema version `8` is applied.
+- Verified both `meaning_ko` columns exist as nullable `text` columns in PostgreSQL.
+- Replaced the student learning score line graph with a compact score table chart grouped by year, midterm, and final exam.
+- Added `StudentLearningScoreTableRow` and service-side grouping so the score display no longer stretches two points across the full chart area.
+- Rewrote the student learning detail template with clean Korean labels after the previous file had corrupted Korean text.
+- Added fixed-size table chart CSS for the score display and verified `compileJava` succeeds.
+- Fixed a corrupted `TeacherDashboardController.java` source file that would break the next server restart.
+- Stopped duplicate stale Spring Boot application processes and restarted a single fixed server on port `8081`.
+- Verified `http://localhost:8081/api/health` returns `ok`.
+- Verified `/teacher/dashboard` and `/teacher/students/status` resolve to secured routes and redirect to `/teacher/login` when not authenticated, instead of falling through to static-resource 404.
 
 ## Next Resume Point
 
-Restart the Spring Boot app, then verify today word seeding, teacher dashboard rendering, and student dashboard redirection.
+Log in again if the browser session was reset, then visually confirm the dashboard and student learning score table chart. Later replace temporary today word/sentence seed data with curated content including Korean meanings and export a PostgreSQL dump from PC_1 for PC_2.
 
 ## Important Notes
 

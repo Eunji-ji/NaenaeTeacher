@@ -21,6 +21,7 @@ import com.naenae.teacher.studentstatus.model.StudentLearningChartPoint;
 import com.naenae.teacher.studentstatus.model.StudentLearningPage;
 import com.naenae.teacher.studentstatus.model.StudentLearningRow;
 import com.naenae.teacher.studentstatus.model.StudentLearningScoreRow;
+import com.naenae.teacher.studentstatus.model.StudentLearningScoreTableRow;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class TeacherStudentStatusService {
 
     private static final int MEMO_MAX_LENGTH = 4000;
+    private static final int DEFAULT_CHART_SLOT_COUNT = 6;
+    private static final int CHART_X_PADDING = 6;
+    private static final int CHART_Y_TOP_PADDING = 6;
+    private static final int CHART_Y_BOTTOM_PADDING = 4;
 
     private final TeacherRepository teacherRepository;
     private final CourseRepository courseRepository;
@@ -102,12 +107,14 @@ public class TeacherStudentStatusService {
                 .map(record -> new StudentLearningScoreRow(
                         record.getExamYear(),
                         toLabel(record.getExamType()),
+                        toExamOrder(record.getExamType()),
                         record.getScore()
                 ))
                 .toList();
 
         List<StudentLearningChartPoint> chartPoints = buildChartPoints(scoreRows);
-        String chartPolyline = buildPolyline(scoreRows);
+        String chartPolyline = buildPolyline(chartPoints);
+        List<StudentLearningScoreTableRow> scoreTableRows = buildScoreTableRows(records);
 
         int scoreDelta = 0;
         if (scoreRows.size() >= 2) {
@@ -124,6 +131,7 @@ public class TeacherStudentStatusService {
                 MEMO_MAX_LENGTH,
                 currentYear,
                 scoreRows,
+                scoreTableRows,
                 chartPoints,
                 chartPolyline,
                 scoreDelta
@@ -186,26 +194,28 @@ public class TeacherStudentStatusService {
         };
     }
 
+    private int toExamOrder(AcademicExamType examType) {
+        return switch (examType) {
+            case MIDTERM -> 0;
+            case FINAL -> 1;
+        };
+    }
+
     private List<StudentLearningChartPoint> buildChartPoints(List<StudentLearningScoreRow> scoreRows) {
         if (scoreRows.isEmpty()) {
             return List.of();
         }
-        if (scoreRows.size() == 1) {
-            StudentLearningScoreRow scoreRow = scoreRows.get(0);
-            return List.of(new StudentLearningChartPoint(
-                    50,
-                    100 - scoreRow.score(),
-                    scoreRow.examYear() + " " + scoreRow.examTypeLabel(),
-                    scoreRow.score()
-            ));
-        }
-
-        int step = 100 / (scoreRows.size() - 1);
+        int firstYear = scoreRows.get(0).examYear();
+        int maxSlot = scoreRows.stream()
+                .mapToInt(scoreRow -> toSlotIndex(firstYear, scoreRow))
+                .max()
+                .orElse(0);
+        int totalSlots = Math.max(DEFAULT_CHART_SLOT_COUNT, maxSlot + 1);
         return scoreRows.stream()
                 .map(scoreRow -> {
-                    int index = scoreRows.indexOf(scoreRow);
-                    int x = Math.min(100, index * step);
-                    int y = Math.max(0, 100 - scoreRow.score());
+                    int slotIndex = toSlotIndex(firstYear, scoreRow);
+                    int x = toChartX(slotIndex, totalSlots);
+                    int y = toChartY(scoreRow.score());
                     return new StudentLearningChartPoint(
                             x,
                             y,
@@ -216,25 +226,57 @@ public class TeacherStudentStatusService {
                 .toList();
     }
 
-    private String buildPolyline(List<StudentLearningScoreRow> scoreRows) {
-        if (scoreRows.isEmpty()) {
+    private List<StudentLearningScoreTableRow> buildScoreTableRows(List<StudentAcademicRecord> records) {
+        Map<Integer, ScoreTableAccumulator> rows = new LinkedHashMap<>();
+        for (StudentAcademicRecord record : records) {
+            ScoreTableAccumulator row = rows.computeIfAbsent(record.getExamYear(), ScoreTableAccumulator::new);
+            if (record.getExamType() == AcademicExamType.MIDTERM) {
+                row.midtermScore = record.getScore();
+            } else if (record.getExamType() == AcademicExamType.FINAL) {
+                row.finalScore = record.getScore();
+            }
+        }
+        return rows.values().stream()
+                .map(row -> new StudentLearningScoreTableRow(row.examYear, row.midtermScore, row.finalScore))
+                .toList();
+    }
+
+    private static class ScoreTableAccumulator {
+        private final int examYear;
+        private Integer midtermScore;
+        private Integer finalScore;
+
+        private ScoreTableAccumulator(int examYear) {
+            this.examYear = examYear;
+        }
+    }
+
+    private int toSlotIndex(int firstYear, StudentLearningScoreRow scoreRow) {
+        return Math.max(0, (scoreRow.examYear() - firstYear) * 2 + scoreRow.examOrder());
+    }
+
+    private int toChartX(int slotIndex, int totalSlots) {
+        int usableWidth = 100 - (CHART_X_PADDING * 2);
+        int denominator = Math.max(1, totalSlots - 1);
+        return CHART_X_PADDING + Math.round((float) slotIndex * usableWidth / denominator);
+    }
+
+    private int toChartY(int score) {
+        int usableHeight = 100 - CHART_Y_TOP_PADDING - CHART_Y_BOTTOM_PADDING;
+        return CHART_Y_TOP_PADDING + Math.round((float) (100 - score) * usableHeight / 100);
+    }
+
+    private String buildPolyline(List<StudentLearningChartPoint> chartPoints) {
+        if (chartPoints.isEmpty()) {
             return "";
         }
-        if (scoreRows.size() == 1) {
-            StudentLearningScoreRow scoreRow = scoreRows.get(0);
-            return "50," + (100 - scoreRow.score());
-        }
-
         StringBuilder builder = new StringBuilder();
-        int step = 100 / (scoreRows.size() - 1);
-        for (int i = 0; i < scoreRows.size(); i++) {
-            StudentLearningScoreRow scoreRow = scoreRows.get(i);
-            int x = Math.min(100, i * step);
-            int y = Math.max(0, 100 - scoreRow.score());
+        for (int i = 0; i < chartPoints.size(); i++) {
+            StudentLearningChartPoint point = chartPoints.get(i);
             if (i > 0) {
                 builder.append(' ');
             }
-            builder.append(x).append(',').append(y);
+            builder.append(point.x()).append(',').append(point.y());
         }
         return builder.toString();
     }
