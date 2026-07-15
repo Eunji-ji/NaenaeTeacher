@@ -41,7 +41,10 @@
 
             <section class="dashboard-card word-test-card word-test-list-card">
                 <div class="page-toolbar">
-                    <div><h2>등록한 과제</h2><p>최근 등록한 과제부터 확인할 수 있어요.</p></div>
+                                        <div><h2>등록한 과제</h2><p>진행중, 예정, 완료 순서로 최신 과제를 확인할 수 있어요.</p></div>
+                    <form class="assignment-filter-form" action="/teacher/assignments" method="get">
+                        <label class="assignment-filter-check"><input type="checkbox" name="inProgressOnly" value="true" th:checked="${inProgressOnly}" onchange="this.form.submit()"><span>진행중만 보기</span></label>
+                    </form>
                 </div>
                 <div class="word-test-list" th:if="${assignmentPage.hasContent()}">
                     <article class="word-test-list-item" th:each="item : ${assignmentPage.content()}">
@@ -51,6 +54,7 @@
                             <p class="word-test-list-title">
                                 <span class="word-test-period"
                                       th:text="|[${#temporals.format(item.startDate(), 'yyyy.MM.dd')} ~ ${#temporals.format(item.endDate(), 'yyyy.MM.dd')}]|">[기간]</span>
+                                <span class="assignment-status-badge" th:classappend="| status-${#strings.toLowerCase(item.status().name())}|" th:text="${item.statusLabel()}">진행중</span>
                                 <span th:text="|${item.courseNames()} ${item.title()}|">반명 과제명</span>
                             </p>
                             <p class="word-test-list-meta">
@@ -72,7 +76,7 @@
                     </article>
                 </div>
                 <div class="empty-state" th:if="${!assignmentPage.hasContent()}">아직 등록한 과제가 없습니다.</div>
-                <div th:replace="~{fragments/pagination :: pagination(${assignmentPage}, '/teacher/assignments')}"></div>
+                <div th:replace="~{fragments/pagination :: pagination(${assignmentPage}, ${assignmentPaginationUrl})}"></div>
             </section>
         </main>
     </div>
@@ -85,5 +89,5 @@
     };
     checks.forEach(check => check.addEventListener('change', updateCount));
 </script>
-</body>
+<script src="/assets/js/mobile-navigation.js" defer></script></body>
 </html>

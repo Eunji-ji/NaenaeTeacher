@@ -285,3 +285,49 @@ Log in again if the browser session was reset, then visually confirm the dashboa
 - Added responsive layouts for tablet and mobile widths and a clearer empty state.
 - Reconfirmed that teacher and student notices use the shared 10-item pagination and newest-first ordering.
 - Verified pagination links and the redesigned notice template with the full test suite.
+## 2026-07-15 Shared community board
+
+- Added a shared academy-scoped board for teacher and student accounts with newest-first 10-item pagination.
+- Added post registration, detail, edit, and delete flows with author ownership checks and teacher moderation delete permission.
+- Added V13 tables for posts, attachments, and comments while keeping every post scoped to its teacher academy.
+- Added attachment upload and authorized download using the common file service and profile-specific `BOARD_STORAGE_DIR` paths.
+- Added view counts, comment counts, attachment indicators, and author labels in the `[course] name` format; multi-course students show all course names.
+- Added comment registration and deletion with author or teacher moderation permission.
+- Built a classic website-style board table with title, author, created date/time, and view-count columns plus responsive detail, editor, and comment layouts.
+- Added the board to the student sidebar and verified list pagination, editor, file, detail, and comment templates with automated tests.
+## 2026-07-15 Notice hero responsive typography
+
+- Reduced the notice-list hero headline size on desktop and tablet layouts.
+- Added explicit 18px headline and 12px description sizes for mobile layouts so the copy scales down cleanly on narrow screens.
+## 2026-07-15 Shared mobile navigation
+
+- Added a shared hamburger menu trigger to all teacher and student dashboard pages.
+- Replaced the hidden mobile sidebar with an accessible off-canvas menu that includes a visible close button.
+- Added backdrop-tap, menu-link, Escape-key, and desktop-resize close behavior with focus and ARIA state handling.
+- Reduced mobile header typography and spacing for narrow screens.
+## 2026-07-15 Mobile typography and logout icon
+
+- Replaced text logout buttons with a compact door-shaped icon while preserving accessible labels and tooltips.
+- Reduced mobile header, card, list, metadata, action, detail, and comment typography at widths up to 480px.
+- Kept form controls at 16px on mobile to avoid unwanted browser input zoom.
+## 2026-07-15 Dashboard attendance-rate denominator fix
+
+- Changed the dashboard attendance-rate denominator from checked attendance records to all enrollments in the teacher’s active courses.
+- Students in unchecked courses now remain in the denominator and therefore no longer allow a partially checked academy to display 100% attendance.
+- Counted multi-course students once per course because each course has its own attendance target and record.
+- Limited status counts to active courses and added regression tests for partially checked and empty-course cases.
+## 2026-07-15 Assignment statuses and profile management
+
+- Expanded assignment statuses to in-progress, scheduled, and completed with a safe V14 migration from OPEN/CLOSED values.
+- Added assignment status radio controls, priority ordering, newest-first ordering within each status, and an in-progress-only checkbox filter that persists through pagination.
+- Added student assignment list/detail/download routes that expose only in-progress assignments linked to the student’s courses.
+- Added recent in-progress assignments to the student dashboard and replaced the teacher dashboard placeholder with the real in-progress assignment count.
+- Removed the unused settings menu from shared and legacy teacher sidebars.
+- Added V15 user nickname and profile-image columns, backfilled existing nicknames from names, and initialized new signup nicknames from the entered name.
+- Added a teacher my-page for nickname and JPG/PNG/WEBP profile-image updates with profile storage paths separated by PC1, PC2, and production profiles.
+- Linked the dashboard profile and shared sidebar profile to my-page and applied nicknames to board author labels.
+
+## 2026-07-15 File picker styling
+
+- Replaced the default visible browser file picker styling with a rounded pastel upload control shared by profile-image and spreadsheet-upload forms.
+- Added hover, keyboard-focus, and mobile sizing states while keeping existing drag-and-drop attachment zones unchanged.

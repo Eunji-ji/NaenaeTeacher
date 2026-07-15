@@ -25,3 +25,5 @@ app:
   storage:
     assignment-dir: ${ASSIGNMENT_STORAGE_DIR:/var/lib/naenae-teacher/uploads/assignments}
     notice-dir: ${NOTICE_STORAGE_DIR:/var/lib/naenae-teacher/uploads/notices}
+    board-dir: ${BOARD_STORAGE_DIR:/var/lib/naenae-teacher/uploads/board}
+    profile-dir: ${PROFILE_STORAGE_DIR:/var/lib/naenae-teacher/uploads/profiles}

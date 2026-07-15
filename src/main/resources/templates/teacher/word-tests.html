@@ -15,7 +15,7 @@
             <div><p class="header-kicker">Word Test</p><h1 class="header-title">단어시험</h1></div>
             <form class="logout-form" action="/logout" method="post">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                <button class="logout-button" type="submit">나가기</button>
+                <button class="logout-button" type="submit" aria-label="로그아웃" title="로그아웃"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h10v18H5zM15 6h4v15h-4M11.5 12h.01"/></svg></button>
             </form>
         </header>
 
@@ -87,5 +87,5 @@
     };
     checks.forEach(check => check.addEventListener('change', updateCount));
 </script>
-</body>
+<script src="/assets/js/mobile-navigation.js" defer></script></body>
 </html>

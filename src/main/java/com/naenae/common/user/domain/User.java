@@ -37,6 +37,11 @@ public class User extends BaseTimeEntity {
 
     @Column(nullable = false, length = 100)
     private String name;
+    @Column(nullable = false, length = 100)
+    private String nickname;
+
+    @Column(name = "profile_image_stored_name", length = 255)
+    private String profileImageStoredName;
 
     @Column(length = 30)
     private String phone;
@@ -53,6 +58,7 @@ public class User extends BaseTimeEntity {
         user.passwordHash = passwordHash;
         user.role = Role.TEACHER;
         user.name = name;
+        user.nickname = name;
         user.active = true;
         return user;
     }
@@ -77,6 +83,12 @@ public class User extends BaseTimeEntity {
         return name;
     }
 
+    public String getNickname() { return nickname; }
+    public String getProfileImageStoredName() { return profileImageStoredName; }
+    public void updateProfile(String nickname, String profileImageStoredName) {
+        this.nickname = nickname;
+        this.profileImageStoredName = profileImageStoredName;
+    }
     public String getPhone() {
         return phone;
     }

@@ -6,6 +6,7 @@ import com.naenae.common.pagination.PageView;
 import com.naenae.common.pagination.PaginationSupport;
 import com.naenae.teacher.assignment.domain.Assignment;
 import com.naenae.teacher.assignment.domain.AssignmentAttachment;
+import com.naenae.teacher.assignment.domain.AssignmentStatus;
 import com.naenae.teacher.assignment.model.AssignmentAttachmentItem;
 import com.naenae.teacher.assignment.model.AssignmentDetail;
 import com.naenae.teacher.assignment.model.AssignmentDownload;
@@ -61,11 +62,11 @@ public class TeacherAssignmentService {
     }
 
     @Transactional(readOnly = true)
-    public PageView<AssignmentListItem> getAssignments(Long teacherUserId, int page) {
+    public PageView<AssignmentListItem> getAssignments(Long teacherUserId, int page, boolean inProgressOnly) {
         Teacher teacher = getTeacher(teacherUserId);
         return PaginationSupport.toView(
-                assignmentRepository.findByTeacherIdOrderByCreatedAtDescIdDesc(
-                        teacher.getId(), PaginationSupport.pageRequest(page)
+                assignmentRepository.findTeacherAssignments(
+                        teacher.getId(), inProgressOnly, PaginationSupport.pageRequest(page)
                 ).map(this::toListItem)
         );
     }
@@ -97,6 +98,7 @@ public class TeacherAssignmentService {
                 assignment.getTitle(),
                 assignment.getStartDate(),
                 assignment.getEndDate(),
+                assignment.getStatus(),
                 assignment.getContentHtml(),
                 attachmentItems(assignment)
         );
@@ -121,6 +123,7 @@ public class TeacherAssignmentService {
             LocalDate startDate,
             LocalDate endDate,
             String descriptionHtml,
+            AssignmentStatus status,
             List<MultipartFile> files
     ) {
         Teacher teacher = getTeacher(teacherUserId);
@@ -129,7 +132,7 @@ public class TeacherAssignmentService {
         List<MultipartFile> actualFiles = validateFiles(files, 0);
 
         Assignment assignment = Assignment.create(
-                teacher, values.title(), values.contentHtml(), values.startDate(), values.endDate()
+                teacher, values.title(), values.contentHtml(), values.startDate(), values.endDate(), requireStatus(status)
         );
         courses.forEach(assignment::addCourse);
         saveAttachments(assignment, actualFiles);
@@ -145,6 +148,7 @@ public class TeacherAssignmentService {
             LocalDate startDate,
             LocalDate endDate,
             String descriptionHtml,
+            AssignmentStatus status,
             List<MultipartFile> files
     ) {
         Teacher teacher = getTeacher(teacherUserId);
@@ -153,7 +157,7 @@ public class TeacherAssignmentService {
         AssignmentValues values = validateValues(title, startDate, endDate, descriptionHtml);
         List<MultipartFile> actualFiles = validateFiles(files, assignment.getAttachments().size());
 
-        assignment.update(values.title(), values.contentHtml(), values.startDate(), values.endDate());
+        assignment.update(values.title(), values.contentHtml(), values.startDate(), values.endDate(), requireStatus(status));
         assignment.replaceCourses(courses);
         saveAttachments(assignment, actualFiles);
     }
@@ -176,6 +180,8 @@ public class TeacherAssignmentService {
                 assignment.getEndDate(),
                 courseNames(assignment),
                 assignment.getTitle(),
+                assignment.getStatus(),
+                assignment.getStatus().getLabel(),
                 assignment.getAttachments().size()
         );
     }
@@ -278,6 +284,11 @@ public class TeacherAssignmentService {
             throw new IllegalArgumentException("선택한 반 정보를 확인할 수 없습니다.");
         }
         return courses;
+    }
+
+    private AssignmentStatus requireStatus(AssignmentStatus status) {
+        if (status == null) throw new IllegalArgumentException("과제 상태를 선택해 주세요.");
+        return status;
     }
 
     private String require(String value, String message) {

@@ -56,7 +56,7 @@ class NoticeTemplateTest {
         assertThat(render("student/notices", list)).contains("받은 알림", "/student/notices/1");
         var detail = base(); detail.put("notice", detail());
         assertThat(render("student/notice-detail", detail)).contains("안내.pdf", "/student/notices/1/attachments/3/download");
-        var dashboard = base(); dashboard.put("studentDashboard", new StudentDashboard("김학생", "중등", "apple", "An apple.", List.of(item())));
+        var dashboard = base(); dashboard.put("studentDashboard", new StudentDashboard("김학생", "중등", "apple", "An apple.", List.of(), List.of(item())));
         assertThat(render("student/dashboard", dashboard)).contains("김학생 학생 대시보드", "최근 알림장", "/student/notices/1");
     }
 

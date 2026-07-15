@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>게시판 | NaenaeTeacher</title><link rel="stylesheet" href="/assets/css/naenae-dashboard.css"></head>
+<body class="naenae-dashboard-body"><div class="dashboard-shell">
+<th:block th:if="${teacherView}"><aside th:replace="~{fragments/teacher-sidebar :: sidebar('board')}"></aside></th:block>
+<th:block th:unless="${teacherView}"><aside th:replace="~{fragments/student-sidebar :: sidebar('board')}"></aside></th:block>
+<div class="dashboard-main"><header class="dashboard-header"><div><p class="header-kicker">Community Board</p><h1 class="header-title">게시판</h1></div><a class="header-nav-action" th:href="${basePath + '/new'}">글쓰기</a></header>
+<main class="dashboard-content"><section class="dashboard-card board-list-panel">
+<div class="board-list-heading"><div><h2>전체 게시글</h2><p>선생님과 학생이 함께 이야기를 나누는 공간입니다.</p></div><span th:text="|총 ${boardPage.totalElements()}건|">총 0건</span></div>
+<div class="auth-alert success" th:if="${successMessage}" th:text="${successMessage}"></div>
+<div class="board-table-wrap" th:if="${boardPage.hasContent()}"><table class="board-table"><colgroup><col><col class="board-author-col"><col class="board-date-col"><col class="board-view-col"></colgroup><thead><tr><th>제목</th><th>작성자</th><th>작성일시</th><th>조회수</th></tr></thead><tbody>
+<tr th:each="item:${boardPage.content()}"><td class="board-title-cell"><a th:href="${basePath + '/' + item.id()}"><span class="board-title-text" th:text="${item.title()}">제목</span><span class="board-comment-count" th:if="${item.commentCount()>0}" th:text="|[${item.commentCount()}]|">[2]</span><span class="board-file-mark" th:if="${item.attachmentCount()>0}" title="첨부파일 있음">⌕</span></a></td><td class="board-author" th:text="${item.authorLabel()}">[반] 이름</td><td class="board-date" th:text="${#temporals.format(item.createdAt(),'yyyy.MM.dd HH:mm')}">작성일시</td><td class="board-views" th:text="${item.viewCount()}">0</td></tr>
+</tbody></table></div>
+<div class="notice-empty-state" th:if="${!boardPage.hasContent()}"><span class="notice-empty-icon">✎</span><h3>아직 게시글이 없어요.</h3><p>첫 게시글을 작성해 이야기를 시작해 보세요.</p><a th:href="${basePath + '/new'}">글쓰기</a></div>
+<div th:replace="~{fragments/pagination :: pagination(${boardPage}, ${basePath})}"></div>
+</section></main></div></div><script src="/assets/js/mobile-navigation.js" defer></script></body></html>

@@ -103,11 +103,11 @@ DB 스키마 생성은 Hibernate가 아니라 Flyway가 담당합니다.
 - 운영 DB 스키마 변경은 반드시 Flyway 마이그레이션 파일로 관리하세요.
 ## 환경별 파일 저장소
 
-과제 첨부파일의 업로드와 다운로드는 `app.storage.assignment-dir`에 지정한 동일한 저장소를 사용합니다.
+과제·알림장·게시판 첨부파일의 업로드와 다운로드는 각 `app.storage.*-dir`에 지정한 동일한 저장소를 사용합니다.
 
 - PC1: `application-pc1.yml`
 - PC2: `application-pc2.yml`
 - 운영 서버: `application-prod.yml`
-- 모든 환경에서 `ASSIGNMENT_STORAGE_DIR` 환경변수로 기본 경로를 재정의할 수 있습니다.
+- 모든 환경에서 `ASSIGNMENT_STORAGE_DIR`, `NOTICE_STORAGE_DIR`, `BOARD_STORAGE_DIR`, `PROFILE_STORAGE_DIR` 환경변수로 기본 경로를 재정의할 수 있습니다.
 - 로컬 기본 프로필은 `pc1`이며, PC2에서는 `SPRING_PROFILES_ACTIVE=pc2`, 운영에서는 `SPRING_PROFILES_ACTIVE=prod`를 사용합니다.
 - 실제 업로드 파일이 저장되는 `uploads/` 디렉터리는 Git에서 제외됩니다.

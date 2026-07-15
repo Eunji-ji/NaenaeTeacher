@@ -2,6 +2,7 @@ package com.naenae.teacher.assignment.controller;
 
 import com.naenae.common.file.FileDownloadResponseFactory;
 import com.naenae.common.user.domain.User;
+import com.naenae.teacher.assignment.domain.AssignmentStatus;
 import com.naenae.teacher.assignment.model.AssignmentDownload;
 import com.naenae.teacher.assignment.model.AssignmentFormData;
 import com.naenae.teacher.assignment.service.TeacherAssignmentService;
@@ -42,10 +43,11 @@ public class TeacherAssignmentController {
     @GetMapping("/teacher/assignments")
     public String assignments(
             @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "false") boolean inProgressOnly,
             Authentication authentication,
             Model model
     ) {
-        populateListModel(getTeacherUserId(authentication), page, model);
+        populateListModel(getTeacherUserId(authentication), page, inProgressOnly, model);
         return "teacher/assignments";
     }
 
@@ -96,6 +98,7 @@ public class TeacherAssignmentController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam String descriptionHtml,
+            @RequestParam AssignmentStatus status,
             @RequestParam(required = false) List<MultipartFile> attachments,
             Authentication authentication,
             RedirectAttributes redirectAttributes,
@@ -104,13 +107,13 @@ public class TeacherAssignmentController {
         Long teacherUserId = getTeacherUserId(authentication);
         try {
             teacherAssignmentService.create(
-                    teacherUserId, courseIds, title, startDate, endDate, descriptionHtml, attachments
+                    teacherUserId, courseIds, title, startDate, endDate, descriptionHtml, status, attachments
             );
             redirectAttributes.addFlashAttribute("successMessage", "과제를 저장했습니다.");
             return "redirect:/teacher/assignments";
         } catch (IllegalArgumentException | IllegalStateException exception) {
             populateSubmittedForm(
-                    model, teacherUserId, null, courseIds, title, startDate, endDate, descriptionHtml, List.of()
+                    model, teacherUserId, null, courseIds, title, startDate, endDate, status, descriptionHtml, List.of()
             );
             model.addAttribute("errorMessage", exception.getMessage());
             return "teacher/assignment-form";
@@ -125,6 +128,7 @@ public class TeacherAssignmentController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam String descriptionHtml,
+            @RequestParam AssignmentStatus status,
             @RequestParam(required = false) List<MultipartFile> attachments,
             Authentication authentication,
             RedirectAttributes redirectAttributes,
@@ -140,6 +144,7 @@ public class TeacherAssignmentController {
                     startDate,
                     endDate,
                     descriptionHtml,
+                    status,
                     attachments
             );
             redirectAttributes.addFlashAttribute("successMessage", "과제를 수정했습니다.");
@@ -154,6 +159,7 @@ public class TeacherAssignmentController {
                     title,
                     startDate,
                     endDate,
+                    status,
                     descriptionHtml,
                     existing.attachments()
             );
@@ -182,18 +188,19 @@ public class TeacherAssignmentController {
         Long teacherUserId = getTeacherUserId(authentication);
         if (courseIds == null || courseIds.isEmpty()) {
             model.addAttribute("errorMessage", "과제를 등록할 반을 1개 이상 선택해 주세요.");
-            populateListModel(teacherUserId, 0, model);
+            populateListModel(teacherUserId, 0, false, model);
             return "teacher/assignments";
         }
         var selectedCourses = selectedCourses(teacherUserId, courseIds);
         if (selectedCourses.size() != courseIds.stream().distinct().count()) {
             model.addAttribute("errorMessage", "선택한 반 정보를 확인할 수 없습니다.");
-            populateListModel(teacherUserId, 0, model);
+            populateListModel(teacherUserId, 0, false, model);
             return "teacher/assignments";
         }
         model.addAttribute("selectedCourses", selectedCourses);
         model.addAttribute("startDate", LocalDate.now());
         model.addAttribute("endDate", LocalDate.now().plusDays(7));
+        model.addAttribute("status", AssignmentStatus.IN_PROGRESS);
         model.addAttribute("existingAttachments", List.of());
         model.addAttribute("editMode", false);
         return "teacher/assignment-form";
@@ -204,6 +211,7 @@ public class TeacherAssignmentController {
         model.addAttribute("title", form.title());
         model.addAttribute("startDate", form.startDate());
         model.addAttribute("endDate", form.endDate());
+        model.addAttribute("status", form.status());
         model.addAttribute("descriptionHtml", form.contentHtml());
         model.addAttribute("existingAttachments", form.attachments());
         model.addAttribute("assignmentId", form.id());
@@ -218,6 +226,7 @@ public class TeacherAssignmentController {
             String title,
             LocalDate startDate,
             LocalDate endDate,
+            AssignmentStatus status,
             String descriptionHtml,
             List<?> existingAttachments
     ) {
@@ -225,6 +234,7 @@ public class TeacherAssignmentController {
         model.addAttribute("title", title);
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
+        model.addAttribute("status", status);
         model.addAttribute("descriptionHtml", descriptionHtml);
         model.addAttribute("existingAttachments", existingAttachments);
         model.addAttribute("assignmentId", assignmentId);
@@ -237,9 +247,11 @@ public class TeacherAssignmentController {
                 .toList();
     }
 
-    private void populateListModel(Long teacherUserId, int page, Model model) {
+    private void populateListModel(Long teacherUserId, int page, boolean inProgressOnly, Model model) {
         model.addAttribute("courses", teacherCourseService.getCourses(teacherUserId));
-        model.addAttribute("assignmentPage", teacherAssignmentService.getAssignments(teacherUserId, page));
+        model.addAttribute("inProgressOnly", inProgressOnly);
+        model.addAttribute("assignmentPaginationUrl", inProgressOnly ? "/teacher/assignments?inProgressOnly=true" : "/teacher/assignments");
+        model.addAttribute("assignmentPage", teacherAssignmentService.getAssignments(teacherUserId, page, inProgressOnly));
     }
 
     private Long getTeacherUserId(Authentication authentication) {

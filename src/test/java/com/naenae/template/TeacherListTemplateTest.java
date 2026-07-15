@@ -3,6 +3,7 @@ package com.naenae.template;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.naenae.common.pagination.PageView;
+import com.naenae.teacher.assignment.domain.AssignmentStatus;
 import com.naenae.teacher.assignment.model.AssignmentAttachmentItem;
 import com.naenae.teacher.assignment.model.AssignmentDetail;
 import com.naenae.teacher.assignment.model.AssignmentListItem;
@@ -51,6 +52,8 @@ class TeacherListTemplateTest {
     void assignmentAndWordTestListsRenderSharedPaginationFragment() {
         var variables = baseVariables();
         variables.put("courses", List.of());
+        variables.put("inProgressOnly", false);
+        variables.put("assignmentPaginationUrl", "/teacher/assignments");
         variables.put("assignmentPage", new PageView<>(
                 List.of(new AssignmentListItem(
                         1L,
@@ -59,6 +62,8 @@ class TeacherListTemplateTest {
                         LocalDate.of(2026, 7, 22),
                         "중등 A반",
                         "숙제",
+                        AssignmentStatus.IN_PROGRESS,
+                        "진행중",
                         3
                 )),
                 0, 3, 21, true, false, List.of(0, 1, 2)
@@ -77,10 +82,10 @@ class TeacherListTemplateTest {
                 "오늘의 영어",
                 "알림장",
                 "게시판",
-                "설정",
+
                 "/teacher/assignments?page=1"
         );
-        assertThat(wordTests).contains("등록한 단어시험", "오늘의 영어", "알림장", "게시판", "설정", "/teacher/word-tests?page=1");
+        assertThat(wordTests).contains("등록한 단어시험", "오늘의 영어", "알림장", "게시판", "/teacher/word-tests?page=1");
     }
 
     @Test
@@ -92,6 +97,7 @@ class TeacherListTemplateTest {
         variables.put("title", "수정할 과제");
         variables.put("startDate", LocalDate.of(2026, 7, 15));
         variables.put("endDate", LocalDate.of(2026, 7, 22));
+        variables.put("status", AssignmentStatus.IN_PROGRESS);
         variables.put("descriptionHtml", "<p>본문</p>");
         variables.put("existingAttachments", List.of(new AssignmentAttachmentItem(3L, "숙제.xlsx", "10 KB")));
 

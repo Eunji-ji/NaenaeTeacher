@@ -60,7 +60,7 @@ public class Assignment extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private AssignmentStatus status = AssignmentStatus.OPEN;
+    private AssignmentStatus status = AssignmentStatus.IN_PROGRESS;
 
     @OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<AssignmentCourse> courses = new ArrayList<>();
@@ -68,7 +68,7 @@ public class Assignment extends BaseTimeEntity {
     @OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<AssignmentAttachment> attachments = new ArrayList<>();
 
-    public static Assignment create(Teacher teacher, String title, String contentHtml, LocalDate startDate, LocalDate endDate) {
+    public static Assignment create(Teacher teacher, String title, String contentHtml, LocalDate startDate, LocalDate endDate, AssignmentStatus status) {
         Assignment assignment = new Assignment();
         assignment.teacher = teacher;
         assignment.title = title;
@@ -76,11 +76,11 @@ public class Assignment extends BaseTimeEntity {
         assignment.contentHtml = contentHtml;
         assignment.startDate = startDate;
         assignment.endDate = endDate;
-        assignment.status = AssignmentStatus.OPEN;
+        assignment.status = status;
         return assignment;
     }
 
-    public void update(String title, String contentHtml, LocalDate startDate, LocalDate endDate) {
+    public void update(String title, String contentHtml, LocalDate startDate, LocalDate endDate, AssignmentStatus status) {
         this.title = title;
         this.contentHtml = contentHtml;
         this.startDate = startDate;

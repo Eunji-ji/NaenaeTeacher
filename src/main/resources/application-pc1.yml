@@ -2,3 +2,5 @@ app:
   storage:
     assignment-dir: ${ASSIGNMENT_STORAGE_DIR:C:/workSp/NaenaeTeacher/uploads/assignments}
     notice-dir: ${NOTICE_STORAGE_DIR:C:/workSp/NaenaeTeacher/uploads/notices}
+    board-dir: ${BOARD_STORAGE_DIR:C:/workSp/NaenaeTeacher/uploads/board}
+    profile-dir: ${PROFILE_STORAGE_DIR:C:/workSp/NaenaeTeacher/uploads/profiles}
