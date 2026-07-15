@@ -9,3 +9,5 @@
 *.iml
 target/
 *.class
+/uploads/
+/build-verification/

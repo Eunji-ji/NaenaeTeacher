@@ -25,10 +25,14 @@ public class TeacherWordTestController {
     }
 
     @GetMapping("/teacher/word-tests")
-    public String wordTests(Authentication authentication, Model model) {
+    public String wordTests(
+            @RequestParam(defaultValue = "0") int page,
+            Authentication authentication,
+            Model model
+    ) {
         Long teacherUserId = getTeacherUserId(authentication);
         model.addAttribute("courses", teacherWordTestService.getCourses(teacherUserId));
-        model.addAttribute("wordTests", teacherWordTestService.getWordTests(teacherUserId));
+        model.addAttribute("wordTestPage", teacherWordTestService.getWordTests(teacherUserId, page));
         return "teacher/word-tests";
     }
 
@@ -48,7 +52,7 @@ public class TeacherWordTestController {
         } catch (IllegalArgumentException exception) {
             model.addAttribute("errorMessage", exception.getMessage());
             model.addAttribute("courses", teacherWordTestService.getCourses(teacherUserId));
-            model.addAttribute("wordTests", teacherWordTestService.getWordTests(teacherUserId));
+            model.addAttribute("wordTestPage", teacherWordTestService.getWordTests(teacherUserId, 0));
             return "teacher/word-tests";
         }
     }

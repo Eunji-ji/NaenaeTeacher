@@ -2,10 +2,13 @@ spring:
   application:
     name: naenae-teacher
   profiles:
-    active: ${SPRING_PROFILES_ACTIVE:local}
+    active: ${SPRING_PROFILES_ACTIVE:pc1}
+    group:
+      pc1: local
+      pc2: local
 
 server:
-  port: ${PORT:8080}
+  port: ${PORT:8081}
   address: 0.0.0.0
 
 management:

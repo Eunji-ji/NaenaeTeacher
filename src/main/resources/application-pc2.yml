@@ -1,0 +1,4 @@
+app:
+  storage:
+    assignment-dir: ${ASSIGNMENT_STORAGE_DIR:C:/workSp/NaenaeTeacher/uploads/assignments}
+    notice-dir: ${NOTICE_STORAGE_DIR:C:/workSp/NaenaeTeacher/uploads/notices}

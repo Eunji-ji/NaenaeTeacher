@@ -1,6 +1,7 @@
 package com.naenae.teacher.studentstatus.service;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -101,7 +102,10 @@ public class TeacherStudentStatusService {
 
         int currentYear = LocalDate.now().getYear();
         List<StudentAcademicRecord> records = studentAcademicRecordRepository
-                .findByStudentIdAndStudentTeacherIdOrderByExamYearAscExamTypeAsc(studentId, teacher.getId());
+                .findByStudentIdAndStudentTeacherIdOrderByExamYearAscExamTypeAsc(studentId, teacher.getId()).stream()
+                .sorted(Comparator.comparingInt(StudentAcademicRecord::getExamYear)
+                        .thenComparingInt(record -> toExamOrder(record.getExamType())))
+                .toList();
 
         List<StudentLearningScoreRow> scoreRows = records.stream()
                 .map(record -> new StudentLearningScoreRow(

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>알림장 | NaenaeTeacher</title>
+    <link rel="stylesheet" href="/assets/css/naenae-dashboard.css">
+</head>
+<body class="naenae-dashboard-body">
+<div class="dashboard-shell">
+    <aside th:replace="~{fragments/teacher-sidebar :: sidebar('notice')}"></aside>
+    <div class="dashboard-main">
+        <header class="dashboard-header">
+            <div><p class="header-kicker">Notice</p><h1 class="header-title">알림장</h1></div>
+            <a class="header-nav-action notice-create-button" href="/teacher/notice/new"><span aria-hidden="true">＋</span> 새 알림 등록</a>
+        </header>
+        <main class="dashboard-content notice-page-content">
+            <section class="notice-list-hero">
+                <div>
+                    <span class="notice-hero-eyebrow">Class message</span>
+                    <h2>학생들에게 전한 소식을<br>한눈에 확인해요.</h2>
+                    <p>전체 또는 반별로 등록한 알림을 최신순으로 모았습니다.</p>
+                </div>
+                <div class="notice-hero-count">
+                    <span>등록한 알림</span>
+                    <strong th:text="${noticePage.totalElements()}">0</strong>
+                    <small>건</small>
+                </div>
+            </section>
+
+            <div class="auth-alert success" th:if="${successMessage}" th:text="${successMessage}"></div>
+
+            <section class="notice-board-card">
+                <div class="notice-board-header">
+                    <div><h2>알림 목록</h2><p>카드를 누르면 상세 내용을 확인할 수 있어요.</p></div>
+                    <span class="notice-sort-label"><span aria-hidden="true">↓</span> 최신 등록순</span>
+                </div>
+
+                <div class="notice-card-list" th:if="${noticePage.hasContent()}">
+                    <article class="notice-list-card" th:each="item : ${noticePage.content()}">
+                        <a class="notice-card-link" th:href="@{/teacher/notice/{id}(id=${item.id()})}" aria-label="알림 상세 조회">
+                            <span class="notice-card-icon" aria-hidden="true">!</span>
+                            <span class="notice-card-body">
+                                <span class="notice-card-topline">
+                                    <span class="notice-target-badge" th:text="${item.targetLabel()}">전체</span>
+                                    <time th:datetime="${item.createdAt()}" th:text="${#temporals.format(item.createdAt(), 'yyyy.MM.dd HH:mm')}">2026.07.15</time>
+                                </span>
+                                <strong class="notice-card-title" th:text="${item.title()}">알림 제목</strong>
+                                <span class="notice-card-caption">상세 내용을 확인하려면 눌러주세요.</span>
+                            </span>
+                            <span class="notice-card-file" th:classappend="${item.attachmentCount() == 0} ? ' is-empty'">
+                                <span aria-hidden="true">⌕</span>
+                                <span th:text="|첨부 ${item.attachmentCount()}|">첨부 0</span>
+                            </span>
+                            <span class="notice-card-arrow" aria-hidden="true">›</span>
+                        </a>
+                        <div class="notice-card-actions">
+                            <a class="notice-action-link edit" th:href="@{/teacher/notice/{id}/edit(id=${item.id()})}">수정</a>
+                            <form th:action="@{/teacher/notice/{id}/delete(id=${item.id()})}" method="post"
+                                  onsubmit="return confirm('이 알림을 삭제할까요?');">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <button class="notice-action-link delete" type="submit">삭제</button>
+                            </form>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="notice-empty-state" th:if="${!noticePage.hasContent()}">
+                    <span class="notice-empty-icon" aria-hidden="true">✦</span>
+                    <h3>아직 등록한 알림이 없어요.</h3>
+                    <p>첫 알림을 작성해 학생들에게 소식을 전해보세요.</p>
+                    <a href="/teacher/notice/new">알림 등록하기</a>
+                </div>
+                <div th:replace="~{fragments/pagination :: pagination(${noticePage}, '/teacher/notice')}"></div>
+            </section>
+        </main>
+    </div>
+</div>
+</body>
+</html>

@@ -1,60 +1,176 @@
 package com.naenae.teacher.assignment.controller;
 
+import com.naenae.common.file.FileDownloadResponseFactory;
 import com.naenae.common.user.domain.User;
+import com.naenae.teacher.assignment.model.AssignmentDownload;
+import com.naenae.teacher.assignment.model.AssignmentFormData;
+import com.naenae.teacher.assignment.service.TeacherAssignmentService;
 import com.naenae.teacher.auth.security.CustomUserDetails;
 import com.naenae.teacher.course.service.TeacherCourseService;
-import com.naenae.teacher.assignment.service.TeacherAssignmentService;
 import java.time.LocalDate;
 import java.util.List;
-import org.springframework.security.core.Authentication;
+import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class TeacherAssignmentController {
 
     private final TeacherCourseService teacherCourseService;
     private final TeacherAssignmentService teacherAssignmentService;
+    private final FileDownloadResponseFactory fileDownloadResponseFactory;
 
-    public TeacherAssignmentController(TeacherCourseService teacherCourseService, TeacherAssignmentService teacherAssignmentService) {
+    public TeacherAssignmentController(
+            TeacherCourseService teacherCourseService,
+            TeacherAssignmentService teacherAssignmentService,
+            FileDownloadResponseFactory fileDownloadResponseFactory
+    ) {
         this.teacherCourseService = teacherCourseService;
         this.teacherAssignmentService = teacherAssignmentService;
+        this.fileDownloadResponseFactory = fileDownloadResponseFactory;
     }
 
     @GetMapping("/teacher/assignments")
-    public String assignments(Authentication authentication, Model model) {
-        Long teacherId=getTeacherUserId(authentication);
-        model.addAttribute("courses", teacherCourseService.getCourses(teacherId));
-        model.addAttribute("assignments", teacherAssignmentService.getAssignments(teacherId));
+    public String assignments(
+            @RequestParam(defaultValue = "0") int page,
+            Authentication authentication,
+            Model model
+    ) {
+        populateListModel(getTeacherUserId(authentication), page, model);
         return "teacher/assignments";
     }
 
+    @GetMapping("/teacher/assignments/{assignmentId}")
+    public String assignmentDetail(
+            @PathVariable Long assignmentId,
+            Authentication authentication,
+            Model model
+    ) {
+        model.addAttribute(
+                "assignment",
+                teacherAssignmentService.getAssignment(getTeacherUserId(authentication), assignmentId)
+        );
+        return "teacher/assignment-detail";
+    }
+
+    @GetMapping("/teacher/assignments/{assignmentId}/edit")
+    public String editAssignmentForm(
+            @PathVariable Long assignmentId,
+            Authentication authentication,
+            Model model
+    ) {
+        AssignmentFormData form = teacherAssignmentService.getAssignmentForm(
+                getTeacherUserId(authentication), assignmentId
+        );
+        populateFormModel(model, form);
+        return "teacher/assignment-form";
+    }
+
+    @GetMapping("/teacher/assignments/{assignmentId}/attachments/{attachmentId}/download")
+    public ResponseEntity<Resource> downloadAttachment(
+            @PathVariable Long assignmentId,
+            @PathVariable Long attachmentId,
+            Authentication authentication
+    ) {
+        AssignmentDownload download = teacherAssignmentService.getAttachmentDownload(
+                getTeacherUserId(authentication), assignmentId, attachmentId
+        );
+        return fileDownloadResponseFactory.create(
+                download.path(), download.originalName(), download.contentType()
+        );
+    }
+
     @PostMapping("/teacher/assignments")
-    public String saveAssignment(@RequestParam List<Long> courseIds,
-                                 @RequestParam String title,
-                                 @RequestParam @DateTimeFormat(iso=DateTimeFormat.ISO.DATE) LocalDate startDate,
-                                 @RequestParam @DateTimeFormat(iso=DateTimeFormat.ISO.DATE) LocalDate endDate,
-                                 @RequestParam String descriptionHtml,
-                                 @RequestParam(required=false) List<MultipartFile> attachments,
-                                 Authentication authentication, RedirectAttributes redirect, Model model) {
-        Long teacherId=getTeacherUserId(authentication);
+    public String saveAssignment(
+            @RequestParam List<Long> courseIds,
+            @RequestParam String title,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam String descriptionHtml,
+            @RequestParam(required = false) List<MultipartFile> attachments,
+            Authentication authentication,
+            RedirectAttributes redirectAttributes,
+            Model model
+    ) {
+        Long teacherUserId = getTeacherUserId(authentication);
         try {
-            teacherAssignmentService.create(teacherId,courseIds,title,startDate,endDate,descriptionHtml,attachments);
-            redirect.addFlashAttribute("successMessage","과제를 저장했습니다.");
+            teacherAssignmentService.create(
+                    teacherUserId, courseIds, title, startDate, endDate, descriptionHtml, attachments
+            );
+            redirectAttributes.addFlashAttribute("successMessage", "과제를 저장했습니다.");
             return "redirect:/teacher/assignments";
-        } catch(IllegalArgumentException|IllegalStateException e) {
-            var all=teacherCourseService.getCourses(teacherId);
-            model.addAttribute("selectedCourses",all.stream().filter(c->courseIds.contains(c.id())).toList());
-            model.addAttribute("errorMessage",e.getMessage()); model.addAttribute("title",title);
-            model.addAttribute("startDate",startDate); model.addAttribute("endDate",endDate); model.addAttribute("descriptionHtml",descriptionHtml);
+        } catch (IllegalArgumentException | IllegalStateException exception) {
+            populateSubmittedForm(
+                    model, teacherUserId, null, courseIds, title, startDate, endDate, descriptionHtml, List.of()
+            );
+            model.addAttribute("errorMessage", exception.getMessage());
             return "teacher/assignment-form";
         }
+    }
+
+    @PostMapping("/teacher/assignments/{assignmentId}")
+    public String updateAssignment(
+            @PathVariable Long assignmentId,
+            @RequestParam List<Long> courseIds,
+            @RequestParam String title,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam String descriptionHtml,
+            @RequestParam(required = false) List<MultipartFile> attachments,
+            Authentication authentication,
+            RedirectAttributes redirectAttributes,
+            Model model
+    ) {
+        Long teacherUserId = getTeacherUserId(authentication);
+        try {
+            teacherAssignmentService.update(
+                    teacherUserId,
+                    assignmentId,
+                    courseIds,
+                    title,
+                    startDate,
+                    endDate,
+                    descriptionHtml,
+                    attachments
+            );
+            redirectAttributes.addFlashAttribute("successMessage", "과제를 수정했습니다.");
+            return "redirect:/teacher/assignments";
+        } catch (IllegalArgumentException | IllegalStateException exception) {
+            AssignmentFormData existing = teacherAssignmentService.getAssignmentForm(teacherUserId, assignmentId);
+            populateSubmittedForm(
+                    model,
+                    teacherUserId,
+                    assignmentId,
+                    courseIds,
+                    title,
+                    startDate,
+                    endDate,
+                    descriptionHtml,
+                    existing.attachments()
+            );
+            model.addAttribute("errorMessage", exception.getMessage());
+            return "teacher/assignment-form";
+        }
+    }
+
+    @PostMapping("/teacher/assignments/{assignmentId}/delete")
+    public String deleteAssignment(
+            @PathVariable Long assignmentId,
+            Authentication authentication,
+            RedirectAttributes redirectAttributes
+    ) {
+        teacherAssignmentService.delete(getTeacherUserId(authentication), assignmentId);
+        redirectAttributes.addFlashAttribute("successMessage", "과제를 삭제했습니다.");
+        return "redirect:/teacher/assignments";
     }
 
     @PostMapping("/teacher/assignments/new")
@@ -66,21 +182,64 @@ public class TeacherAssignmentController {
         Long teacherUserId = getTeacherUserId(authentication);
         if (courseIds == null || courseIds.isEmpty()) {
             model.addAttribute("errorMessage", "과제를 등록할 반을 1개 이상 선택해 주세요.");
-            model.addAttribute("courses", teacherCourseService.getCourses(teacherUserId));
+            populateListModel(teacherUserId, 0, model);
             return "teacher/assignments";
         }
-        var selected = teacherCourseService.getCourses(teacherUserId).stream()
-                .filter(course -> courseIds.contains(course.id()))
-                .toList();
-        if (selected.size() != courseIds.stream().distinct().count()) {
+        var selectedCourses = selectedCourses(teacherUserId, courseIds);
+        if (selectedCourses.size() != courseIds.stream().distinct().count()) {
             model.addAttribute("errorMessage", "선택한 반 정보를 확인할 수 없습니다.");
-            model.addAttribute("courses", teacherCourseService.getCourses(teacherUserId));
+            populateListModel(teacherUserId, 0, model);
             return "teacher/assignments";
         }
-        model.addAttribute("selectedCourses", selected);
+        model.addAttribute("selectedCourses", selectedCourses);
         model.addAttribute("startDate", LocalDate.now());
         model.addAttribute("endDate", LocalDate.now().plusDays(7));
+        model.addAttribute("existingAttachments", List.of());
+        model.addAttribute("editMode", false);
         return "teacher/assignment-form";
+    }
+
+    private void populateFormModel(Model model, AssignmentFormData form) {
+        model.addAttribute("selectedCourses", form.courses());
+        model.addAttribute("title", form.title());
+        model.addAttribute("startDate", form.startDate());
+        model.addAttribute("endDate", form.endDate());
+        model.addAttribute("descriptionHtml", form.contentHtml());
+        model.addAttribute("existingAttachments", form.attachments());
+        model.addAttribute("assignmentId", form.id());
+        model.addAttribute("editMode", true);
+    }
+
+    private void populateSubmittedForm(
+            Model model,
+            Long teacherUserId,
+            Long assignmentId,
+            List<Long> courseIds,
+            String title,
+            LocalDate startDate,
+            LocalDate endDate,
+            String descriptionHtml,
+            List<?> existingAttachments
+    ) {
+        model.addAttribute("selectedCourses", selectedCourses(teacherUserId, courseIds));
+        model.addAttribute("title", title);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        model.addAttribute("descriptionHtml", descriptionHtml);
+        model.addAttribute("existingAttachments", existingAttachments);
+        model.addAttribute("assignmentId", assignmentId);
+        model.addAttribute("editMode", assignmentId != null);
+    }
+
+    private List<?> selectedCourses(Long teacherUserId, List<Long> courseIds) {
+        return teacherCourseService.getCourses(teacherUserId).stream()
+                .filter(course -> courseIds.contains(course.id()))
+                .toList();
+    }
+
+    private void populateListModel(Long teacherUserId, int page, Model model) {
+        model.addAttribute("courses", teacherCourseService.getCourses(teacherUserId));
+        model.addAttribute("assignmentPage", teacherAssignmentService.getAssignments(teacherUserId, page));
     }
 
     private Long getTeacherUserId(Authentication authentication) {

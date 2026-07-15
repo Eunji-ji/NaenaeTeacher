@@ -22,7 +22,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -78,7 +80,26 @@ public class Assignment extends BaseTimeEntity {
         return assignment;
     }
 
-    public void addCourse(Course course) { courses.add(AssignmentCourse.create(this, course)); }
+    public void update(String title, String contentHtml, LocalDate startDate, LocalDate endDate) {
+        this.title = title;
+        this.contentHtml = contentHtml;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+    public void replaceCourses(List<Course> selectedCourses) {
+        Set<Long> selectedIds = selectedCourses.stream().map(Course::getId).collect(java.util.stream.Collectors.toSet());
+        courses.removeIf(mapping -> !selectedIds.contains(mapping.getCourse().getId()));
+        Set<Long> existingIds = new HashSet<>();
+        courses.forEach(mapping -> existingIds.add(mapping.getCourse().getId()));
+        selectedCourses.stream()
+                .filter(course -> !existingIds.contains(course.getId()))
+                .forEach(this::addCourse);
+    }
+
+    public void addCourse(Course course) {
+        courses.add(AssignmentCourse.create(this, course));
+    }
 
     public void addAttachment(String originalName, String storedName, String contentType, long fileSize) {
         attachments.add(AssignmentAttachment.create(this, originalName, storedName, contentType, fileSize));

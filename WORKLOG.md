@@ -231,3 +231,57 @@ Log in again if the browser session was reset, then visually confirm the dashboa
 - Restarted the app with `PORT=8081`.
 - Verified `http://localhost:8081/api/health` returns `{"status":"ok"}`.
 - Verified `http://localhost:8080/api/health` no longer responds.
+
+## 2026-07-15 학생 성적 변화량 정렬 수정
+
+- 학생 성적을 연도 오름차순으로 정렬한 뒤 같은 연도에서는 중간고사, 기말고사 순으로 명시적으로 정렬하도록 수정했다.
+- 시험 종류 문자열의 알파벳순 정렬 때문에 기말고사가 중간고사보다 먼저 배치되어 변화량의 부호가 반대로 계산되던 문제를 해결했다.
+- 성적 변화량과 차트가 `2025 중간 → 2025 기말 → 2026 중간 → 2026 기말` 순서를 동일하게 사용하도록 했다.
+## 2026-07-15 과제 상세조회·공통 페이징·파일 처리 개선
+
+- 과제 목록의 행을 클릭하면 교사 소유권이 확인된 과제 상세조회 화면으로 이동하도록 구현했다.
+- 과제 상세조회에서 등록한 첨부파일의 파일명과 크기를 표시하고 다운로드할 수 있도록 구현했다.
+- 첨부파일 조회 시 과제 ID, 첨부파일 ID, 로그인한 교사의 ID를 함께 검증해 다른 교사의 파일에 접근할 수 없도록 했다.
+- 과제와 단어시험 목록을 등록일시 내림차순으로 조회하고 페이지당 10개씩 표시하도록 변경했다.
+- `PaginationSupport`, `PageView`, 공통 Thymeleaf 페이징 fragment를 추가해 다른 게시판에서도 재사용할 수 있도록 했다.
+- 과제 파일 저장 경로를 `app.storage.assignment-dir`로 분리하고 `pc1`, `pc2`, `prod` 프로필별 설정 파일에서 각각 관리하도록 했다.
+- 공통 `LocalFileStorage`와 `FileDownloadResponseFactory`를 추가해 파일명 정규화, 저장소 경로 이탈 방지, 저장, 다운로드 응답 생성을 재사용하도록 했다.
+- 공통 `ExcelFileService`를 추가하고 학생 엑셀 일괄등록의 템플릿 생성, 헤더 검증, 행 읽기 로직을 공통 처리로 교체했다.
+- 업로드 파일이 Git에 포함되지 않도록 `/uploads/`를 `.gitignore`에 추가했다.
+- 공통 페이징, 파일 경로 보안, 엑셀 생성·읽기, 단어시험·과제 목록 및 과제 상세 템플릿 렌더링 테스트를 추가했다.
+## 2026-07-15 과제 목록 첨부파일 개수 표시 개선
+
+- 과제 조회 목록에서 각 과제의 첨부파일 개수를 `첨부파일 N개` 배지로 명확하게 표시하도록 개선했다.
+## 2026-07-15 과제 수정·삭제 기능 추가
+
+- 과제 조회 목록에 단어시험과 동일한 수정·삭제 버튼을 추가했다.
+- 로그인한 교사가 소유한 과제만 수정하거나 삭제할 수 있도록 기존 교사 소유권 검증을 동일하게 적용했다.
+- 과제 제목, 게시 기간, 내용, 대상 반을 수정하고 기존 첨부파일을 유지한 채 새 첨부파일을 추가할 수 있도록 구현했다.
+- 수정 시 기존 첨부파일을 포함해 최대 5개, 파일당 10MB 제한을 서버와 화면에서 함께 검증하도록 했다.
+- 대상 반 연결은 기존 연결을 유지하면서 변경된 반만 추가·제거해 고유키 충돌을 방지했다.
+- 과제 삭제 트랜잭션이 커밋된 뒤 실제 첨부파일을 공통 파일 저장소에서 정리하도록 구현했다.
+- 과제 상세 화면에도 수정 버튼을 추가하고 등록·수정 공용 폼에서 기존 첨부파일을 다운로드할 수 있도록 했다.
+- 목록 버튼, 수정 폼 기존값, 첨부파일 표시와 실제 파일 삭제 테스트를 추가하고 전체 테스트 통과를 확인했다.
+## 2026-07-15 과제 화면 사이드바 메뉴 복원
+
+- 과제 목록·상세·수정 화면에서 오늘의 영어, 알림장, 게시판, 설정 메뉴가 누락되던 문제를 수정했다.
+- 전체 교사 메뉴를 `teacher-sidebar` 공통 Thymeleaf fragment로 분리해 과제 관련 화면과 단어시험 목록이 동일한 사이드바를 사용하도록 변경했다.
+- 과제 및 단어시험 목록 템플릿 테스트에서 전체 하단 메뉴가 렌더링되는지 검증하도록 보강했다.
+## 2026-07-15 반별 알림장 기능 추가
+
+- 교사용 알림장 목록, 상세조회, 등록, 수정, 삭제 기능을 추가하고 최신 등록일 역순 공통 페이징을 적용했다.
+- 알림 대상을 전체 학생 또는 교사가 소유한 여러 반으로 선택해 저장할 수 있도록 알림장과 반의 다대다 연결 구조를 추가했다.
+- 등록·수정 화면에서 전체와 반별 다중 선택을 함께 제공하고, 잘못된 반 ID나 대상 미선택을 서버에서 검증하도록 했다.
+- 알림장 첨부파일을 최대 5개, 파일당 10MB로 등록하고 교사·학생 상세 화면에서 권한을 확인한 뒤 다운로드할 수 있도록 구현했다.
+- 알림장 파일 경로를 `app.storage.notice-dir`로 분리하고 `pc1`, `pc2`, `prod` 프로필별 환경변수 `NOTICE_STORAGE_DIR`로 관리하도록 했다.
+- 학생 알림장 메뉴와 목록·상세 화면을 추가하고, 학생 담당 선생님의 전체 알림 또는 실제 소속 반 알림만 조회되도록 제한했다.
+- 학생 대시보드에 본인에게 공개된 최근 알림 5건을 표시하고 학생용 공통 사이드바를 추가했다.
+- 기본 서버 포트를 8081로 변경했다.
+- 교사·학생 알림장 목록, 등록·수정 폼, 상세, 학생 대시보드 템플릿 렌더링 테스트를 추가하고 전체 테스트 통과를 확인했다.
+## 2026-07-15 Notice list design refresh
+
+- Refined the teacher notice list with a soft summary hero, total notice count, and a cleaner card-based layout.
+- Improved visual hierarchy for target courses, registration time, attachment count, and row actions while keeping full-card detail navigation.
+- Added responsive layouts for tablet and mobile widths and a clearer empty state.
+- Reconfirmed that teacher and student notices use the shared 10-item pagination and newest-first ordering.
+- Verified pagination links and the redesigned notice template with the full test suite.

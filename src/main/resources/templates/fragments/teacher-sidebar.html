@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<aside class="dashboard-sidebar" th:fragment="sidebar(activeMenu)" aria-label="선생님 메뉴">
+    <div class="brand">
+        <span class="brand-mark">N</span>
+        <div>
+            <p class="brand-name" th:text="${teacherDisplayName}">선생님</p>
+            <p class="brand-role">Teacher Space</p>
+        </div>
+    </div>
+    <nav class="sidebar-nav">
+        <a class="nav-item" th:classappend="${activeMenu == 'dashboard'} ? ' active'" href="/teacher/dashboard">
+            <span class="nav-icon">▦</span> 대시보드
+        </a>
+        <div class="sidebar-section" aria-label="학생관리">
+            <div class="sidebar-section-label"><span class="nav-icon">●</span> 학생관리</div>
+            <div class="sidebar-subnav">
+                <a class="sidebar-subitem" th:classappend="${activeMenu == 'courses'} ? ' active'" href="/teacher/courses">반등록</a>
+                <a class="sidebar-subitem" th:classappend="${activeMenu == 'students'} ? ' active'" href="/teacher/students">학생등록</a>
+                <a class="sidebar-subitem" th:classappend="${activeMenu == 'studentBulk'} ? ' active'" href="/teacher/students/bulk">학생일괄등록</a>
+                <a class="sidebar-subitem" th:classappend="${activeMenu == 'attendance'} ? ' active'" href="/teacher/attendance">출석관리</a>
+                <a class="sidebar-subitem" th:classappend="${activeMenu == 'studentStatus'} ? ' active'" href="/teacher/students/status">학생 학습관리</a>
+            </div>
+        </div>
+        <div class="sidebar-section" aria-label="과제관리">
+            <div class="sidebar-section-label"><span class="nav-icon">▣</span> 과제관리</div>
+            <div class="sidebar-subnav">
+                <a class="sidebar-subitem" th:classappend="${activeMenu == 'wordTests'} ? ' active'" href="/teacher/word-tests">단어시험</a>
+                <a class="sidebar-subitem" th:classappend="${activeMenu == 'assignments'} ? ' active'" href="/teacher/assignments">과제등록</a>
+            </div>
+        </div>
+        <a class="nav-item" th:classappend="${activeMenu == 'todayEnglish'} ? ' active'" href="/teacher/today-english">
+            <span class="nav-icon">Aa</span> 오늘의 영어
+        </a>
+        <a class="nav-item" th:classappend="${activeMenu == 'notice'} ? ' active'" href="/teacher/notice">
+            <span class="nav-icon">!</span> 알림장
+        </a>
+        <a class="nav-item" th:classappend="${activeMenu == 'board'} ? ' active'" href="/teacher/board">
+            <span class="nav-icon">#</span> 게시판
+        </a>
+        <a class="nav-item" th:classappend="${activeMenu == 'settings'} ? ' active'" href="/teacher/settings">
+            <span class="nav-icon">⚙</span> 설정
+        </a>
+    </nav>
+</aside>
+</body>
+</html>

@@ -1,5 +1,7 @@
 package com.naenae.teacher.wordtest.service;
 
+import com.naenae.common.pagination.PageView;
+import com.naenae.common.pagination.PaginationSupport;
 import com.naenae.teacher.course.domain.Course;
 import com.naenae.teacher.course.repository.CourseRepository;
 import com.naenae.teacher.profile.domain.Teacher;
@@ -60,11 +62,14 @@ public class TeacherWordTestService {
     }
 
     @Transactional(readOnly = true)
-    public List<WordTestListItem> getWordTests(Long teacherUserId) {
+    public PageView<WordTestListItem> getWordTests(Long teacherUserId, int page) {
         Teacher teacher = getTeacher(teacherUserId);
-        return wordTestRepository.findByTeacherIdOrderByStartDateDescIdDesc(teacher.getId()).stream()
-                .map(test -> new WordTestListItem(
+        return PaginationSupport.toView(
+                wordTestRepository.findByTeacherIdOrderByCreatedAtDescIdDesc(
+                        teacher.getId(), PaginationSupport.pageRequest(page)
+                ).map(test -> new WordTestListItem(
                         test.getId(),
+                        test.getCreatedAt(),
                         test.getStartDate(),
                         test.getEndDate(),
                         test.getCourses().stream()
@@ -73,11 +78,7 @@ public class TeacherWordTestService {
                                 .collect(Collectors.joining(", ")),
                         test.getWords().size()
                 ))
-                .sorted(Comparator.comparing(WordTestListItem::startDate).reversed()
-                        .thenComparing(WordTestListItem::endDate, Comparator.reverseOrder())
-                        .thenComparing(WordTestListItem::courseNames, String.CASE_INSENSITIVE_ORDER)
-                        .thenComparing(WordTestListItem::id, Comparator.reverseOrder()))
-                .toList();
+        );
     }
 
     @Transactional(readOnly = true)

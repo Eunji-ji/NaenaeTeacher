@@ -1,12 +1,184 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>과제 작성 | NaenaeTeacher</title><link rel="stylesheet" href="/assets/css/naenae-dashboard.css"></head>
-<body class="naenae-dashboard-body"><div class="dashboard-shell">
-<aside class="dashboard-sidebar" aria-label="선생님 메뉴"><div class="brand"><span class="brand-mark">N</span><div><p class="brand-name" th:text="${teacherDisplayName}">선생님</p><p class="brand-role">Teacher Space</p></div></div><nav class="sidebar-nav"><a class="nav-item" href="/teacher/dashboard"><span class="nav-icon">⌂</span> 대시보드</a><div class="sidebar-section"><div class="sidebar-section-label"><span class="nav-icon">👥</span> 학생관리</div></div><div class="sidebar-section"><div class="sidebar-section-label"><span class="nav-icon">📝</span> 과제관리</div><div class="sidebar-subnav"><a class="sidebar-subitem" href="/teacher/word-tests"><span class="nav-icon">•</span> 단어시험</a><a class="sidebar-subitem active" href="/teacher/assignments"><span class="nav-icon">•</span> 과제등록</a></div></div></nav></aside>
-<div class="dashboard-main"><header class="dashboard-header"><div><p class="header-kicker">Assignment Editor</p><h1 class="header-title">과제 작성</h1></div><a class="header-nav-action header-nav-action-secondary" href="/teacher/assignments">반 다시 선택</a></header>
-<main class="dashboard-content"><section class="dashboard-card assignment-editor-card"><div class="selected-course-summary"><span class="summary-caption">선택한 반</span><span class="selected-course-chip" th:each="course:${selectedCourses}" th:text="${course.title()}">중등반</span></div>
-<div class="auth-alert error" th:if="${errorMessage}" th:text="${errorMessage}"></div><form id="assignmentForm" action="/teacher/assignments" method="post" enctype="multipart/form-data"><input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"><input th:each="course:${selectedCourses}" type="hidden" name="courseIds" th:value="${course.id()}"><div class="assignment-basic-grid"><div class="field-group assignment-title-field"><label for="assignmentTitle">과제 제목</label><input id="assignmentTitle" name="title" type="text" maxlength="200" placeholder="과제 제목을 입력하세요" th:value="${title}" required></div><div class="field-group"><label for="startDate">게시 시작일</label><input id="startDate" name="startDate" type="date" th:value="${startDate}" required></div><div class="field-group"><label for="endDate">게시 종료일</label><input id="endDate" name="endDate" type="date" th:value="${endDate}" required></div></div>
-<div class="field-group"><label>과제 내용</label><div class="editor-shell"><div class="editor-toolbar" role="toolbar" aria-label="텍스트 서식"><button type="button" data-command="bold"><b>B</b></button><button type="button" data-command="italic"><i>I</i></button><button type="button" data-command="underline"><u>U</u></button><span></span><button type="button" data-command="insertUnorderedList">• 목록</button><button type="button" data-command="insertOrderedList">1. 목록</button><button type="button" data-command="justifyLeft">왼쪽</button><button type="button" data-command="justifyCenter">가운데</button><button type="button" id="linkButton">링크</button></div><div id="assignmentEditor" class="assignment-editor" contenteditable="true" data-placeholder="학생에게 전달할 과제 내용을 작성하세요."></div><input id="descriptionHtml" name="descriptionHtml" type="hidden"></div></div>
-<div class="field-group"><label for="attachments">첨부파일 <span class="field-note">최대 5개 · 파일당 10MB</span></label><label class="attachment-dropzone" id="dropzone" for="attachments"><span class="attachment-icon">＋</span><strong>파일을 끌어놓거나 클릭해서 선택하세요</strong><small>여러 파일을 한 번에 선택할 수 있어요.</small></label><input id="attachments" name="attachments" type="file" multiple hidden><div id="attachmentList" class="attachment-list"></div></div>
-<div class="word-test-form-actions"><a class="bulk-action bulk-download" href="/teacher/assignments">취소</a><button class="bulk-action bulk-upload" type="submit">과제 저장</button></div></form></section></main></div></div>
-<script th:inline="javascript">const editor=document.getElementById('assignmentEditor');editor.innerHTML=/*[[${descriptionHtml}]]*/'';document.querySelectorAll('[data-command]').forEach(b=>b.addEventListener('click',()=>{document.execCommand(b.dataset.command,false,null);editor.focus()}));document.getElementById('linkButton').addEventListener('click',()=>{const u=prompt('연결할 주소를 입력하세요.','https://');if(u&&/^https?:\/\//i.test(u))document.execCommand('createLink',false,u)});const input=document.getElementById('attachments'),list=document.getElementById('attachmentList'),drop=document.getElementById('dropzone');let files=[];function render(){list.replaceChildren();files.forEach((f,i)=>{const row=document.createElement('div');row.className='attachment-item';row.innerHTML=`<span>📎</span><div><strong></strong><small>${(f.size/1024/1024).toFixed(2)} MB</small></div><button type="button" aria-label="파일 삭제">×</button>`;row.querySelector('strong').textContent=f.name;row.querySelector('button').onclick=()=>{files.splice(i,1);sync()};list.appendChild(row)})}function sync(){const dt=new DataTransfer();files.forEach(f=>dt.items.add(f));input.files=dt.files;render()}function add(fs){for(const f of fs){if(files.length>=5){alert('첨부파일은 최대 5개까지 선택할 수 있습니다.');break}if(f.size>10*1024*1024){alert(`${f.name} 파일은 10MB를 초과합니다.`);continue}files.push(f)}sync()}input.addEventListener('change',e=>add(e.target.files));['dragenter','dragover'].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.add('dragging')}));['dragleave','drop'].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.remove('dragging')}));drop.addEventListener('drop',e=>add(e.dataTransfer.files));document.getElementById('assignmentForm').addEventListener('submit',()=>document.getElementById('descriptionHtml').value=editor.innerHTML);</script></body></html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${editMode} ? '과제 수정 | NaenaeTeacher' : '과제 작성 | NaenaeTeacher'">과제 작성 | NaenaeTeacher</title>
+    <link rel="stylesheet" href="/assets/css/naenae-dashboard.css">
+</head>
+<body class="naenae-dashboard-body">
+<div class="dashboard-shell">
+    <aside th:replace="~{fragments/teacher-sidebar :: sidebar('assignments')}"></aside>
+
+    <div class="dashboard-main">
+        <header class="dashboard-header">
+            <div>
+                <p class="header-kicker">Assignment Editor</p>
+                <h1 class="header-title" th:text="${editMode} ? '과제 수정' : '과제 작성'">과제 작성</h1>
+            </div>
+            <a class="header-nav-action header-nav-action-secondary"
+               th:href="${editMode} ? @{/teacher/assignments/{id}(id=${assignmentId})} : @{/teacher/assignments}">취소</a>
+        </header>
+
+        <main class="dashboard-content">
+            <section class="dashboard-card assignment-editor-card">
+                <div class="selected-course-summary">
+                    <span class="summary-caption">선택한 반</span>
+                    <span class="selected-course-chip"
+                          th:each="course : ${selectedCourses}"
+                          th:text="${course.title()}">중등반</span>
+                </div>
+                <div class="auth-alert error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+                <form id="assignmentForm"
+                      th:action="${editMode} ? @{/teacher/assignments/{id}(id=${assignmentId})} : @{/teacher/assignments}"
+                      method="post"
+                      enctype="multipart/form-data">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <input th:each="course : ${selectedCourses}" type="hidden" name="courseIds" th:value="${course.id()}">
+
+                    <div class="assignment-basic-grid">
+                        <div class="field-group assignment-title-field">
+                            <label for="assignmentTitle">과제 제목</label>
+                            <input id="assignmentTitle" name="title" type="text" maxlength="200"
+                                   placeholder="과제 제목을 입력하세요" th:value="${title}" required>
+                        </div>
+                        <div class="field-group">
+                            <label for="startDate">게시 시작일</label>
+                            <input id="startDate" name="startDate" type="date" th:value="${startDate}" required>
+                        </div>
+                        <div class="field-group">
+                            <label for="endDate">게시 종료일</label>
+                            <input id="endDate" name="endDate" type="date" th:value="${endDate}" required>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <label>과제 내용</label>
+                        <div class="editor-shell">
+                            <div class="editor-toolbar" role="toolbar" aria-label="텍스트 서식">
+                                <button type="button" data-command="bold"><b>B</b></button>
+                                <button type="button" data-command="italic"><i>I</i></button>
+                                <button type="button" data-command="underline"><u>U</u></button>
+                                <span></span>
+                                <button type="button" data-command="insertUnorderedList">• 목록</button>
+                                <button type="button" data-command="insertOrderedList">1. 목록</button>
+                                <button type="button" data-command="justifyLeft">왼쪽</button>
+                                <button type="button" data-command="justifyCenter">가운데</button>
+                                <button type="button" id="linkButton">링크</button>
+                            </div>
+                            <div id="assignmentEditor" class="assignment-editor" contenteditable="true"
+                                 data-placeholder="학생에게 전달할 과제 내용을 작성하세요."></div>
+                            <input id="descriptionHtml" name="descriptionHtml" type="hidden">
+                        </div>
+                    </div>
+
+                    <div class="field-group" th:if="${!#lists.isEmpty(existingAttachments)}">
+                        <label>기존 첨부파일</label>
+                        <div class="assignment-download-list">
+                            <a class="assignment-download-item"
+                               th:each="attachment : ${existingAttachments}"
+                               th:href="@{/teacher/assignments/{assignmentId}/attachments/{attachmentId}/download(assignmentId=${assignmentId}, attachmentId=${attachment.id()})}">
+                                <span aria-hidden="true">↓</span>
+                                <strong th:text="${attachment.originalName()}">파일명</strong>
+                                <small th:text="${attachment.fileSizeLabel()}">0 KB</small>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="attachments">
+                            <span th:text="${editMode} ? '첨부파일 추가' : '첨부파일'">첨부파일</span>
+                            <span class="field-note">기존 파일 포함 최대 5개 · 파일당 10MB</span>
+                        </label>
+                        <label class="attachment-dropzone" id="dropzone" for="attachments">
+                            <span class="attachment-icon">＋</span>
+                            <strong>파일을 끌어놓거나 클릭해서 선택하세요.</strong>
+                            <small>여러 파일을 한 번에 선택할 수 있어요.</small>
+                        </label>
+                        <input id="attachments" name="attachments" type="file" multiple hidden>
+                        <div id="attachmentList" class="attachment-list"></div>
+                    </div>
+
+                    <div class="word-test-form-actions">
+                        <a class="bulk-action bulk-download"
+                           th:href="${editMode} ? @{/teacher/assignments/{id}(id=${assignmentId})} : @{/teacher/assignments}">취소</a>
+                        <button class="bulk-action bulk-upload" type="submit"
+                                th:text="${editMode} ? '과제 수정' : '과제 저장'">과제 저장</button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+</div>
+<script th:inline="javascript">
+    const editor = document.getElementById('assignmentEditor');
+    editor.innerHTML = /*[[${descriptionHtml}]]*/ '';
+    document.querySelectorAll('[data-command]').forEach(button => button.addEventListener('click', () => {
+        document.execCommand(button.dataset.command, false, null);
+        editor.focus();
+    }));
+    document.getElementById('linkButton').addEventListener('click', () => {
+        const url = prompt('연결할 주소를 입력하세요.', 'https://');
+        if (url && /^https?:\/\//i.test(url)) document.execCommand('createLink', false, url);
+    });
+
+    const existingCount = /*[[${#lists.size(existingAttachments)}]]*/ 0;
+    const input = document.getElementById('attachments');
+    const list = document.getElementById('attachmentList');
+    const dropzone = document.getElementById('dropzone');
+    let files = [];
+
+    function renderFiles() {
+        list.replaceChildren();
+        files.forEach((file, index) => {
+            const row = document.createElement('div');
+            row.className = 'attachment-item';
+            row.innerHTML = `<span>📎</span><div><strong></strong><small>${(file.size / 1024 / 1024).toFixed(2)} MB</small></div><button type="button" aria-label="파일 삭제">×</button>`;
+            row.querySelector('strong').textContent = file.name;
+            row.querySelector('button').onclick = () => {
+                files.splice(index, 1);
+                syncFiles();
+            };
+            list.appendChild(row);
+        });
+    }
+
+    function syncFiles() {
+        const transfer = new DataTransfer();
+        files.forEach(file => transfer.items.add(file));
+        input.files = transfer.files;
+        renderFiles();
+    }
+
+    function addFiles(selectedFiles) {
+        for (const file of selectedFiles) {
+            if (existingCount + files.length >= 5) {
+                alert('첨부파일은 기존 파일을 포함해 최대 5개까지 선택할 수 있습니다.');
+                break;
+            }
+            if (file.size > 10 * 1024 * 1024) {
+                alert(`${file.name} 파일은 10MB를 초과합니다.`);
+                continue;
+            }
+            files.push(file);
+        }
+        syncFiles();
+    }
+
+    input.addEventListener('change', event => addFiles(event.target.files));
+    ['dragenter', 'dragover'].forEach(name => dropzone.addEventListener(name, event => {
+        event.preventDefault();
+        dropzone.classList.add('dragging');
+    }));
+    ['dragleave', 'drop'].forEach(name => dropzone.addEventListener(name, event => {
+        event.preventDefault();
+        dropzone.classList.remove('dragging');
+    }));
+    dropzone.addEventListener('drop', event => addFiles(event.dataTransfer.files));
+    document.getElementById('assignmentForm').addEventListener('submit', () => {
+        document.getElementById('descriptionHtml').value = editor.innerHTML;
+    });
+</script>
+</body>
+</html>

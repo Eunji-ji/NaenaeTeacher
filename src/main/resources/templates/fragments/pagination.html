@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav class="pagination-nav"
+     th:fragment="pagination(page, baseUrl)"
+     th:if="${page.totalPages() > 1}"
+     aria-label="페이지 이동">
+    <a class="pagination-link"
+       th:classappend="${!page.hasPrevious()} ? ' disabled'"
+       th:href="${page.hasPrevious()} ? @{${baseUrl}(page=${page.number() - 1})} : '#'"
+       aria-label="이전 페이지">이전</a>
+    <a class="pagination-link"
+       th:each="pageNumber : ${page.pageNumbers()}"
+       th:classappend="${pageNumber == page.number()} ? ' active'"
+       th:href="@{${baseUrl}(page=${pageNumber})}"
+       th:text="${pageNumber + 1}">1</a>
+    <a class="pagination-link"
+       th:classappend="${!page.hasNext()} ? ' disabled'"
+       th:href="${page.hasNext()} ? @{${baseUrl}(page=${page.number() + 1})} : '#'"
+       aria-label="다음 페이지">다음</a>
+</nav>
+</body>
+</html>
