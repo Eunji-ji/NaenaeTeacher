@@ -419,3 +419,9 @@ Log in again if the browser session was reset, then visually confirm the dashboa
 - Added a dedicated student login page and a shared authentication processing endpoint with role-aware login failure redirects.
 - Routed unauthenticated student pages to the student login while keeping teacher pages on the teacher login.
 - Returned both roles to the role-selection screen after logout and added portal-back links to both login screens.
+
+## 2026-07-16 Database dump cleanup
+
+- Removed the previous generic database dump path from the current Git tree.
+- Kept only the validated dump created today under the dated filename `naenae_teacher_20260716.dump`.
+- Updated the database restore guide to use the dated dump filename.
