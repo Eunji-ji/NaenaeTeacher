@@ -14,6 +14,7 @@ import com.naenae.teacher.profile.domain.Teacher;
 import com.naenae.teacher.profile.repository.TeacherRepository;
 import com.naenae.teacher.student.model.CourseOption;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
@@ -58,6 +59,16 @@ public class TeacherNoticeService {
     }
 
     @Transactional(readOnly = true)
+    public Optional<DashboardNoticeItem> getDashboardNotice(Long userId) {
+        Teacher teacher = getTeacher(userId);
+        LocalDate today = LocalDate.now();
+        return noticeRepository
+                .findFirstByTeacherIdAndPublishStartDateLessThanEqualAndPublishEndDateGreaterThanEqualOrderByCreatedAtDescIdDesc(
+                        teacher.getId(), today, today)
+                .map(this::toDashboardItem);
+    }
+
+    @Transactional(readOnly = true)
     public NoticeDetail getNotice(Long userId, Long noticeId) {
         Notice notice = owned(getTeacher(userId), noticeId);
         return new NoticeDetail(notice.getId(), notice.getCreatedAt(), notice.getTitle(), targetLabel(notice),
@@ -68,6 +79,7 @@ public class TeacherNoticeService {
     public NoticeFormData getForm(Long userId, Long noticeId) {
         Notice notice = owned(getTeacher(userId), noticeId);
         return new NoticeFormData(notice.getId(), notice.getTitle(), notice.getContentHtml(), notice.isTargetAll(),
+                notice.getPublishStartDate(), notice.getPublishEndDate(),
                 notice.getCourses().stream().map(mapping -> new CourseOption(mapping.getCourse().getId(), mapping.getCourse().getTitle()))
                         .sorted(Comparator.comparing(CourseOption::title, String.CASE_INSENSITIVE_ORDER)).toList(), attachments(notice));
     }
@@ -82,20 +94,26 @@ public class TeacherNoticeService {
     }
 
     @Transactional
-    public void create(Long userId, String title, String html, boolean targetAll, List<Long> courseIds, List<MultipartFile> files) {
+    public void create(Long userId, String title, String html, boolean targetAll,
+                       LocalDate publishStartDate, LocalDate publishEndDate,
+                       List<Long> courseIds, List<MultipartFile> files) {
         Teacher teacher = getTeacher(userId); Values values = values(title, html);
+        validatePeriod(publishStartDate, publishEndDate);
         List<Course> courses = targetCourses(teacher, targetAll, courseIds); List<MultipartFile> actual = files(files, 0);
-        Notice notice = Notice.create(teacher, values.title(), values.html(), targetAll);
+        Notice notice = Notice.create(teacher, values.title(), values.html(), targetAll, publishStartDate, publishEndDate);
         courses.forEach(notice::addCourse); saveFiles(notice, actual); noticeRepository.save(notice);
     }
 
     @Transactional
     public void update(Long userId, Long noticeId, String title, String html, boolean targetAll,
+                       LocalDate publishStartDate, LocalDate publishEndDate,
                        List<Long> courseIds, List<MultipartFile> files) {
         Teacher teacher = getTeacher(userId); Notice notice = owned(teacher, noticeId); Values values = values(title, html);
+        validatePeriod(publishStartDate, publishEndDate);
         List<Course> courses = targetCourses(teacher, targetAll, courseIds);
         List<MultipartFile> actual = files(files, notice.getAttachments().size());
-        notice.update(values.title(), values.html(), targetAll); notice.replaceCourses(courses); saveFiles(notice, actual);
+        notice.update(values.title(), values.html(), targetAll, publishStartDate, publishEndDate);
+        notice.replaceCourses(courses); saveFiles(notice, actual);
     }
 
     @Transactional
@@ -107,6 +125,12 @@ public class TeacherNoticeService {
 
     private NoticeListItem toListItem(Notice notice) {
         return new NoticeListItem(notice.getId(), notice.getCreatedAt(), notice.getTitle(), targetLabel(notice), notice.getAttachments().size());
+    }
+    private DashboardNoticeItem toDashboardItem(Notice notice) {
+        String text = Jsoup.parse(notice.getContentHtml()).text();
+        String summary = text.length() > 140 ? text.substring(0, 140) + "…" : text;
+        return new DashboardNoticeItem(notice.getId(), notice.getCreatedAt(), notice.getTitle(),
+                targetLabel(notice), summary);
     }
     private List<NoticeAttachmentItem> attachments(Notice notice) {
         return notice.getAttachments().stream().sorted(Comparator.comparing(NoticeAttachment::getId))
@@ -129,6 +153,10 @@ public class TeacherNoticeService {
         if (title == null || title.trim().isEmpty()) throw new IllegalArgumentException("알림장 제목을 입력해 주세요.");
         String clean = Jsoup.clean(html == null ? "" : html, Safelist.relaxed().removeTags("img"));
         return new Values(title.trim(), clean);
+    }
+    private void validatePeriod(LocalDate startDate, LocalDate endDate) {
+        if (startDate == null || endDate == null) throw new IllegalArgumentException("게시기간을 선택해 주세요.");
+        if (endDate.isBefore(startDate)) throw new IllegalArgumentException("게시 종료일은 시작일보다 빠를 수 없습니다.");
     }
     private List<MultipartFile> files(List<MultipartFile> files, int existing) {
         List<MultipartFile> actual = files == null ? List.of() : files.stream().filter(file -> !file.isEmpty()).toList();

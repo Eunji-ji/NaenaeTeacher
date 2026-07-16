@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>오늘의 영어 단어조회 | NaenaeTeacher</title>
+    <link rel="stylesheet" href="/assets/css/naenae-dashboard.css">
+</head>
+<body class="naenae-dashboard-body">
+<div class="dashboard-shell">
+    <aside th:replace="~{fragments/teacher-sidebar :: sidebar('todayEnglishWords')}"></aside>
+    <div class="dashboard-main">
+        <header class="dashboard-header">
+            <div><p class="header-kicker">Today English Words</p><h1 class="header-title">단어조회</h1></div>
+            <a class="header-nav-action" href="/teacher/today-english">단어등록</a>
+        </header>
+        <main class="dashboard-content">
+            <section class="dashboard-card word-test-card word-test-list-card">
+                <div class="page-toolbar today-word-query-toolbar">
+                    <div><h2>등록된 단어</h2><p>레벨별 단어와 뜻을 조회하고 불필요한 단어를 삭제할 수 있어요.</p></div>
+                    <form class="today-word-level-filter" action="/teacher/today-english/words" method="get">
+                        <label for="level">레벨</label>
+                        <select id="level" name="level">
+                            <option value="" th:selected="${selectedLevel == null}">전체</option>
+                            <option th:each="level : ${wordLevels}" th:value="${level.name()}"
+                                    th:selected="${selectedLevel == level}" th:text="${level.label}">초등저학년</option>
+                        </select>
+                        <button class="bulk-action bulk-upload" type="submit">조회</button>
+                    </form>
+                </div>
+                <div class="auth-alert success" th:if="${successMessage}" th:text="${successMessage}"></div>
+                <div class="auth-alert error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+                <div class="word-test-list today-word-query-list" th:if="${wordPage.hasContent()}">
+                    <article class="word-test-list-item" th:each="item : ${wordPage.content()}">
+                        <div class="word-test-list-content">
+                            <p class="word-test-list-title"><span class="today-word-level" th:text="${item.levelLabel()}">초등저학년</span><span th:text="${item.word()}">apple</span></p>
+                            <p class="description" th:text="${item.meaning()}">사과</p>
+                        </div>
+                        <div class="word-test-list-actions">
+                            <form th:action="@{/teacher/today-english/words/{id}/delete(id=${item.id()})}" method="post"
+                                  onsubmit="return confirm('이 단어를 삭제할까요?');">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <input type="hidden" name="page" th:value="${wordPage.number()}">
+                                <input type="hidden" name="level" th:if="${selectedLevel != null}" th:value="${selectedLevel.name()}">
+                                <button class="word-test-action-button danger" type="submit">삭제</button>
+                            </form>
+                        </div>
+                    </article>
+                </div>
+                <div class="empty-state" th:if="${!wordPage.hasContent()}">등록된 단어가 없습니다.</div>
+                <div th:replace="~{fragments/pagination :: pagination(${wordPage}, ${wordPaginationUrl})}"></div>
+            </section>
+        </main>
+    </div>
+</div>
+<script src="/assets/js/mobile-navigation.js" defer></script>
+</body>
+</html>

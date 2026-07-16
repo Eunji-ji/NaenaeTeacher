@@ -22,6 +22,11 @@ public class AuthPageController {
         return "auth/login";
     }
 
+    @GetMapping("/student/login")
+    public String studentLogin() {
+        return "auth/student-login";
+    }
+
     @GetMapping("/teacher/signup")
     public String teacherSignup() {
         return "auth/signup";

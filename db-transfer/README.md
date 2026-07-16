@@ -2,6 +2,11 @@
 
 `naenae_teacher_test.dump`는 PostgreSQL custom-format 덤프입니다.
 
+- 생성일: 2026-07-16
+- PostgreSQL: 16.14
+- Flyway 스키마: V21
+- 포함 범위: 현재 로컬 테스트 DB의 스키마와 데이터 전체
+
 ## 복원
 
 대상 PostgreSQL에 빈 데이터베이스를 만든 뒤 실행합니다.

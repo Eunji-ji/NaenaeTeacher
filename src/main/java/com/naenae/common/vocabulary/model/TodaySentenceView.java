@@ -5,6 +5,7 @@ import com.naenae.common.vocabulary.domain.WordLevel;
 public record TodaySentenceView(
         WordLevel level,
         String levelLabel,
-        String sentence
+        String sentence,
+        String meaning
 ) {
 }

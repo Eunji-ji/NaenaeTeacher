@@ -11,3 +11,4 @@ target/
 *.class
 /uploads/
 /build-verification/
+/build-*/

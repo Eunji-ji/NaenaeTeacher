@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,17 +23,23 @@ public class Notice extends BaseTimeEntity {
     @Column(nullable = false, length = 200) private String title;
     @Column(name = "content_html", nullable = false, columnDefinition = "TEXT") private String contentHtml;
     @Column(name = "target_all", nullable = false) private boolean targetAll;
+    @Column(name = "publish_start_date", nullable = false) private LocalDate publishStartDate;
+    @Column(name = "publish_end_date", nullable = false) private LocalDate publishEndDate;
     @OneToMany(mappedBy = "notice", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<NoticeCourse> courses = new ArrayList<>();
     @OneToMany(mappedBy = "notice", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<NoticeAttachment> attachments = new ArrayList<>();
 
-    public static Notice create(Teacher teacher, String title, String contentHtml, boolean targetAll) {
+    public static Notice create(Teacher teacher, String title, String contentHtml, boolean targetAll,
+                                LocalDate publishStartDate, LocalDate publishEndDate) {
         Notice notice = new Notice(); notice.teacher = teacher; notice.title = title;
-        notice.contentHtml = contentHtml; notice.targetAll = targetAll; return notice;
+        notice.contentHtml = contentHtml; notice.targetAll = targetAll;
+        notice.publishStartDate = publishStartDate; notice.publishEndDate = publishEndDate; return notice;
     }
-    public void update(String title, String contentHtml, boolean targetAll) {
+    public void update(String title, String contentHtml, boolean targetAll,
+                       LocalDate publishStartDate, LocalDate publishEndDate) {
         this.title = title; this.contentHtml = contentHtml; this.targetAll = targetAll;
+        this.publishStartDate = publishStartDate; this.publishEndDate = publishEndDate;
     }
     public void replaceCourses(List<Course> selectedCourses) {
         Set<Long> selectedIds = selectedCourses.stream().map(Course::getId).collect(java.util.stream.Collectors.toSet());

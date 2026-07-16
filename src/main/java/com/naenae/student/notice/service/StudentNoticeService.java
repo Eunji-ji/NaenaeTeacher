@@ -11,6 +11,7 @@ import com.naenae.student.profile.domain.Student;
 import com.naenae.student.profile.repository.StudentRepository;
 import com.naenae.teacher.course.repository.CourseStudentRepository;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,6 +48,13 @@ public class StudentNoticeService {
     public List<NoticeListItem> getRecentNotices(Student student, int size) {
         return noticeRepository.findVisibleToStudent(student.getTeacher().getId(), queryCourseIds(student), PageRequest.of(0, size))
                 .map(this::toListItem).getContent();
+    }
+
+    @Transactional(readOnly = true)
+    public List<DashboardNoticeItem> getDashboardNotices(Student student, int size) {
+        return noticeRepository.findVisibleToStudentOnDate(
+                        student.getTeacher().getId(), queryCourseIds(student), LocalDate.now(), PageRequest.of(0, size))
+                .map(this::toDashboardItem).getContent();
     }
 
     @Transactional(readOnly = true)
@@ -87,6 +95,13 @@ public class StudentNoticeService {
 
     private NoticeListItem toListItem(Notice notice) {
         return new NoticeListItem(notice.getId(), notice.getCreatedAt(), notice.getTitle(), targetLabel(notice), notice.getAttachments().size());
+    }
+
+    private DashboardNoticeItem toDashboardItem(Notice notice) {
+        String text = org.jsoup.Jsoup.parse(notice.getContentHtml()).text();
+        String summary = text.length() > 140 ? text.substring(0, 140) + "…" : text;
+        return new DashboardNoticeItem(notice.getId(), notice.getCreatedAt(), notice.getTitle(),
+                targetLabel(notice), summary);
     }
 
     private List<NoticeAttachmentItem> attachments(Notice notice) {

@@ -2,17 +2,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.querySelector('.dashboard-sidebar');
     const header = document.querySelector('.dashboard-header');
     if (!sidebar || !header) return;
+    if (sidebar.dataset.mobileNavigationInitialized === 'true') return;
+    sidebar.dataset.mobileNavigationInitialized = 'true';
 
     sidebar.setAttribute('id', 'dashboardSidebar');
 
-    const openButton = document.createElement('button');
+    const existingOpenButton = header.querySelector('.mobile-menu-button');
+    const openButton = existingOpenButton || document.createElement('button');
     openButton.type = 'button';
     openButton.className = 'mobile-menu-button';
     openButton.setAttribute('aria-label', '메뉴 열기');
     openButton.setAttribute('aria-controls', 'dashboardSidebar');
     openButton.setAttribute('aria-expanded', 'false');
     openButton.innerHTML = '<span aria-hidden="true">☰</span>';
-    header.insertBefore(openButton, header.firstChild);
+    if (!existingOpenButton) header.insertBefore(openButton, header.firstChild);
 
     const closeButton = document.createElement('button');
     closeButton.type = 'button';

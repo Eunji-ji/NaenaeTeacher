@@ -8,35 +8,7 @@
 </head>
 <body class="naenae-dashboard-body">
 <div class="dashboard-shell">
-    <aside class="dashboard-sidebar" aria-label="선생님 메뉴">
-        <div class="brand">
-            <span class="brand-mark">N</span>
-            <div><p class="brand-name" th:text="${teacherDisplayName}">김지우쌤</p><p class="brand-role">Teacher Space</p></div>
-        </div>
-        <nav class="sidebar-nav">
-            <a class="nav-item" href="/teacher/dashboard"><span class="nav-icon">⌂</span> 대시보드</a>
-            <div class="sidebar-section" aria-label="학생관리">
-                <div class="sidebar-section-label"><span class="nav-icon" aria-hidden="true">👥</span> 학생관리</div>
-                <div class="sidebar-subnav">
-                    <a class="sidebar-subitem" href="/teacher/courses"><span class="nav-icon">•</span> 반등록</a>
-                    <a class="sidebar-subitem" href="/teacher/students"><span class="nav-icon">•</span> 학생등록</a>
-                    <a class="sidebar-subitem" href="/teacher/students/bulk"><span class="nav-icon">•</span> 학생일괄등록</a>
-                    <a class="sidebar-subitem" href="/teacher/attendance"><span class="nav-icon">•</span> 출석관리</a>
-                    <a class="sidebar-subitem" href="/teacher/students/status"><span class="nav-icon">•</span> 학생 학습관리</a>
-                </div>
-            </div>
-            <div class="sidebar-section" aria-label="과제관리">
-                <div class="sidebar-section-label"><span class="nav-icon" aria-hidden="true">📝</span> 과제관리</div>
-                <div class="sidebar-subnav">
-                    <a class="sidebar-subitem active" href="/teacher/word-tests"><span class="nav-icon">•</span> 단어시험</a>
-                    <a class="sidebar-subitem" href="/teacher/assignments"><span class="nav-icon">•</span> 과제등록</a>
-                </div>
-            </div>
-            <a class="nav-item" href="/teacher/today-english"><span class="nav-icon">Aa</span> 오늘의 영어</a>
-            <a class="nav-item" href="/teacher/notice"><span class="nav-icon">!</span> 알림장</a>
-            <a class="nav-item" href="/teacher/board"><span class="nav-icon">#</span> 게시판</a>
-        </nav>
-    </aside>
+    <aside th:replace="~{fragments/teacher-sidebar :: sidebar('wordTests')}"></aside>
 
     <div class="dashboard-main">
         <header class="dashboard-header">

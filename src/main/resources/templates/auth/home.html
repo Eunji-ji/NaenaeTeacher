@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>NaenaeTeacher | 화면 선택</title>
+    <link rel="stylesheet" href="/assets/css/naenae-dashboard.css">
+</head>
+<body class="portal-body">
+<main class="portal-shell">
+    <section class="portal-heading">
+        <div class="portal-character" role="img" aria-label="웃는 얼굴"><span></span><span></span><i></i></div>
+        <p class="portal-kicker">WELCOME TO</p>
+        <h1>NaenaeTeacher</h1>
+        <p>학원 선생님과 학생이 함께 쓰는 따뜻한 학습 공간이에요.<br>사용할 화면을 선택해 주세요.</p>
+    </section>
+
+    <div class="auth-alert success portal-alert" th:if="${param.logout}">안전하게 로그아웃되었습니다.</div>
+
+    <section class="portal-role-grid" aria-label="사용 화면 선택">
+        <a class="portal-role-card teacher" href="/teacher/login">
+            <span class="portal-role-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4zM7 9.5V15c2.8 2.4 7.2 2.4 10 0V9.5M21 8v6"/></svg>
+            </span>
+            <span class="portal-role-copy"><strong>선생님용</strong><small>Teacher Dashboard</small><p>출석 현황, 오늘의 영어, 알림장과 학생 학습 상태를 한눈에 관리해요.</p></span>
+            <span class="portal-enter">들어가기 <b>→</b></span>
+        </a>
+        <a class="portal-role-card student" href="/student/login">
+            <span class="portal-role-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 013 3v13H7a2 2 0 01-2-2V4zM7 17a2 2 0 00-2 2M9 8h6M9 12h6"/></svg>
+            </span>
+            <span class="portal-role-copy"><strong>학생용</strong><small>Student Dashboard</small><p>오늘의 단어와 문장, 과제, 출석과 선생님의 알림을 확인해요.</p></span>
+            <span class="portal-enter">들어가기 <b>→</b></span>
+        </a>
+    </section>
+    <p class="portal-footnote">오늘도 작은 성장을 함께 기록해요 <span>🌱</span></p>
+</main>
+</body>
+</html>
+

@@ -8,44 +8,11 @@
 </head>
 <body class="naenae-dashboard-body">
 <div class="dashboard-shell">
-    <aside class="dashboard-sidebar" aria-label="선생님 메뉴">
-        <div class="brand">
-            <span class="brand-mark">N</span>
-            <div>
-                <p class="brand-name" th:text="${teacherDisplayName}">김지우쌤</p>
-                <p class="brand-role">Teacher Space</p>
-            </div>
-        </div>
-
-        <nav class="sidebar-nav">
-            <a class="nav-item active" href="/teacher/dashboard"><span class="nav-icon">▦</span> Dashboard</a>
-            <div class="sidebar-section" aria-label="학생관리">
-                <div class="sidebar-section-label"><span class="nav-icon" aria-hidden="true">👥</span> 학생관리</div>
-                <div class="sidebar-subnav">
-                    <a class="sidebar-subitem" href="/teacher/courses"><span class="nav-icon">▤</span> 반등록</a>
-                    <a class="sidebar-subitem" href="/teacher/students"><span class="nav-icon">◎</span> 학생등록</a>
-                    <a class="sidebar-subitem" href="/teacher/students/bulk"><span class="nav-icon">⬇</span> 학생일괄등록</a>
-                    <a class="sidebar-subitem" href="/teacher/attendance"><span class="nav-icon">✓</span> 출석관리</a>
-                    <a class="sidebar-subitem" href="/teacher/students/status"><span class="nav-icon">▤</span> 학생 학습관리</a>
-                </div>
-            </div>
-            <div class="sidebar-section" aria-label="과제관리">
-                <div class="sidebar-section-label"><span class="nav-icon" aria-hidden="true">📝</span> 과제관리</div>
-                <div class="sidebar-subnav">
-                    <a class="sidebar-subitem" href="/teacher/word-tests"><span class="nav-icon">•</span> 단어시험</a>
-                    <a class="sidebar-subitem" href="/teacher/assignments"><span class="nav-icon">•</span> 과제등록</a>
-                </div>
-            </div>
-            <a class="nav-item" href="/teacher/today-english"><span class="nav-icon">✦</span> 오늘의 영어</a>
-            <a class="nav-item" href="/teacher/notice"><span class="nav-icon">!</span> 알림장</a>
-            <a class="nav-item" href="/teacher/board"><span class="nav-icon">#</span> 게시판</a>
-        </nav>
-    </aside>
+    <aside th:replace="~{fragments/teacher-sidebar :: sidebar('dashboard')}"></aside>
 
     <div class="dashboard-main">
         <header class="dashboard-header">
             <div style="display:flex; align-items:center; gap:10px;">
-                <button class="mobile-menu-button" type="button" aria-label="메뉴 열기">☰</button>
                 <div>
                     <p class="header-kicker">Teacher Dashboard</p>
                     <h1 class="header-title">선생님 대시보드</h1>
@@ -113,7 +80,7 @@
                     <article class="dashboard-card">
                         <div class="card-header">
                             <h2 class="card-title"><span class="card-icon tone-info">Aa</span> 오늘의 단어</h2>
-                            <span class="pill">3 카테고리</span>
+                            <a class="pill" href="/teacher/today-english" aria-label="오늘의 영어 관리로 이동">관리</a>
                         </div>
                         <div class="today-word-list">
                             <article class="today-word-mini"
@@ -124,9 +91,10 @@
                                     <span class="pill">오늘</span>
                                 </div>
                                 <p class="word" th:text="${word.word()}">brave</p>
-                                <p class="description" th:text="${word.sentence()}">She is brave enough to try again.</p>
+                                <p class="description" th:text="${word.meaning()}">용감한</p>
                             </article>
                         </div>
+                        <p class="description" th:if="${#lists.isEmpty(todayEnglishWords)}">등록된 단어가 없습니다. 오늘의 영어에서 엑셀을 업로드해 주세요.</p>
                     </article>
 
                     <article class="dashboard-card">
@@ -140,6 +108,7 @@
                                      th:classappend="${#strings.length(sentence.sentence()) > 78 ? ' sentence-extra-long' : (#strings.length(sentence.sentence()) > 56 ? ' sentence-long' : '')}">
                                 <span class="today-word-level" th:text="${sentence.levelLabel()}">초등저학년</span>
                                 <p class="sentence" th:text="${sentence.sentence()}">A kind heart can make a better day.</p>
+                                <p class="description today-sentence-meaning" th:text="${sentence.meaning()}">따뜻한 마음은 더 좋은 하루를 만들 수 있어요.</p>
                             </article>
                         </div>
                     </article>
@@ -160,20 +129,30 @@
                     <article class="dashboard-card">
                         <div class="card-header">
                             <h2 class="card-title"><span class="card-icon tone-warning">!</span> 오늘의 알림장</h2>
-                            <span class="pill">15:20</span>
+                            <a class="pill" th:if="${todayNotice != null}"
+                               th:href="@{/teacher/notice/{id}(id=${todayNotice.id()})}"
+                               th:text="${#temporals.format(todayNotice.createdAt(),'MM.dd HH:mm')}">07.16 15:20</a>
+                            <a class="pill" th:unless="${todayNotice != null}" href="/teacher/notice">보기</a>
                         </div>
-                        <p class="description">오늘 숙제는 Unit 3 단어 10개 외우기입니다. 내일은 짧은 단어 테스트가 있습니다.</p>
+                        <div th:if="${todayNotice != null}">
+                            <a class="dashboard-content-link" th:href="@{/teacher/notice/{id}(id=${todayNotice.id()})}">
+                                <strong class="item-title" th:text="${todayNotice.title()}">알림장 제목</strong>
+                                <p class="description" th:text="${todayNotice.summary()}">알림장 내용</p>
+                                <span class="item-meta" th:text="|대상 ${todayNotice.targetLabel()}|">대상 전체</span>
+                            </a>
+                        </div>
+                        <p class="description" th:unless="${todayNotice != null}">등록된 알림장이 없습니다.</p>
                     </article>
 
                     <article class="dashboard-card">
                         <div class="card-header">
                             <h2 class="card-title"><span class="card-icon tone-info">▤</span> 오늘 수업</h2>
+                            <a class="pill" href="/teacher/classes/schedule">관리</a>
                         </div>
                         <ul class="schedule-list">
-                            <li class="list-item"><div><p class="item-title">초등 영어 A반</p><p class="item-meta">16:00 · 8명</p></div><span class="pill">예정</span></li>
-                            <li class="list-item"><div><p class="item-title">중등 문법반</p><p class="item-meta">18:00 · 10명</p></div><span class="pill">예정</span></li>
-                            <li class="list-item"><div><p class="item-title">고등 독해반</p><p class="item-meta">20:00 · 6명</p></div><span class="pill">마감</span></li>
+                            <li class="list-item" th:each="schedule:${todaySchedules}"><div><p class="item-title" th:text="${schedule.lessonTitle()}">중등 문법 수업</p><p class="item-meta" th:text="|${schedule.courseTitle()} · ${#temporals.format(schedule.startTime(),'HH:mm')} ~ ${#temporals.format(schedule.endTime(),'HH:mm')}|">중등반 · 18:00 ~ 19:00</p></div><span class="pill" th:text="${schedule.weekdayLabel()}">월요일</span></li>
                         </ul>
+                        <p class="description" th:if="${#lists.isEmpty(todaySchedules)}">오늘 등록된 수업이 없습니다.</p>
                     </article>
 
                     <article class="dashboard-card">
@@ -182,9 +161,15 @@
                             <a class="pill" href="/teacher/board">보기</a>
                         </div>
                         <ul class="board-list">
-                            <li class="list-item"><div><p class="item-title">7월 수업 일정 안내</p><p class="item-meta">댓글 4개</p></div><span class="pill">공지</span></li>
-                            <li class="list-item"><div><p class="item-title">Unit 3 단어장 PDF</p><p class="item-meta">댓글 2개</p></div><span class="pill">자료</span></li>
+                            <li class="list-item" th:each="post : ${boardPosts}">
+                                <a class="dashboard-content-link" th:href="@{/teacher/board/{id}(id=${post.id()})}">
+                                    <div><p class="item-title" th:text="${post.title()}">게시글 제목</p>
+                                        <p class="item-meta" th:text="|${post.authorLabel()} · 댓글 ${post.commentCount()}개|">작성자 · 댓글</p></div>
+                                    <span class="pill" th:text="${#temporals.format(post.createdAt(),'MM.dd')}">07.16</span>
+                                </a>
+                            </li>
                         </ul>
+                        <p class="description" th:if="${#lists.isEmpty(boardPosts)}">등록된 게시글이 없습니다.</p>
                     </article>
 
                     <article class="dashboard-card full-row">

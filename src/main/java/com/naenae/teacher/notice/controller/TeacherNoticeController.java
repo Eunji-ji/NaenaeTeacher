@@ -7,6 +7,8 @@ import com.naenae.common.user.domain.User;
 import com.naenae.teacher.auth.security.CustomUserDetails;
 import com.naenae.teacher.notice.service.TeacherNoticeService;
 import java.util.List;
+import java.time.LocalDate;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -37,23 +39,27 @@ public class TeacherNoticeController {
 
     @GetMapping("/teacher/notice/new")
     public String createForm(Authentication authentication, Model model) {
-        populateForm(model, userId(authentication), null, "", "", true, List.of(), List.of());
+        LocalDate today = LocalDate.now();
+        populateForm(model, userId(authentication), null, "", "", true, today, today, List.of(), List.of());
         return "teacher/notice-form";
     }
 
     @PostMapping("/teacher/notice")
     public String create(@RequestParam String title, @RequestParam String contentHtml,
                          @RequestParam(defaultValue = "false") boolean targetAll,
+                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate publishStartDate,
+                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate publishEndDate,
                          @RequestParam(required = false) List<Long> courseIds,
                          @RequestParam(required = false) List<MultipartFile> attachments,
                          Authentication authentication, Model model, RedirectAttributes redirectAttributes) {
         Long userId = userId(authentication);
         try {
-            noticeService.create(userId, title, contentHtml, targetAll, courseIds, attachments);
+            noticeService.create(userId, title, contentHtml, targetAll, publishStartDate, publishEndDate, courseIds, attachments);
             redirectAttributes.addFlashAttribute("successMessage", "알림장을 등록했습니다.");
             return "redirect:/teacher/notice";
         } catch (IllegalArgumentException | IllegalStateException exception) {
-            populateForm(model, userId, null, title, contentHtml, targetAll, courseIds, List.of());
+            populateForm(model, userId, null, title, contentHtml, targetAll,
+                    publishStartDate, publishEndDate, courseIds, List.of());
             model.addAttribute("errorMessage", exception.getMessage());
             return "teacher/notice-form";
         }
@@ -70,6 +76,7 @@ public class TeacherNoticeController {
         Long userId = userId(authentication);
         NoticeFormData form = noticeService.getForm(userId, noticeId);
         populateForm(model, userId, form.id(), form.title(), form.contentHtml(), form.targetAll(),
+                form.publishStartDate(), form.publishEndDate(),
                 form.selectedCourses().stream().map(course -> course.id()).toList(), form.attachments());
         return "teacher/notice-form";
     }
@@ -77,17 +84,21 @@ public class TeacherNoticeController {
     @PostMapping("/teacher/notice/{noticeId}")
     public String update(@PathVariable Long noticeId, @RequestParam String title, @RequestParam String contentHtml,
                          @RequestParam(defaultValue = "false") boolean targetAll,
+                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate publishStartDate,
+                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate publishEndDate,
                          @RequestParam(required = false) List<Long> courseIds,
                          @RequestParam(required = false) List<MultipartFile> attachments,
                          Authentication authentication, Model model, RedirectAttributes redirectAttributes) {
         Long userId = userId(authentication);
         try {
-            noticeService.update(userId, noticeId, title, contentHtml, targetAll, courseIds, attachments);
+            noticeService.update(userId, noticeId, title, contentHtml, targetAll,
+                    publishStartDate, publishEndDate, courseIds, attachments);
             redirectAttributes.addFlashAttribute("successMessage", "알림장을 수정했습니다.");
             return "redirect:/teacher/notice/" + noticeId;
         } catch (IllegalArgumentException | IllegalStateException exception) {
             NoticeFormData existing = noticeService.getForm(userId, noticeId);
-            populateForm(model, userId, noticeId, title, contentHtml, targetAll, courseIds, existing.attachments());
+            populateForm(model, userId, noticeId, title, contentHtml, targetAll,
+                    publishStartDate, publishEndDate, courseIds, existing.attachments());
             model.addAttribute("errorMessage", exception.getMessage());
             return "teacher/notice-form";
         }
@@ -108,7 +119,8 @@ public class TeacherNoticeController {
     }
 
     private void populateForm(Model model, Long userId, Long noticeId, String title, String contentHtml,
-                              boolean targetAll, List<Long> selectedIds, List<?> attachments) {
+                              boolean targetAll, LocalDate publishStartDate, LocalDate publishEndDate,
+                              List<Long> selectedIds, List<?> attachments) {
         List<Long> ids = selectedIds == null ? List.of() : selectedIds;
         model.addAttribute("courses", noticeService.getCourses(userId));
         model.addAttribute("selectedCourseIds", ids);
@@ -116,6 +128,8 @@ public class TeacherNoticeController {
         model.addAttribute("title", title);
         model.addAttribute("contentHtml", contentHtml);
         model.addAttribute("targetAll", targetAll);
+        model.addAttribute("publishStartDate", publishStartDate);
+        model.addAttribute("publishEndDate", publishEndDate);
         model.addAttribute("existingAttachments", attachments);
         model.addAttribute("editMode", noticeId != null);
     }

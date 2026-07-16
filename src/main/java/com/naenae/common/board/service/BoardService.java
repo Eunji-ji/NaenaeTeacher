@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -54,6 +55,14 @@ public class BoardService {
         Actor actor = actor(userId);
         return PaginationSupport.toView(postRepository.findByTeacherIdOrderByCreatedAtDescIdDesc(
                 actor.teacher().getId(), PaginationSupport.pageRequest(page)).map(this::toListItem));
+    }
+
+    @Transactional(readOnly = true)
+    public List<BoardListItem> getRecentPosts(Long userId, int size) {
+        Actor actor = actor(userId);
+        return postRepository.findByTeacherIdOrderByCreatedAtDescIdDesc(
+                        actor.teacher().getId(), PageRequest.of(0, size))
+                .map(this::toListItem).getContent();
     }
 
     @Transactional

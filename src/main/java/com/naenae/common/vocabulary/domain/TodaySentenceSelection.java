@@ -17,11 +17,12 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import com.naenae.teacher.profile.domain.Teacher;
 
 @Entity
 @Table(
         name = "today_sentence_selections",
-        uniqueConstraints = @UniqueConstraint(name = "uk_today_sentence_selections_date_level", columnNames = {"selection_date", "level"})
+        uniqueConstraints = @UniqueConstraint(name = "uk_today_sentence_selections_teacher_date_level", columnNames = {"teacher_id", "selection_date", "level"})
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TodaySentenceSelection extends BaseTimeEntity {
@@ -29,6 +30,10 @@ public class TodaySentenceSelection extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "teacher_id", nullable = false)
+    private Teacher teacher;
 
     @Column(name = "selection_date", nullable = false)
     private LocalDate selectionDate;
@@ -41,8 +46,10 @@ public class TodaySentenceSelection extends BaseTimeEntity {
     @JoinColumn(name = "today_sentence_id", nullable = false)
     private TodaySentence todaySentence;
 
-    public static TodaySentenceSelection create(LocalDate selectionDate, WordLevel level, TodaySentence todaySentence) {
+    public static TodaySentenceSelection create(Teacher teacher, LocalDate selectionDate,
+                                                WordLevel level, TodaySentence todaySentence) {
         TodaySentenceSelection selection = new TodaySentenceSelection();
+        selection.teacher = teacher;
         selection.selectionDate = selectionDate;
         selection.level = level;
         selection.todaySentence = todaySentence;
@@ -55,6 +62,10 @@ public class TodaySentenceSelection extends BaseTimeEntity {
 
     public LocalDate getSelectionDate() {
         return selectionDate;
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
     }
 
     public WordLevel getLevel() {

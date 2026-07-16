@@ -331,3 +331,91 @@ Log in again if the browser session was reset, then visually confirm the dashboa
 
 - Replaced the default visible browser file picker styling with a rounded pastel upload control shared by profile-image and spreadsheet-upload forms.
 - Added hover, keyboard-focus, and mobile sizing states while keeping existing drag-and-drop attachment zones unchanged.
+
+## 2026-07-16 Dashboard notice and board integration
+
+- Replaced the teacher dashboard's sample notice and board content with the latest notice and the three newest academy board posts.
+- Added the latest class-scoped notices and recent academy board posts to the student dashboard, including content from prior dates when no notice was registered today.
+- Added notice summaries, detail links, author/comment/view metadata, and empty states to the dashboard cards.
+- Linked the teacher dashboard's upper-left profile brand to the same my-page route as the upper-right profile control.
+
+## 2026-07-16 Today English Excel management and class menus
+
+- Added a teacher Today English screen with an Excel template using the exact LEVEL1, LEVEL2, and LEVEL3 headers.
+- Added replacement imports that accept different word counts per level column, skip blank cells, deduplicate words, and require at least one word per level.
+- Scoped uploaded word pools and daily random selections by teacher so students only receive words uploaded by their own teacher.
+- Removed the temporary generated word pool through Flyway V16 while leaving the separate Today Sentence data intact.
+- Changed student dashboards to combine the student's level-specific random word with the existing level-specific Today Sentence.
+- Added a Class Management navigation category below Assignment Management with Progress Management and Schedule placeholder pages.
+- Added a management shortcut beside the teacher dashboard's Today Word card title that opens the Today English screen.
+
+## 2026-07-16 Today English word meanings
+
+- Changed the Today English workbook from three level columns to three named sheets: LEVEL1, LEVEL2, and LEVEL3.
+- Standardized each sheet on the required Korean headers `단어` and `뜻`, with validation for missing sheets, headers, words, or meanings.
+- Extended the shared Excel component with reusable multi-sheet template generation and parsing.
+- Stored uploaded Korean meanings with each teacher-scoped word and displayed them on both teacher and student dashboards.
+
+## 2026-07-16 Unified teacher profile navigation
+
+- Removed dashboard-specific profile values that overwrote the shared nickname with the signup name.
+- Replaced all remaining legacy teacher sidebars with the shared sidebar fragment.
+- Unified the dashboard's upper-left, upper-right, and menu-page profiles on the latest saved nickname and profile image.
+
+## 2026-07-16 Mobile menu trigger deduplication
+
+- Removed the dashboard-only hardcoded hamburger button and kept the shared mobile navigation trigger as the single source.
+- Made the mobile navigation initializer idempotent and able to reuse an existing trigger to prevent duplicate controls if scripts or markup overlap.
+
+## 2026-07-16 Today English word query and deletion
+
+- Converted Today English into a parent navigation category with Word Registration and Word Query submenus.
+- Kept the existing level workbook upload as the Word Registration screen.
+- Added a teacher-scoped word query screen with level filtering, shared pagination, word meanings, and mobile-responsive layout.
+- Added individual word deletion and removed any daily selections referencing a deleted word so the dashboard can choose a replacement safely.
+
+## 2026-07-16 Notice publish periods
+
+- Added required notice publish start and end dates through Flyway V17, defaulting new registration forms to today.
+- Added publish-period controls to notice registration and editing with validation that the end date is not before the start date.
+- Limited teacher dashboard notices to currently active publish periods.
+- Limited student dashboard notices to currently active periods while preserving whole-academy or enrolled-class visibility rules.
+
+## 2026-07-16 Weekly class timetable
+
+- Added a teacher-scoped Monday-to-Friday timetable with class, weekday, start/end time, and lesson title registration.
+- Added overlap validation and course ownership checks so teachers cannot register conflicting lessons or use another teacher's class.
+- Added a responsive weekly timetable layout with per-lesson deletion and an all-schedule deletion action protected by a confirmation dialog.
+- Added today's registered lessons to the teacher dashboard with a shortcut to timetable management.
+- Added Flyway V18 for timetable storage and automated coverage for registration, overlap prevention, teacher-scoped bulk deletion, dashboard output, and confirmation UI.
+- Kept the class-name pill fitted to its text so a timetable with only one lesson does not stretch the rounded badge across the card.
+
+## 2026-07-16 Class progress sticky notes
+
+- Replaced the progress-management placeholder with a teacher-scoped sticky-note board.
+- Added optional class and timetable selection, filtering timetable choices to the selected class in the browser.
+- Added required progress memos with a 1,000-character limit and a live character counter.
+- Displayed saved progress as responsive pastel sticky notes with optional `[class] [lesson]` labels, free-memo support, timestamps, and confirmed deletion.
+- Preserved selected class and lesson labels as snapshots even if their original timetable is later removed.
+- Added Flyway V19 and automated service/template coverage for optional selections, ownership validation, length validation, filtering metadata, and sticky-note rendering.
+- Refined the progress hero into a compact lesson-log card, added dedicated styled select controls, and unified sticky notes in a soft light-wood palette.
+- Changed the progress memo editor to a clean white surface with a neutral border and wood-tone focus state.
+- Removed the schedule-count helper below the timetable selector so the class and timetable controls stay perfectly aligned.
+- Renamed the board section to Class Progress List and added shared pagination at six newest-first notes per page.
+- Assigned each new note a persistent random Windows-sticky-note color from yellow, light blue, light green, and light pink, including stable colors for existing notes through Flyway V20.
+
+## 2026-07-16 Today English sentence management
+
+- Added Sentence Registration and Sentence Query submenus under Today English.
+- Added teacher-uploaded multi-sheet sentence workbooks using LEVEL1, LEVEL2, and LEVEL3 sheets with required `문장` and `뜻` columns.
+- Removed all legacy generated sentence rows and scoped newly uploaded sentences and daily selections by teacher through Flyway V21.
+- Added teacher-scoped sentence replacement, level filtering, shared pagination, deletion, and Korean meaning display on teacher and student dashboards.
+- Improved the shared Excel template generator with colored bold headers, frozen header rows, filters, and wider configurable columns for both word and sentence templates.
+- Reduced Korean sentence-meaning typography on teacher and student dashboards to keep Today Sentence cards compact, with an additional mobile reduction.
+
+## 2026-07-16 Role selection and student login entry
+
+- Replaced the root teacher-login redirect with the responsive Student/Teacher role-selection screen from the original UI template direction.
+- Added a dedicated student login page and a shared authentication processing endpoint with role-aware login failure redirects.
+- Routed unauthenticated student pages to the student login while keeping teacher pages on the teacher login.
+- Returned both roles to the role-selection screen after logout and added portal-back links to both login screens.

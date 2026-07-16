@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -35,6 +37,8 @@ public class SecurityConfig {
                                 "/teacher/login",
                                 "/teacher/signup",
                                 "/student",
+                                "/student/login",
+                                "/auth/login",
                                 "/api/auth/**",
                                 "/api/health",
                                 "/css/**",
@@ -49,16 +53,27 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/teacher/login")
-                        .loginProcessingUrl("/teacher/login")
+                        .loginProcessingUrl("/auth/login")
                         .usernameParameter("email")
                         .passwordParameter("password")
                         .successHandler(roleBasedAuthenticationSuccessHandler)
-                        .failureUrl("/teacher/login?error")
+                        .failureHandler((request, response, exception) -> {
+                            String portal = request.getParameter("portal");
+                            response.sendRedirect("student".equals(portal)
+                                    ? "/student/login?error" : "/teacher/login?error");
+                        })
                         .permitAll()
                 )
+                .exceptionHandling(exceptions -> exceptions
+                        .defaultAuthenticationEntryPointFor(
+                                new LoginUrlAuthenticationEntryPoint("/student/login"),
+                                new AntPathRequestMatcher("/student/**"))
+                        .defaultAuthenticationEntryPointFor(
+                                new LoginUrlAuthenticationEntryPoint("/teacher/login"),
+                                new AntPathRequestMatcher("/teacher/**")))
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/teacher/login?logout")
+                        .logoutSuccessUrl("/?logout")
                         .permitAll()
                 )
                 .authenticationProvider(daoAuthenticationProvider());

@@ -15,7 +15,11 @@ public final class PaginationSupport {
     }
 
     public static Pageable pageRequest(int page) {
-        return PageRequest.of(Math.max(page, 0), DEFAULT_PAGE_SIZE);
+        return pageRequest(page, DEFAULT_PAGE_SIZE);
+    }
+
+    public static Pageable pageRequest(int page, int size) {
+        return PageRequest.of(Math.max(page, 0), Math.max(size, 1));
     }
 
     public static <T> PageView<T> toView(Page<T> page) {

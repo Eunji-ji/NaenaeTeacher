@@ -1,6 +1,7 @@
 package com.naenae.teacher.dashboard.service;
 
 import java.time.LocalDate;
+import com.naenae.common.board.service.BoardService;
 import com.naenae.student.profile.repository.StudentRepository;
 import com.naenae.teacher.attendance.domain.AttendanceStatus;
 import com.naenae.teacher.attendance.repository.AttendanceRepository;
@@ -10,6 +11,8 @@ import com.naenae.teacher.course.repository.CourseStudentRepository;
 import com.naenae.teacher.dashboard.model.TeacherDashboard;
 import com.naenae.teacher.profile.domain.Teacher;
 import com.naenae.teacher.profile.repository.TeacherRepository;
+import com.naenae.teacher.notice.service.TeacherNoticeService;
+import com.naenae.teacher.classschedule.service.TeacherClassScheduleService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,15 +23,23 @@ public class TeacherDashboardService {
     private final CourseStudentRepository courseStudentRepository;
     private final AttendanceRepository attendanceRepository;
     private final AssignmentRepository assignmentRepository;
+    private final TeacherNoticeService teacherNoticeService;
+    private final BoardService boardService;
+    private final TeacherClassScheduleService classScheduleService;
 
     public TeacherDashboardService(TeacherRepository teacherRepository, StudentRepository studentRepository,
                                    CourseStudentRepository courseStudentRepository,
-                                   AttendanceRepository attendanceRepository, AssignmentRepository assignmentRepository) {
+                                   AttendanceRepository attendanceRepository, AssignmentRepository assignmentRepository,
+                                   TeacherNoticeService teacherNoticeService, BoardService boardService,
+                                   TeacherClassScheduleService classScheduleService) {
         this.teacherRepository = teacherRepository;
         this.studentRepository = studentRepository;
         this.courseStudentRepository = courseStudentRepository;
         this.attendanceRepository = attendanceRepository;
         this.assignmentRepository = assignmentRepository;
+        this.teacherNoticeService = teacherNoticeService;
+        this.boardService = boardService;
+        this.classScheduleService = classScheduleService;
     }
 
     @Transactional(readOnly = true)
@@ -48,8 +59,14 @@ public class TeacherDashboardService {
                 ? 0
                 : Math.round((presentCount + lateCount) * 100f / totalAttendanceTargets);
 
+        int openAssignmentCount = Math.toIntExact(
+                assignmentRepository.countByTeacherIdAndStatus(teacher.getId(), AssignmentStatus.IN_PROGRESS));
+
         return new TeacherDashboard(totalStudentCount, presentCount, lateCount, absentCount,
-                attendanceRate, 0, 0);
+                attendanceRate, openAssignmentCount, 0,
+                teacherNoticeService.getDashboardNotice(teacherUserId).orElse(null),
+                boardService.getRecentPosts(teacherUserId, 3),
+                classScheduleService.getTodaySchedules(teacherUserId, today));
     }
 
     private int count(Long teacherId, LocalDate date, AttendanceStatus status) {

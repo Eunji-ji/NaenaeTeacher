@@ -6,6 +6,6 @@ public record TodayWordView(
         WordLevel level,
         String levelLabel,
         String word,
-        String sentence
+        String meaning
 ) {
 }

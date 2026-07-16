@@ -1,0 +1,5 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title th:text="|${pageTitle} | NaenaeTeacher|">수업관리</title><link rel="stylesheet" href="/assets/css/naenae-dashboard.css"></head>
+<body class="naenae-dashboard-body"><div class="dashboard-shell"><aside th:replace="~{fragments/teacher-sidebar :: sidebar(${activeMenu})}"></aside><div class="dashboard-main"><header class="dashboard-header"><div><p class="header-kicker">Class Management</p><h1 class="header-title" th:text="${pageTitle}">수업관리</h1></div></header><main class="dashboard-content"><section class="dashboard-card coming-soon-card"><span class="card-icon tone-info">▤</span><h2 th:text="${pageTitle}">수업관리</h2><p class="description" th:text="${pageDescription}">화면을 준비하고 있습니다.</p></section></main></div></div><script src="/assets/js/mobile-navigation.js" defer></script></body>
+</html>

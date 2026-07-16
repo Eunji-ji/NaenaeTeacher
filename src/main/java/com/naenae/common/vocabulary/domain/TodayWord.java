@@ -1,6 +1,7 @@
 package com.naenae.common.vocabulary.domain;
 
 import com.naenae.common.domain.BaseTimeEntity;
+import com.naenae.teacher.profile.domain.Teacher;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(
         name = "today_words",
-        uniqueConstraints = @UniqueConstraint(name = "uk_today_words_level_word", columnNames = {"level", "word"})
+        uniqueConstraints = @UniqueConstraint(name = "uk_today_words_teacher_level_word", columnNames = {"teacher_id", "level", "word"})
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TodayWord extends BaseTimeEntity {
@@ -25,6 +26,10 @@ public class TodayWord extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "teacher_id", nullable = false)
+    private Teacher teacher;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "level", nullable = false, length = 30)
     private WordLevel level;
@@ -32,17 +37,15 @@ public class TodayWord extends BaseTimeEntity {
     @Column(nullable = false, length = 120)
     private String word;
 
-    @Column(name = "sentence", nullable = false, columnDefinition = "TEXT")
-    private String sentence;
-
     @Column(name = "meaning_ko", columnDefinition = "TEXT")
     private String meaningKo;
 
-    public static TodayWord create(WordLevel level, String word, String sentence) {
+    public static TodayWord create(Teacher teacher, WordLevel level, String word, String meaningKo) {
         TodayWord todayWord = new TodayWord();
+        todayWord.teacher = teacher;
         todayWord.level = level;
         todayWord.word = word;
-        todayWord.sentence = sentence;
+        todayWord.meaningKo = meaningKo;
         return todayWord;
     }
 
@@ -58,8 +61,8 @@ public class TodayWord extends BaseTimeEntity {
         return word;
     }
 
-    public String getSentence() {
-        return sentence;
+    public Teacher getTeacher() {
+        return teacher;
     }
 
     public String getMeaningKo() {

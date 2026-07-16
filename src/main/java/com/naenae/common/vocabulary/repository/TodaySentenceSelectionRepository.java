@@ -8,5 +8,8 @@ import com.naenae.common.vocabulary.domain.WordLevel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TodaySentenceSelectionRepository extends JpaRepository<TodaySentenceSelection, Long> {
-    Optional<TodaySentenceSelection> findBySelectionDateAndLevel(LocalDate selectionDate, WordLevel level);
+    Optional<TodaySentenceSelection> findByTeacherIdAndSelectionDateAndLevel(
+            Long teacherId, LocalDate selectionDate, WordLevel level);
+    long deleteByTeacherId(Long teacherId);
+    long deleteByTodaySentenceId(Long todaySentenceId);
 }
