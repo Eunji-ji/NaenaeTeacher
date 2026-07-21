@@ -32,6 +32,8 @@ Windows PowerShell에서는 다음 명령을 사용할 수 있습니다.
 .\gradlew.bat bootRun
 ```
 
+Git에 포함된 최신 DB 덤프를 집 PC(PC2)의 Docker PostgreSQL에 복원하는 방법은 [`PC2_DB_SETUP.md`](PC2_DB_SETUP.md)를 참고하세요.
+
 로컬 기본 DB 값은 `application-local.yml`에 개발 편의용 기본값으로 들어 있습니다. 운영 환경에서는 환경변수로 값을 주입하세요.
 
 Eclipse에서는 `File > Import > Gradle > Existing Gradle Project`로 프로젝트 루트를 가져오세요. 기존 프로젝트로 열려 있다면 `Gradle > Refresh Gradle Project`를 실행하면 됩니다.

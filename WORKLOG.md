@@ -495,3 +495,8 @@ Log in again if the browser session was reset, then visually confirm the dashboa
 
 - Created and validated a PostgreSQL 16 custom-format snapshot of the current database at Flyway schema V26.
 - Replaced the previous dated snapshot with `db-transfer/naenae_teacher_20260721.dump` and updated the restore instructions.
+
+## 2026-07-21 PC2 database restore guide
+
+- Added a Windows PowerShell guide for creating the home-PC PostgreSQL 16 container, backing up an existing local DB, validating and restoring the V26 custom-format dump, and verifying restored data.
+- Documented the `pc2` profile, port 8081 startup, environment-specific upload paths, health checks, common Docker/PostgreSQL failures, and the fact that uploaded files require a separate transfer.

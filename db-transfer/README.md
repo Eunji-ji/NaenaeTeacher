@@ -24,3 +24,5 @@ docker exec <컨테이너명> pg_restore -U naenae -d naenae_teacher --clean --i
 ```
 
 복원 대상 DB에 필요한 데이터가 있으면 먼저 별도로 백업하세요. `--clean`은 덤프에 포함된 기존 객체를 삭제한 뒤 복원합니다.
+
+집 PC(PC2)에서 Docker Desktop으로 DB를 생성하고 이 덤프를 복원한 뒤 애플리케이션을 실행하는 전체 절차는 [`PC2_DB_SETUP.md`](../PC2_DB_SETUP.md)를 참고하세요.
