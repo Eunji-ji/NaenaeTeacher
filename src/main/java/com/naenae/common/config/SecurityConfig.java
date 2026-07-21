@@ -38,6 +38,9 @@ public class SecurityConfig {
                                 "/teacher/signup",
                                 "/student",
                                 "/student/login",
+                                "/student/signup",
+                                "/privacy",
+                                "/terms",
                                 "/auth/login",
                                 "/api/auth/**",
                                 "/api/health",
@@ -54,7 +57,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/teacher/login")
                         .loginProcessingUrl("/auth/login")
-                        .usernameParameter("email")
+                        .usernameParameter("loginId")
                         .passwordParameter("password")
                         .successHandler(roleBasedAuthenticationSuccessHandler)
                         .failureHandler((request, response, exception) -> {

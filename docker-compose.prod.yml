@@ -1,0 +1,73 @@
+services:
+  app:
+    container_name: naenae-teacher-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - ${APP_ENV_FILE:-.env.prod}
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      PORT: 8081
+      DB_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "127.0.0.1:8081:8081"
+    expose:
+      - "8081"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - app_uploads:/var/lib/naenae-teacher/uploads
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "--show-error", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 40s
+      retries: 5
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    networks:
+      - backend
+
+  db:
+    image: postgres:16-alpine
+    container_name: naenae-teacher-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    networks:
+      - backend
+
+volumes:
+  postgres_data:
+    name: naenae-teacher-postgres-data
+  app_uploads:
+    name: naenae-teacher-uploads
+
+networks:
+  backend:
+    name: naenae-teacher-backend
+    driver: bridge

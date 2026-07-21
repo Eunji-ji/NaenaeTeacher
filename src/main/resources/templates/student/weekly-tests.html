@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>주간테스트 | NaenaeTeacher</title><link rel="stylesheet" href="/assets/css/naenae-dashboard.css"></head>
+<body class="naenae-dashboard-body student-dashboard-body"><div class="dashboard-shell">
+<aside th:replace="~{fragments/student-sidebar :: sidebar('learningWeeklyTests')}"></aside>
+<div class="dashboard-main"><header class="dashboard-header"><div><p class="header-kicker">Weekly Test</p><h1 class="header-title">주간테스트</h1></div></header>
+<main class="dashboard-content"><section class="dashboard-card student-weekly-test-card"><div class="page-toolbar"><div><h2>내 주간테스트</h2><p>내가 응시하는 반의 테스트와 점수를 확인해요.</p></div></div>
+    <div class="student-weekly-test-list" th:if="${weeklyTestPage.hasContent()}"><a th:each="test:${weeklyTestPage.content()}" th:href="@{/student/weekly-tests/{id}(id=${test.id()})}" class="student-weekly-test-item"><div><span class="weekly-test-course-chip" th:text="${test.courseName()}">중등1반</span><strong th:text="${test.name()}">테스트명</strong><small th:text="${#temporals.format(test.createdAt(),'yyyy.MM.dd HH:mm')}">등록일</small></div><span class="student-weekly-score" th:classappend="${test.score()==null}?' pending'" th:text="${test.score()!=null ? test.score()+'점' : '미입력'}">미입력</span></a></div>
+    <div class="empty-state" th:if="${!weeklyTestPage.hasContent()}">등록된 주간테스트가 없습니다.</div>
+    <div th:replace="~{fragments/pagination :: pagination(${weeklyTestPage}, '/student/weekly-tests')}"></div>
+</section></main></div></div><script src="/assets/js/mobile-navigation.js" defer></script></body></html>

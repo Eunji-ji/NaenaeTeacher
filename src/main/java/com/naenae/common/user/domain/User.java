@@ -25,8 +25,11 @@ public class User extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String email;
+
+    @Column(name = "login_id", nullable = false, unique = true, length = 50)
+    private String loginId;
 
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
@@ -52,13 +55,41 @@ public class User extends BaseTimeEntity {
     @Column(name = "last_login_at")
     private LocalDateTime lastLoginAt;
 
+    @Column(name = "terms_version", length = 30)
+    private String termsVersion;
+
+    @Column(name = "terms_agreed_at")
+    private LocalDateTime termsAgreedAt;
+
+    @Column(name = "privacy_version", length = 30)
+    private String privacyVersion;
+
+    @Column(name = "privacy_agreed_at")
+    private LocalDateTime privacyAgreedAt;
+
+    @Column(name = "age_or_guardian_confirmed_at")
+    private LocalDateTime ageOrGuardianConfirmedAt;
+
     public static User createTeacher(String email, String passwordHash, String name) {
         User user = new User();
         user.email = email;
+        user.loginId = email;
         user.passwordHash = passwordHash;
         user.role = Role.TEACHER;
         user.name = name;
         user.nickname = name;
+        user.active = true;
+        return user;
+    }
+
+    public static User createStudent(String loginId, String passwordHash, String name, String phone) {
+        User user = new User();
+        user.loginId = loginId;
+        user.passwordHash = passwordHash;
+        user.role = Role.STUDENT;
+        user.name = name;
+        user.nickname = name;
+        user.phone = phone;
         user.active = true;
         return user;
     }
@@ -69,6 +100,10 @@ public class User extends BaseTimeEntity {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getLoginId() {
+        return loginId;
     }
 
     public String getPasswordHash() {
@@ -89,6 +124,10 @@ public class User extends BaseTimeEntity {
         this.nickname = nickname;
         this.profileImageStoredName = profileImageStoredName;
     }
+
+    public void updateProfileImage(String profileImageStoredName) {
+        this.profileImageStoredName = profileImageStoredName;
+    }
     public String getPhone() {
         return phone;
     }
@@ -99,5 +138,14 @@ public class User extends BaseTimeEntity {
 
     public LocalDateTime getLastLoginAt() {
         return lastLoginAt;
+    }
+
+    public void recordSignupConsent(String termsVersion, String privacyVersion,
+                                    LocalDateTime agreedAt, boolean ageOrGuardianConfirmed) {
+        this.termsVersion = termsVersion;
+        this.termsAgreedAt = agreedAt;
+        this.privacyVersion = privacyVersion;
+        this.privacyAgreedAt = agreedAt;
+        this.ageOrGuardianConfirmedAt = ageOrGuardianConfirmed ? agreedAt : null;
     }
 }

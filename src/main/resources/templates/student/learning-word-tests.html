@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>단어시험 결과 | NaenaeTeacher</title><link rel="stylesheet" href="/assets/css/naenae-dashboard.css"></head>
+<body class="naenae-dashboard-body">
+<div class="dashboard-shell">
+    <aside th:replace="~{fragments/student-sidebar :: sidebar('learningWordTests')}"></aside>
+    <div class="dashboard-main">
+        <header class="dashboard-header"><div><p class="header-kicker">My Learning</p><h1 class="header-title">단어시험 결과</h1></div></header>
+        <main class="dashboard-content learning-dashboard">
+            <section class="learning-hero learning-hero-word"><div><span class="learning-eyebrow">Word Tests</span><h2>단어시험 기록을 한눈에 확인해요.</h2><p>내 반에 등록된 단어시험 기간과 단어 수, 결과를 확인할 수 있어요.</p></div><span class="learning-hero-icon">Aa</span></section>
+            <section class="dashboard-card learning-panel">
+                <div class="page-toolbar"><div><h2>시험 목록</h2><p th:text="|총 ${wordTestPage.totalElements()}개의 단어시험|">시험 목록</p></div></div>
+                <div class="learning-test-list" th:if="${wordTestPage.hasContent()}">
+                    <article class="learning-test-card" th:each="test:${wordTestPage.content()}">
+                        <div class="learning-test-main"><span class="learning-status" th:classappend="${test.statusClass()}" th:text="${test.statusLabel()}">종료</span><div><h3 th:text="|${#temporals.format(test.startDate(),'yyyy.MM.dd')} ~ ${#temporals.format(test.endDate(),'yyyy.MM.dd')} 단어시험|">단어시험</h3><p th:text="${test.courseNames()}">반 이름</p></div></div>
+                        <div class="learning-test-meta"><span th:text="|단어 ${test.wordCount()}개|">단어 20개</span><strong th:text="${test.resultLabel()}">결과 미등록</strong></div>
+                    </article>
+                </div>
+                <div class="empty-state learning-empty" th:if="${!wordTestPage.hasContent()}">내 반에 등록된 단어시험이 없습니다.</div>
+                <div th:replace="~{fragments/pagination :: pagination(${wordTestPage}, '/student/learning/word-tests')}"></div>
+            </section>
+        </main>
+    </div>
+</div>
+<script src="/assets/js/mobile-navigation.js" defer></script>
+</body></html>

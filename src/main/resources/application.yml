@@ -24,3 +24,14 @@ springdoc:
 app:
   jwt:
     secret: ${JWT_SECRET:}
+  security:
+    invitation-code:
+      valid-days: ${INVITATION_CODE_VALID_DAYS:30}
+      max-uses: ${INVITATION_CODE_MAX_USES:100}
+    signup-rate-limit:
+      lookup-per-minute: ${SIGNUP_LOOKUP_LIMIT_PER_MINUTE:30}
+      signup-per-ten-minutes: ${SIGNUP_LIMIT_PER_TEN_MINUTES:10}
+  legal:
+    service-name: ${SERVICE_NAME:NaenaeTeacher}
+    operator-name: ${SERVICE_OPERATOR_NAME:NaenaeTeacher 운영자}
+    contact-email: ${PRIVACY_CONTACT_EMAIL:support@example.invalid}

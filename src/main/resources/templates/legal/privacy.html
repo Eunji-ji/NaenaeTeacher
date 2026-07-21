@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>개인정보처리방침 | NaenaeTeacher</title>
+    <link rel="stylesheet" href="/assets/css/naenae-dashboard.css">
+</head>
+<body class="legal-body">
+<main class="legal-shell">
+    <header class="legal-header">
+        <a class="legal-brand" href="/"><span>N</span><strong th:text="${serviceName}">NaenaeTeacher</strong></a>
+        <p>시행일 및 버전 <time th:text="${documentVersion}">2026-07-21</time></p>
+        <h1>개인정보처리방침</h1>
+        <p>학습 기록과 회원 정보를 어떤 목적으로 처리하고 보호하는지 안내합니다.</p>
+    </header>
+
+    <article class="legal-document">
+        <section><h2>1. 개인정보 처리자</h2><p><strong th:text="${operatorName}">운영자</strong>는 <span th:text="${serviceName}">서비스</span>에서 처리하는 개인정보를 보호하고 관련 문의를 처리합니다.</p></section>
+        <section><h2>2. 처리 목적</h2><ul><li>회원 가입, 본인 식별, 로그인 및 계정 보안</li><li>선생님과 학생·반 연결 및 학원 학습관리 서비스 제공</li><li>출석, 성적, 과제, 단어시험과 수업 기록 관리</li><li>알림장, 게시판, 첨부파일 및 문의 처리</li><li>서비스 안정성 확보와 부정 이용 방지</li></ul></section>
+        <section><h2>3. 처리하는 개인정보 항목</h2><h3>선생님</h3><p>이름, 이메일, 로그인 정보(암호화된 비밀번호), 닉네임, 프로필 사진, 초대코드, 서비스 이용 중 작성한 학습관리 자료</p><h3>학생</h3><p>이름, 로그인 아이디, 로그인 정보(암호화된 비밀번호), 프로필 사진, 소속 선생님과 반, 학교·학년, 학생 및 보호자 연락처, 출석·성적·과제·시험·학습 기록</p><h3>자동 생성 정보</h3><p>가입 동의 문서 버전과 동의 시각, 계정 생성·수정 시각, 로그인 시각, 보안과 장애 대응을 위한 서버 로그가 처리될 수 있습니다.</p></section>
+        <section><h2>4. 보유 및 이용 기간</h2><p>회원 정보와 학습 기록은 서비스 이용 기간 동안 보유하며 탈퇴 또는 삭제 요청 시 지체 없이 삭제합니다. 다만 관계 법령에 따른 보존 의무가 있거나 분쟁·보안 사고 처리를 위해 필요한 경우에는 해당 목적과 기간에 한해 분리 보관 후 삭제합니다.</p></section>
+        <section><h2>5. 제3자 제공과 처리위탁</h2><p>개인정보를 원래 목적을 벗어나 제3자에게 제공하지 않습니다. 호스팅, 데이터베이스, 파일 저장 등 외부 업체에 처리를 맡기게 되는 경우 수탁자와 업무 내용을 이 방침에 공개하고 필요한 보호조치를 적용합니다.</p></section>
+        <section><h2>6. 개인정보의 파기</h2><p>보유 목적이 끝난 개인정보는 복구하기 어려운 방법으로 삭제합니다. 전자 파일은 안전하게 삭제하고 출력물이 있는 경우 분쇄 또는 소각합니다.</p></section>
+        <section><h2>7. 정보주체의 권리</h2><p>회원과 법정대리인은 개인정보 열람, 정정, 삭제, 처리정지 및 동의 철회를 요청할 수 있습니다. 요청자의 본인 또는 정당한 대리인 여부를 확인한 뒤 법령이 정한 범위에서 처리합니다.</p></section>
+        <section><h2>8. 만 14세 미만 학생</h2><p>만 14세 미만 학생의 개인정보 처리에 동의가 필요한 경우 법정대리인의 동의를 받아야 합니다. 학생 가입 화면의 확인만으로 법정대리인 확인 절차가 모두 완료되는 것은 아니며, 운영자는 실제 서비스 개시 전에 적절한 동의 확인 절차를 마련합니다.</p></section>
+        <section><h2>9. 안전성 확보조치</h2><ul><li>비밀번호 BCrypt 단방향 암호화</li><li>역할과 소속 선생님을 기준으로 한 접근 통제</li><li>초대코드 만료·사용 제한 및 가입 요청 제한</li><li>첨부파일 저장 경로 분리와 접근 권한 확인</li><li>운영 공개 전 HTTPS 적용 및 운영 환경의 접근·백업 통제</li></ul></section>
+        <section><h2>10. 개인정보 보호 문의</h2><p>개인정보 관련 문의와 권리 행사는 <a th:href="|mailto:${contactEmail}|" th:text="${contactEmail}">contact</a>로 요청할 수 있습니다.</p></section>
+        <section><h2>11. 방침 변경</h2><p>내용이 변경되면 시행일 전에 서비스 화면을 통해 안내하며 중요한 변경은 필요한 경우 다시 동의를 받습니다.</p></section>
+    </article>
+    <footer class="legal-footer"><a href="/terms">이용약관 보기</a><a href="/">처음으로</a></footer>
+</main>
+</body>
+</html>

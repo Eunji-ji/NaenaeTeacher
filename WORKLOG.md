@@ -425,3 +425,68 @@ Log in again if the browser session was reset, then visually confirm the dashboa
 - Removed the previous generic database dump path from the current Git tree.
 - Kept only the validated dump created today under the dated filename `naenae_teacher_20260716.dump`.
 - Updated the database restore guide to use the dated dump filename.
+
+## 2026-07-21 Student signup entry
+
+- Added a responsive signup link to the student login screen and a matching student signup page.
+- Added a teacher-managed unique invitation code to My Page and normalized codes to uppercase.
+- Required the teacher invitation code during student signup and used it to preserve the teacher-to-student 1:N relationship.
+- Connected a signup to a matching unlinked student already registered by the inviting teacher, or created a new student under that teacher when no match exists.
+- Added BCrypt password storage, duplicate-email checks, password confirmation, ambiguous-record protection, and public security access for the signup route.
+- Kept the existing student record's teacher association so student data remains scoped to the correct teacher.
+- Refined signup into an invitation-code-driven flow that loads the inviting teacher's active classes and then only unlinked students registered in the selected class.
+- Replaced student email signup with a dedicated unique login ID while preserving existing teacher email logins through login-ID backfill in Flyway V23.
+- Added a public login-ID availability check, mandatory client and server duplicate validation, and password confirmation feedback.
+- Prevented signup with a student outside the selected teacher and class, and stopped signup from creating arbitrary student records.
+
+## 2026-07-21 Student learning status menus
+
+- Added My Learning Status as a student navigation category with Score Changes, Word Test Results, and Attendance Rate submenus.
+- Added teacher-scoped student score history with chronological midterm/final ordering, latest score, average, and change from the immediately previous exam.
+- Added paged word-test history limited to the student's enrolled classes, including period, class, word count, and current test status.
+- Added paged attendance history with present, late, absent, excused counts and a recorded-attendance rate where present and late count as attendance.
+- Added responsive desktop and mobile learning cards and automated service/template coverage.
+- Removed the fixed year-order helper sentence from the student score trend panel.
+- Realigned the student learning submenu with a full-width parent row, consistent indentation, a vertical hierarchy guide, and clear active-item markers on desktop and mobile navigation.
+
+## 2026-07-21 Student profile and My Page
+
+- Replaced the generic Student Space sidebar brand with the logged-in student's real name, student label, initial, and saved profile image.
+- Made the student sidebar profile clickable from every student page and routed it to a dedicated responsive My Page.
+- Added student profile-image registration and replacement using the shared profile storage property and common local file storage.
+- Kept student identity fixed to the teacher-registered real name without a nickname field.
+- Added image type and 5MB size validation with old-image cleanup after a successful transaction.
+
+## 2026-07-21 Secure invitations and signup consent
+
+- Replaced teacher-entered invitation codes with server-generated 24-character codes backed by `SecureRandom`.
+- Added 30-day expiration, configurable signup limits, atomic use counting, and confirmed code reissuance that immediately invalidates the previous code.
+- Invalidated legacy short invitation codes through Flyway V24 and automatically issue a secure code from teacher signup or My Page.
+- Added per-client request limits to public student-signup lookup, login-ID availability, and signup actions.
+- Added public responsive Terms of Service and Privacy Policy pages with operator and contact details managed through environment properties.
+- Required separate terms and privacy consent for teacher and student signup, plus student age or guardian confirmation.
+- Persisted legal document versions and consent timestamps through Flyway V25 for signup audit history.
+- Added automated coverage for invitation expiry and consumption, signup throttling, consent persistence, and updated signup/My Page templates.
+
+## 2026-07-21 Weekly test management
+
+- Added Weekly Test Management under the teacher Assignment Management menu with a dedicated weekly registration flow.
+- Generated test names automatically from the registration year, month, seven-day week ordinal, and required class name.
+- Added optional remarks and up to five 10MB attachments using a profile-specific weekly-test storage property.
+- Added newest-first teacher listings with a default two-month date range, preserved filters across shared pagination data, and clickable detail rows.
+- Snapshotted active class members by the existing stable `students.id` key when each test is registered.
+- Added teacher detail pages with test information, class, downloads, roster, and transactional 0-100 score entry, clearing, and updates.
+- Added student Weekly Tests under My Learning Status, restricted to tests whose stored roster contains the authenticated student's mapped `student_id`.
+- Added student list/detail/download views that expose only the logged-in student's score.
+- Added Flyway V26 and automated service/template coverage for naming, roster identity, score validation, teacher UI, and student visibility.
+- Guaranteed that active classes on the weekly-test registration form are displayed in ascending class-name order, independent of database collation, with regression coverage.
+- Added the entered-student score average beside each test name in the teacher weekly-test list, with an explicit unregistered state when no score has been entered.
+- Moved Attendance Rate to the first position under the student My Learning Status menu and changed the parent menu link to open Attendance Rate.
+
+## 2026-07-21 Oracle Cloud production deployment preparation
+
+- Rebuilt the production Dockerfile as a Java 21 multi-stage image running as a non-root user on port 8081 with configurable low-memory JVM options and an Actuator health check.
+- Added a production Docker Compose stack with a loopback-only app port, private PostgreSQL 16 service, health-gated startup, persistent database/upload volumes, restart policies, and bounded JSON logs.
+- Added a production environment template, Docker build exclusions, and explicit Git exclusions for production secrets and local backups.
+- Hardened the production Spring profile with environment-only secrets, schema validation, Flyway ownership, disabled SQL detail logging, small HikariCP defaults, proxy header handling, and limited health/info Actuator exposure.
+- Added an HTTPS Nginx reverse-proxy example targeting port 8081, deployment/restart/log/atomic database backup scripts, and a complete Oracle Cloud Ubuntu deployment runbook.

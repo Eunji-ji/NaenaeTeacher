@@ -1,4 +1,6 @@
 .env
+.env.prod
+.env.prod.local
 *.log
 *.pid
 /build
@@ -10,5 +12,6 @@
 target/
 *.class
 /uploads/
+/backups/
 /build-verification/
 /build-*/

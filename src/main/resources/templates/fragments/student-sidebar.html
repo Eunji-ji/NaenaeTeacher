@@ -1,12 +1,29 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"><body>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
 <aside class="dashboard-sidebar" th:fragment="sidebar(activeMenu)" aria-label="학생 메뉴">
-    <div class="brand"><span class="brand-mark">N</span><div><p class="brand-name">학생 공간</p><p class="brand-role">Student Space</p></div></div>
+    <a class="brand profile-brand student-profile-brand" href="/student/mypage" aria-label="학생 마이페이지로 이동">
+        <span class="brand-mark">
+            <img th:if="${studentHasProfileImage}" src="/student/mypage/profile-image" alt="">
+            <span th:unless="${studentHasProfileImage}" th:text="${studentInitial}">학</span>
+        </span>
+        <div><p class="brand-name" th:text="|${studentDisplayName} 학생|">김철수 학생</p><p class="brand-role">Student Space</p></div>
+    </a>
     <nav class="sidebar-nav">
         <a class="nav-item" th:classappend="${activeMenu=='dashboard'}?' active'" href="/student/dashboard"><span class="nav-icon">▦</span> 대시보드</a>
         <a class="nav-item" th:classappend="${activeMenu=='assignments'}?' active'" href="/student/assignments"><span class="nav-icon">✓</span> 진행중인 과제</a>
+        <div class="sidebar-section student-learning-section" aria-label="내 학습현황">
+            <a class="nav-item student-learning-parent" th:classappend="${#strings.startsWith(activeMenu,'learning')}?' active'" href="/student/learning/attendance"><span class="nav-icon">↗</span><span>내 학습현황</span><span class="student-section-chevron" aria-hidden="true">⌄</span></a>
+            <div class="sidebar-subnav">
+                <a class="sidebar-subitem" th:classappend="${activeMenu=='learningAttendance'}?' active'" href="/student/learning/attendance">출석률</a>
+                <a class="sidebar-subitem" th:classappend="${activeMenu=='learningScores'}?' active'" href="/student/learning/scores">시험 점수 변화</a>
+                <a class="sidebar-subitem" th:classappend="${activeMenu=='learningWordTests'}?' active'" href="/student/learning/word-tests">단어시험 결과</a>
+                <a class="sidebar-subitem" th:classappend="${activeMenu=='learningWeeklyTests'}?' active'" href="/student/weekly-tests">주간테스트</a>
+            </div>
+        </div>
         <a class="nav-item" th:classappend="${activeMenu=='notices'}?' active'" href="/student/notices"><span class="nav-icon">!</span> 알림장</a>
         <a class="nav-item" th:classappend="${activeMenu=='board'}?' active'" href="/student/board"><span class="nav-icon">#</span> 게시판</a>
     </nav>
 </aside>
-</body></html>
+</body>
+</html>

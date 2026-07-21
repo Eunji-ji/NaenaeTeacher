@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>주간테스트 관리 | NaenaeTeacher</title><link rel="stylesheet" href="/assets/css/naenae-dashboard.css"></head>
+<body class="naenae-dashboard-body">
+<div class="dashboard-shell">
+    <aside th:replace="~{fragments/teacher-sidebar :: sidebar('weeklyTests')}"></aside>
+    <div class="dashboard-main">
+        <header class="dashboard-header"><div><p class="header-kicker">Weekly Test</p><h1 class="header-title">주간테스트 관리</h1></div></header>
+        <main class="dashboard-content weekly-test-page">
+            <section class="dashboard-card weekly-test-register-card">
+                <div class="weekly-test-register-copy"><span class="weekly-test-calendar">W</span><div><h2>이번 주 테스트를 등록해요.</h2><p>반을 선택하면 주차와 반 이름으로 테스트명이 자동 생성됩니다.</p></div></div>
+                <a class="bulk-action bulk-upload" href="/teacher/weekly-tests/new">이번주 테스트 등록</a>
+            </section>
+
+            <section class="dashboard-card weekly-test-list-card">
+                <div class="page-toolbar"><div><h2>등록된 테스트 목록</h2><p>기본 최근 두 달의 테스트를 최신 등록순으로 보여드려요.</p></div></div>
+                <div class="auth-alert success" th:if="${successMessage}" th:text="${successMessage}"></div>
+                <div class="auth-alert error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+                <form class="weekly-test-search" method="get" action="/teacher/weekly-tests">
+                    <label><span>시작일</span><input type="date" name="startDate" th:value="${startDate}"></label>
+                    <span class="weekly-test-search-wave">~</span>
+                    <label><span>종료일</span><input type="date" name="endDate" th:value="${endDate}"></label>
+                    <button type="submit">조회</button>
+                </form>
+
+                <div class="weekly-test-table-wrap" th:if="${weeklyTestPage.hasContent()}">
+                    <table class="weekly-test-table"><thead><tr><th>테스트명</th><th>등록일자</th></tr></thead><tbody>
+                    <tr th:each="test : ${weeklyTestPage.content()}">
+                        <td><a th:href="@{/teacher/weekly-tests/{id}(id=${test.id()})}"><span th:text="${test.name()}">주간 테스트</span> <span class="weekly-test-average" th:text="${test.averageScore() != null ? '(평균 ' + test.averageScore() + ')' : '(평균 미등록)'}">(평균 90점)</span></a></td>
+                        <td th:text="${#temporals.format(test.createdAt(), 'yyyy.MM.dd HH:mm')}">2026.07.21</td>
+                    </tr></tbody></table>
+                </div>
+                <div class="empty-state" th:if="${!weeklyTestPage.hasContent()}">조회 기간에 등록된 주간테스트가 없습니다.</div>
+                <nav class="pagination-nav" th:if="${weeklyTestPage.totalPages() > 1}" aria-label="페이지 이동">
+                    <a class="pagination-link" th:classappend="${!weeklyTestPage.hasPrevious()} ? ' disabled'"
+                       th:href="${weeklyTestPage.hasPrevious()} ? @{/teacher/weekly-tests(page=${weeklyTestPage.number()-1},startDate=${startDate},endDate=${endDate})} : '#'">이전</a>
+                    <a class="pagination-link" th:each="number : ${weeklyTestPage.pageNumbers()}" th:classappend="${number==weeklyTestPage.number()}?' active'"
+                       th:href="@{/teacher/weekly-tests(page=${number},startDate=${startDate},endDate=${endDate})}" th:text="${number+1}">1</a>
+                    <a class="pagination-link" th:classappend="${!weeklyTestPage.hasNext()} ? ' disabled'"
+                       th:href="${weeklyTestPage.hasNext()} ? @{/teacher/weekly-tests(page=${weeklyTestPage.number()+1},startDate=${startDate},endDate=${endDate})} : '#'">다음</a>
+                </nav>
+            </section>
+        </main>
+    </div>
+</div>
+<script src="/assets/js/mobile-navigation.js" defer></script>
+</body></html>

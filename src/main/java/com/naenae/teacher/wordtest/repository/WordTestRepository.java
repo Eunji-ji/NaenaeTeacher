@@ -28,4 +28,19 @@ public interface WordTestRepository extends JpaRepository<WordTest, Long> {
             @Param("courseIds") Collection<Long> courseIds,
             @Param("date") LocalDate date
     );
+
+    @Query(
+            value = """
+                    select distinct wt from WordTest wt
+                    join wt.courses mapping
+                    where mapping.course.id in :courseIds
+                    order by wt.startDate desc, wt.id desc
+                    """,
+            countQuery = """
+                    select count(distinct wt.id) from WordTest wt
+                    join wt.courses mapping
+                    where mapping.course.id in :courseIds
+                    """
+    )
+    Page<WordTest> findStudentTests(@Param("courseIds") Collection<Long> courseIds, Pageable pageable);
 }

@@ -96,4 +96,11 @@ public class Student extends BaseTimeEntity {
     public void updateMemoSummary(String memoSummary) {
         this.memoSummary = memoSummary;
     }
+
+    public void connectUser(User user) {
+        if (this.user != null) {
+            throw new IllegalStateException("이미 계정이 연결된 학생입니다.");
+        }
+        this.user = user;
+    }
 }

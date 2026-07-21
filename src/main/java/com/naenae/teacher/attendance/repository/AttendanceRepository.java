@@ -8,6 +8,8 @@ import com.naenae.teacher.attendance.domain.Attendance;
 import com.naenae.teacher.attendance.domain.AttendanceStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
@@ -29,4 +31,12 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
             @Param("attendanceDate") LocalDate attendanceDate,
             @Param("status") AttendanceStatus status
     );
+
+    Page<Attendance> findByStudentIdAndTeacherIdOrderByAttendanceDateDescIdDesc(
+            Long studentId,
+            Long teacherId,
+            Pageable pageable
+    );
+
+    List<Attendance> findByStudentIdAndTeacherId(Long studentId, Long teacherId);
 }

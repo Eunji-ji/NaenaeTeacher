@@ -2,6 +2,9 @@ package com.naenae.teacher.auth.service;
 
 import com.naenae.common.user.domain.User;
 import com.naenae.common.user.repository.UserRepository;
+import com.naenae.common.legal.LegalConsentValidator;
+import com.naenae.common.legal.LegalDocumentVersions;
+import com.naenae.teacher.invitation.service.InvitationCodeService;
 import com.naenae.teacher.profile.domain.Teacher;
 import com.naenae.teacher.profile.repository.TeacherRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,19 +17,27 @@ public class TeacherSignupService {
     private final UserRepository userRepository;
     private final TeacherRepository teacherRepository;
     private final PasswordEncoder passwordEncoder;
+    private final InvitationCodeService invitationCodeService;
+    private final LegalConsentValidator legalConsentValidator;
 
     public TeacherSignupService(
             UserRepository userRepository,
             TeacherRepository teacherRepository,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
+            InvitationCodeService invitationCodeService,
+            LegalConsentValidator legalConsentValidator
     ) {
         this.userRepository = userRepository;
         this.teacherRepository = teacherRepository;
         this.passwordEncoder = passwordEncoder;
+        this.invitationCodeService = invitationCodeService;
+        this.legalConsentValidator = legalConsentValidator;
     }
 
     @Transactional
-    public void signup(String name, String email, String password, String passwordConfirm) {
+    public void signup(String name, String email, String password, String passwordConfirm,
+                       boolean termsAgreed, boolean privacyAgreed) {
+        var agreedAt = legalConsentValidator.validateTeacher(termsAgreed, privacyAgreed);
         String normalizedName = requireText(name, "이름을 입력해 주세요.");
         String normalizedEmail = requireText(email, "이메일을 입력해 주세요.").toLowerCase();
         String rawPassword = requireText(password, "비밀번호를 입력해 주세요.");
@@ -49,8 +60,11 @@ public class TeacherSignupService {
                 passwordEncoder.encode(rawPassword),
                 normalizedName
         );
+        user.recordSignupConsent(LegalDocumentVersions.TERMS, LegalDocumentVersions.PRIVACY, agreedAt, false);
         User savedUser = userRepository.save(user);
-        teacherRepository.save(Teacher.create(savedUser));
+        Teacher teacher = Teacher.create(savedUser);
+        invitationCodeService.reissue(teacher);
+        teacherRepository.save(teacher);
     }
 
     private String requireText(String value, String message) {

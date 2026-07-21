@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>출석률 | NaenaeTeacher</title><link rel="stylesheet" href="/assets/css/naenae-dashboard.css"></head>
+<body class="naenae-dashboard-body">
+<div class="dashboard-shell">
+    <aside th:replace="~{fragments/student-sidebar :: sidebar('learningAttendance')}"></aside>
+    <div class="dashboard-main">
+        <header class="dashboard-header"><div><p class="header-kicker">My Learning</p><h1 class="header-title">출석률</h1></div></header>
+        <main class="dashboard-content learning-dashboard">
+            <section class="learning-hero learning-hero-attendance"><div><span class="learning-eyebrow">Attendance</span><h2 th:text="|${attendancePage.studentName()} 학생의 출석 기록|">나의 출석 기록</h2><p>선생님이 체크한 출석 기록을 날짜별로 확인할 수 있어요.</p></div><div class="attendance-rate-ring" th:style="|--rate:${attendancePage.attendanceRate()}|"><strong th:text="|${attendancePage.attendanceRate()}%|">100%</strong><span>출석률</span></div></section>
+            <section class="learning-summary-grid attendance-summary-grid">
+                <article class="learning-summary-card"><span>전체 기록</span><strong th:text="|${attendancePage.totalCount()}회|">0회</strong></article>
+                <article class="learning-summary-card tone-present"><span>출석</span><strong th:text="|${attendancePage.presentCount()}회|">0회</strong></article>
+                <article class="learning-summary-card tone-late"><span>지각</span><strong th:text="|${attendancePage.lateCount()}회|">0회</strong></article>
+                <article class="learning-summary-card tone-absent"><span>결석</span><strong th:text="|${attendancePage.absentCount()}회|">0회</strong></article>
+            </section>
+            <section class="dashboard-card learning-panel">
+                <div class="page-toolbar"><div><h2>날짜별 출석 기록</h2><p>출석과 지각은 출석률에 포함됩니다.</p></div><span class="learning-excused" th:text="|인정결석 ${attendancePage.excusedCount()}회|">인정결석 0회</span></div>
+                <div class="attendance-record-list" th:if="${attendancePage.records().hasContent()}">
+                    <article class="attendance-record" th:each="record:${attendancePage.records().content()}"><time th:text="${#temporals.format(record.attendanceDate(),'yyyy.MM.dd')}">2026.07.21</time><span th:text="${record.courseName()}">반</span><strong class="attendance-status" th:classappend="${record.statusClass()}" th:text="${record.statusLabel()}">출석</strong></article>
+                </div>
+                <div class="empty-state learning-empty" th:if="${!attendancePage.records().hasContent()}">아직 체크된 출석 기록이 없습니다.</div>
+                <div th:replace="~{fragments/pagination :: pagination(${attendancePage.records()}, '/student/learning/attendance')}"></div>
+            </section>
+        </main>
+    </div>
+</div>
+<script src="/assets/js/mobile-navigation.js" defer></script>
+</body></html>

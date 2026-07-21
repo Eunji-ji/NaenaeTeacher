@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>학생 마이페이지 | NaenaeTeacher</title>
+    <link rel="stylesheet" href="/assets/css/naenae-dashboard.css">
+</head>
+<body class="naenae-dashboard-body">
+<div class="dashboard-shell">
+    <aside th:replace="~{fragments/student-sidebar :: sidebar('mypage')}"></aside>
+    <div class="dashboard-main">
+        <header class="dashboard-header"><div><p class="header-kicker">My Page</p><h1 class="header-title">마이페이지</h1></div></header>
+        <main class="dashboard-content">
+            <section class="dashboard-card mypage-card student-mypage-card">
+                <div class="mypage-heading">
+                    <div class="mypage-avatar student-mypage-avatar">
+                        <img th:if="${profile.hasProfileImage()}" src="/student/mypage/profile-image" alt="프로필 사진">
+                        <span th:unless="${profile.hasProfileImage()}" th:text="${studentInitial}">학</span>
+                    </div>
+                    <div><h2 th:text="|${profile.name()} 학생|">김철수 학생</h2><p>Student Profile</p></div>
+                </div>
+
+                <div class="auth-alert success" th:if="${successMessage}" th:text="${successMessage}"></div>
+                <div class="auth-alert error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+                <form action="/student/mypage" method="post" enctype="multipart/form-data" class="mypage-form">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <div class="field-group">
+                        <label>이름</label>
+                        <input type="text" th:value="${profile.name()}" disabled>
+                        <span class="field-note">학생 이름은 선생님이 등록한 실명으로 표시됩니다.</span>
+                    </div>
+                    <div class="field-group">
+                        <label>로그인 아이디</label>
+                        <input type="text" th:value="${profile.loginId()}" disabled>
+                    </div>
+                    <div class="field-group">
+                        <label for="profileImage">프로필 사진</label>
+                        <input id="profileImage" name="profileImage" type="file" accept="image/jpeg,image/png,image/webp" required>
+                        <span class="field-note">JPG, PNG, WEBP · 최대 5MB</span>
+                    </div>
+                    <div class="word-test-form-actions"><button class="bulk-action bulk-upload" type="submit">프로필 사진 저장</button></div>
+                </form>
+            </section>
+        </main>
+    </div>
+</div>
+<script src="/assets/js/mobile-navigation.js" defer></script>
+</body>
+</html>

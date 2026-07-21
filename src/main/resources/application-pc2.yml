@@ -4,3 +4,4 @@ app:
     notice-dir: ${NOTICE_STORAGE_DIR:C:/workSp/NaenaeTeacher/uploads/notices}
     board-dir: ${BOARD_STORAGE_DIR:C:/workSp/NaenaeTeacher/uploads/board}
     profile-dir: ${PROFILE_STORAGE_DIR:C:/workSp/NaenaeTeacher/uploads/profiles}
+    weekly-test-dir: ${WEEKLY_TEST_STORAGE_DIR:C:/workSp/NaenaeTeacher/uploads/weekly-tests}

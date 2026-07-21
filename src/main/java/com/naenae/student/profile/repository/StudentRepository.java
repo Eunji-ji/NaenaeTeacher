@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.naenae.student.profile.domain.Student;
+import com.naenae.teacher.profile.domain.Teacher;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
@@ -16,6 +17,8 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Optional<Student> findByIdAndTeacherId(Long id, Long teacherId);
 
     Optional<Student> findByUserId(Long userId);
+
+    List<Student> findByTeacherAndNameAndPhoneAndUserIsNull(Teacher teacher, String name, String phone);
 
     long countByTeacherId(Long teacherId);
 }

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>주간테스트 상세 | NaenaeTeacher</title><link rel="stylesheet" href="/assets/css/naenae-dashboard.css"></head>
+<body class="naenae-dashboard-body"><div class="dashboard-shell">
+<aside th:replace="~{fragments/teacher-sidebar :: sidebar('weeklyTests')}"></aside>
+<div class="dashboard-main"><header class="dashboard-header"><div><p class="header-kicker">Weekly Test Detail</p><h1 class="header-title">주간테스트 상세</h1></div><a class="header-nav-action header-nav-action-secondary" href="/teacher/weekly-tests">목록</a></header>
+<main class="dashboard-content weekly-test-detail-page">
+    <div class="auth-alert success" th:if="${successMessage}" th:text="${successMessage}"></div><div class="auth-alert error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+    <section class="dashboard-card weekly-test-summary-card">
+        <div class="weekly-test-title-row"><div><span class="weekly-test-course-chip" th:text="${weeklyTest.courseName()}">중등1반</span><h2 th:text="${weeklyTest.name()}">테스트명</h2><p th:text="|등록 ${#temporals.format(weeklyTest.createdAt(),'yyyy.MM.dd HH:mm')}|">등록일</p></div></div>
+        <div class="weekly-test-remarks"><h3>테스트 내용</h3><p th:text="${weeklyTest.remarks()!=null ? weeklyTest.remarks() : '등록된 비고가 없습니다.'}">비고</p></div>
+        <div class="weekly-test-files" th:if="${!#lists.isEmpty(weeklyTest.attachments())}"><h3>첨부파일</h3><a th:each="file:${weeklyTest.attachments()}" th:href="@{/teacher/weekly-tests/{testId}/attachments/{fileId}/download(testId=${weeklyTest.id()},fileId=${file.id()})}"><span th:text="${file.originalName()}">file</span><small th:text="${file.fileSize()}">1KB</small></a></div>
+    </section>
+    <section class="dashboard-card weekly-test-score-card"><div class="page-toolbar"><div><h2>학생 점수</h2><p>0~100점으로 입력하며, 빈칸으로 저장하면 미입력 상태가 됩니다.</p></div><span class="weekly-test-student-count" th:text="|${#lists.size(weeklyTest.scores())}명|">0명</span></div>
+        <form th:action="@{/teacher/weekly-tests/{id}/scores(id=${weeklyTest.id()})}" method="post"><input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <div class="weekly-test-score-list" th:if="${!#lists.isEmpty(weeklyTest.scores())}">
+                <div class="weekly-test-score-row" th:each="row:${weeklyTest.scores()}"><div class="weekly-test-student"><span class="weekly-test-student-avatar" th:text="${#strings.substring(row.studentName(),0,1)}">김</span><div><strong th:text="${row.studentName()}">학생</strong><small th:text="${row.schoolName()!=null ? row.schoolName() : '학교 정보 없음'}">학교</small></div></div><label><span class="sr-only" th:text="|${row.studentName()} 점수|">점수</span><input type="number" min="0" max="100" inputmode="numeric" th:name="|score_${row.id()}|" th:value="${row.score()}" placeholder="점수"><em>점</em></label></div>
+            </div><div class="empty-state" th:if="${#lists.isEmpty(weeklyTest.scores())}">테스트 등록 당시 이 반에 등록된 학생이 없습니다.</div>
+            <div class="word-test-form-actions" th:if="${!#lists.isEmpty(weeklyTest.scores())}"><button class="bulk-action bulk-upload" type="submit">점수 저장</button></div>
+        </form>
+    </section>
+</main></div></div><script src="/assets/js/mobile-navigation.js" defer></script></body></html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>시험 점수 변화 | NaenaeTeacher</title><link rel="stylesheet" href="/assets/css/naenae-dashboard.css"></head>
+<body class="naenae-dashboard-body">
+<div class="dashboard-shell">
+    <aside th:replace="~{fragments/student-sidebar :: sidebar('learningScores')}"></aside>
+    <div class="dashboard-main">
+        <header class="dashboard-header"><div><p class="header-kicker">My Learning</p><h1 class="header-title">시험 점수 변화</h1></div></header>
+        <main class="dashboard-content learning-dashboard">
+            <section class="learning-hero learning-hero-score">
+                <div><span class="learning-eyebrow">Score Trend</span><h2 th:text="|${scorePage.studentName()} 학생의 성장 기록|">나의 성장 기록</h2><p>중간고사와 기말고사 점수가 날짜순으로 이어져요.</p></div>
+                <span class="learning-hero-icon">↗</span>
+            </section>
+            <section class="learning-summary-grid">
+                <article class="learning-summary-card"><span>최근 점수</span><strong th:text="${scorePage.latestScore() == null ? '-' : scorePage.latestScore() + '점'}">90점</strong></article>
+                <article class="learning-summary-card"><span>평균 점수</span><strong th:text="${scorePage.scores().isEmpty() ? '-' : scorePage.averageScore() + '점'}">85점</strong></article>
+                <article class="learning-summary-card"><span>최근 변화량</span><strong th:classappend="${scorePage.latestChange()!=null and scorePage.latestChange()>0}?' positive':(${scorePage.latestChange()!=null and scorePage.latestChange()<0}?' negative':'')" th:text="${scorePage.latestChange()==null ? '-' : (scorePage.latestChange()>0 ? '+' : '') + scorePage.latestChange() + '점'}">+10점</strong></article>
+            </section>
+            <section class="dashboard-card learning-panel" th:if="${!scorePage.scores().isEmpty()}">
+                <div class="page-toolbar"><div><h2>점수 흐름</h2></div></div>
+                <div class="score-trend-list">
+                    <article class="score-trend-row" th:each="item:${scorePage.scores()}">
+                        <div class="score-trend-label"><strong th:text="|${item.examYear()} ${item.examLabel()}|">2026 중간고사</strong><span th:text="${item.changeFromPrevious()==null ? '첫 기록' : (item.changeFromPrevious()>0 ? '+' : '') + item.changeFromPrevious() + '점 변화'}">+10점 변화</span></div>
+                        <div class="score-progress"><span th:style="|width:${item.score()}%|"></span></div>
+                        <b th:text="|${item.score()}점|">90점</b>
+                    </article>
+                </div>
+            </section>
+            <section class="dashboard-card empty-state learning-empty" th:if="${scorePage.scores().isEmpty()}">아직 등록된 시험 점수가 없습니다.</section>
+        </main>
+    </div>
+</div>
+<script src="/assets/js/mobile-navigation.js" defer></script>
+</body></html>

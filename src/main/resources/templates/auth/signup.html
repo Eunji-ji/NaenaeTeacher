@@ -56,6 +56,17 @@
                     <label for="passwordConfirm">비밀번호 확인</label>
                     <input id="passwordConfirm" name="passwordConfirm" type="password" autocomplete="new-password" minlength="8" required>
                 </div>
+                <fieldset class="legal-consent-box">
+                    <legend>필수 동의</legend>
+                    <label class="legal-consent-row">
+                        <input name="termsAgreed" type="checkbox" value="true" th:checked="${termsAgreed}" required>
+                        <span><strong>[필수]</strong> <a href="/terms" target="_blank" rel="noopener">이용약관</a>에 동의합니다.</span>
+                    </label>
+                    <label class="legal-consent-row">
+                        <input name="privacyAgreed" type="checkbox" value="true" th:checked="${privacyAgreed}" required>
+                        <span><strong>[필수]</strong> <a href="/privacy" target="_blank" rel="noopener">개인정보 수집·이용 및 처리방침</a>을 확인하고 동의합니다.</span>
+                    </label>
+                </fieldset>
                 <button class="auth-submit" type="submit">회원가입</button>
             </form>
 
