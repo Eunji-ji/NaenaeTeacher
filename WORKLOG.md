@@ -490,3 +490,8 @@ Log in again if the browser session was reset, then visually confirm the dashboa
 - Added a production environment template, Docker build exclusions, and explicit Git exclusions for production secrets and local backups.
 - Hardened the production Spring profile with environment-only secrets, schema validation, Flyway ownership, disabled SQL detail logging, small HikariCP defaults, proxy header handling, and limited health/info Actuator exposure.
 - Added an HTTPS Nginx reverse-proxy example targeting port 8081, deployment/restart/log/atomic database backup scripts, and a complete Oracle Cloud Ubuntu deployment runbook.
+
+## 2026-07-21 Database snapshot refresh
+
+- Created and validated a PostgreSQL 16 custom-format snapshot of the current database at Flyway schema V26.
+- Replaced the previous dated snapshot with `db-transfer/naenae_teacher_20260721.dump` and updated the restore instructions.
