@@ -1,6 +1,19 @@
+# Local environment files may contain credentials. Keep templates only.
 .env
-.env.prod
-.env.prod.local
+.env.*
+!.env.example
+!.env.*.example
+
+# Database dumps and backups
+*.dump
+*.dump.gz
+*.backup
+*.bak
+pg_dump*.sql
+/db-transfer/*.sql
+/db-transfer/*.sql.gz
+/db-transfer/*.dump
+/db-transfer/*.backup
 *.log
 *.pid
 /build

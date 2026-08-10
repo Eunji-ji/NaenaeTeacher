@@ -98,6 +98,8 @@ DB 스키마 생성은 Hibernate가 아니라 Flyway가 담당합니다.
 
 ## 배포 주의사항
 
+- Railway + Neon 배포 절차는 [README_RAILWAY_DEPLOY.md](README_RAILWAY_DEPLOY.md)를 기준으로 합니다.
+
 - 운영에서는 `SPRING_PROFILES_ACTIVE=prod`를 사용하세요.
 - DB 접속정보와 `JWT_SECRET`은 환경변수로만 주입하세요.
 - 비밀번호는 `password_hash`에 BCrypt 해시만 저장하는 구조입니다.

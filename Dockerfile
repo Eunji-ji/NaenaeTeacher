@@ -34,13 +34,11 @@ RUN mkdir -p /var/lib/naenae-teacher/uploads \
 
 USER naenae
 
-ENV SPRING_PROFILES_ACTIVE=prod \
-    PORT=8081 \
-    JAVA_OPTS="-Xms128m -Xmx512m"
+ENV SPRING_PROFILES_ACTIVE=prod
 
 EXPOSE 8081
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=5 \
-    CMD curl --fail --silent --show-error http://localhost:8081/actuator/health || exit 1
+    CMD curl --fail --silent --show-error "http://localhost:${PORT:-8081}/actuator/health" || exit 1
 
 ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar /app/app.jar"]
