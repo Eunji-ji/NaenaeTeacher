@@ -21,3 +21,7 @@ db-transfer
 *.sql
 **/*.dump
 **/*.sql
+
+# Flyway migrations are application resources and must be copied into the image.
+!src/main/resources/db/migration/*.sql
+!src/main/resources/db/migration/**/*.sql
