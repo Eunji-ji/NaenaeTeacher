@@ -42,6 +42,7 @@ public class SecurityConfig {
                                 "/privacy",
                                 "/terms",
                                 "/auth/login",
+                                "/auth/demo",
                                 "/api/auth/**",
                                 "/api/health",
                                 "/css/**",

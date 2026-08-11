@@ -36,12 +36,13 @@ class AuthPortalTemplateTest {
     }
 
     @Test
-    void rootPortalOffersTeacherAndStudentLoginChoices() {
+    void rootPortalOffersTeacherStudentAndPortfolioDemoChoices() {
         String html = engine.process("auth/home", new WebContext(exchange, Locale.KOREAN));
 
-        assertThat(html).contains("NaenaeTeacher", "선생님용", "학생용",
+        assertThat(html).contains("NaenaeTeacher", "선생님용", "학생용", "포트폴리오 체험계정",
                 "href=\"/teacher/login\"", "href=\"/student/login\"",
-                "Teacher Dashboard", "Student Dashboard");
+                "Teacher Dashboard", "Student Dashboard", "action=\"/auth/demo\"",
+                "method=\"post\"", "바로 체험하기");
         assertThat(html).doesNotContain("href=\"/teacher/dashboard\"", "href=\"/student/dashboard\"");
     }
 
@@ -55,6 +56,17 @@ class AuthPortalTemplateTest {
         assertThat(html).contains("학생 로그인", "action=\"/auth/login\"",
                 "name=\"portal\" value=\"student\"", "name=\"loginId\"",
                 "href=\"/student/signup\"", "회원가입", "href=\"/\"");
+    }
+
+    @Test
+    void teacherLoginDoesNotShowAUserNameBeforeAuthentication() {
+        var values = new HashMap<String, Object>();
+        values.put("_csrf", new DefaultCsrfToken("X-CSRF-TOKEN", "_csrf", "token"));
+
+        String html = engine.process("auth/login", new WebContext(exchange, Locale.KOREAN, values));
+
+        assertThat(html).contains("선생님 로그인", "Teacher Space");
+        assertThat(html).doesNotContain("이름쌤");
     }
 
     @Test

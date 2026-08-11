@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -16,6 +16,7 @@
     </section>
 
     <div class="auth-alert success portal-alert" th:if="${param.logout}">안전하게 로그아웃되었습니다.</div>
+    <div class="auth-alert error portal-alert" th:if="${demoLoginError}" th:text="${demoLoginError}"></div>
 
     <section class="portal-role-grid" aria-label="사용 화면 선택">
         <a class="portal-role-card teacher" href="/teacher/login">
@@ -32,9 +33,16 @@
             <span class="portal-role-copy"><strong>학생용</strong><small>Student Dashboard</small><p>오늘의 단어와 문장, 과제, 출석과 선생님의 알림을 확인해요.</p></span>
             <span class="portal-enter">들어가기 <b>→</b></span>
         </a>
+        <form class="portal-role-card demo" action="/auth/demo" method="post">
+            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <span class="portal-role-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 3l2.2 4.6 5 .7-3.6 3.5.9 5-4.5-2.4-4.5 2.4.9-5-3.6-3.5 5-.7L12 3zM9 20h6"/></svg>
+            </span>
+            <span class="portal-role-copy"><strong>포트폴리오 체험계정</strong><small>Portfolio Demo</small><p>회원가입과 로그인 없이 준비된 테스트 데이터로 선생님 대시보드를 바로 둘러보세요.</p></span>
+            <button class="portal-enter portal-demo-submit" type="submit">바로 체험하기 <b>→</b></button>
+        </form>
     </section>
     <p class="portal-footnote">오늘도 작은 성장을 함께 기록해요 <span>🌱</span></p>
 </main>
 </body>
 </html>
-

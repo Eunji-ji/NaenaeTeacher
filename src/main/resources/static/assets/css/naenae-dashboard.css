@@ -3058,7 +3058,7 @@ a {
     color: var(--foreground);
     font-family: Pretendard, "Noto Sans KR", system-ui, sans-serif;
 }
-.portal-shell { width: min(820px, calc(100% - 32px)); margin: 0 auto; padding: clamp(52px, 8vh, 90px) 0 40px; }
+.portal-shell { width: min(1080px, calc(100% - 32px)); margin: 0 auto; padding: clamp(52px, 8vh, 90px) 0 40px; }
 .portal-heading { display: grid; justify-items: center; text-align: center; }
 .portal-character {
     position: relative;
@@ -3079,7 +3079,7 @@ a {
 .portal-heading h1 { margin: 0; color: #2f3945; font-size: clamp(30px, 5vw, 42px); font-weight: 950; letter-spacing: -.05em; }
 .portal-heading > p:last-child { margin: 12px 0 0; color: #78838e; font-size: 14px; font-weight: 650; line-height: 1.7; }
 .portal-alert { width: min(520px, 100%); margin: 20px auto 0; text-align: center; }
-.portal-role-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; margin-top: 34px; }
+.portal-role-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; margin-top: 34px; }
 .portal-role-card {
     position: relative;
     display: flex;
@@ -3097,8 +3097,10 @@ a {
 }
 .portal-role-card:hover { transform: translateY(-6px); border-color: rgba(76,195,188,.58); box-shadow: 0 18px 38px rgba(55,91,91,.12); }
 .portal-role-card.student:hover { border-color: rgba(112,154,205,.55); box-shadow: 0 18px 38px rgba(69,101,143,.11); }
+.portal-role-card.demo:hover { border-color: rgba(224,166,85,.62); box-shadow: 0 18px 38px rgba(143,103,49,.11); }
 .portal-role-icon { display: grid; width: 54px; height: 54px; place-items: center; border-radius: 18px; background: #e6f6f3; color: #359d96; }
 .portal-role-card.student .portal-role-icon { background: #e9f1fa; color: #527fab; }
+.portal-role-card.demo .portal-role-icon { background: #fff2d9; color: #c78732; }
 .portal-role-icon svg { width: 27px; height: 27px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .portal-role-copy { display: block; margin-top: 19px; }
 .portal-role-copy strong { display: block; color: var(--card-foreground); font-size: 19px; font-weight: 950; }
@@ -3106,6 +3108,8 @@ a {
 .portal-role-copy p { margin: 13px 0 0; color: #78838e; font-size: 13px; font-weight: 650; line-height: 1.65; word-break: keep-all; }
 .portal-enter { display: flex; align-items: center; gap: 7px; margin-top: auto; padding-top: 18px; color: #359d96; font-size: 13px; font-weight: 900; }
 .portal-role-card.student .portal-enter { color: #527fab; }
+.portal-role-card.demo .portal-enter { color: #b9741e; }
+.portal-demo-submit { border: 0; background: transparent; cursor: pointer; font-family: inherit; }
 .portal-enter b { font-size: 17px; transition: transform .2s ease; }
 .portal-role-card:hover .portal-enter b { transform: translateX(4px); }
 .portal-footnote { margin: 28px 0 0; color: #a0a7af; font-size: 11px; font-weight: 700; text-align: center; }
@@ -3114,6 +3118,12 @@ a {
 .student-auth-intro { background: linear-gradient(145deg, rgba(223,238,249,.95), rgba(230,247,242,.92)); }
 .student-auth-panel .auth-submit { background: linear-gradient(135deg, #5b91bd, #58b8b0); }
 .student-auth-panel .auth-kicker { color: #527fab; }
+
+@media (max-width: 900px) and (min-width: 641px) {
+    .portal-shell { width: min(720px, calc(100% - 32px)); }
+    .portal-role-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .portal-role-card.demo { grid-column: 1 / -1; min-height: 230px; }
+}
 
 /* Student learning dashboard */
 .student-learning-section {
